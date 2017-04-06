@@ -1,13 +1,10 @@
 <template>
-	<div class="home-recommend">
-		<div class="recommend-title">
-			<img src="../assets/icon/home_activity_recommended@3x.png">
-		</div>
+	<div>
 		<template>
 			<div class="recommend-default recommend-three">
 				<div class="recommend-left">
 					<div>
-						<img src="http://img1.imgtn.bdimg.com/it/u=66250564,3253305393&fm=23&gp=0.jpg" >
+						<img src="http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg" >
 					</div>
 					<h1>华为honor/荣耀华为honor/荣耀华为honor/荣耀</h1>
 					<p>华为honor/荣耀V8华为honor/荣耀V8华为honor/荣耀V8</p>
@@ -16,7 +13,7 @@
 				<div class="recommend-right">
 					<div class="recommend-right-top">
 						<div class="right-img">
-							<img src="http://img1.imgtn.bdimg.com/it/u=66250564,3253305393&fm=23&gp=0.jpg">
+							<img src="http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg">
 						</div>
 						<div class="right-desc">
 							<h1>华为honor/荣耀华为honor/荣耀华为honor/荣耀华为honor/荣耀华为honor/荣耀华为honor/荣耀</h1>
@@ -26,7 +23,7 @@
 					</div>
 					<div class="recommend-right-bottom">
 						<div class="right-img">
-							<img src="http://img1.imgtn.bdimg.com/it/u=66250564,3253305393&fm=23&gp=0.jpg">
+							<img src="http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg">
 						</div>
 						<div class="right-desc">
 							<h1>华为honor/荣耀华为honor/荣耀华为honor/荣耀华为honor/荣耀华为honor/荣耀华为honor/荣耀</h1>
@@ -47,14 +44,6 @@ export default {
 </script>
 <style scoped>
 
-/* recommend-today */
-.home-recommend {
-	width: 100%;
-	height: 7.0rem;
-	border-bottom: 1px solid #bbb;
-	overflow: hidden;
-}
-
 .recommend-default {
 	width: 100%;
 	height: 5.96rem;
@@ -68,7 +57,7 @@ export default {
 .recommend-three .recommend-left {
 	display: block;
 	width: 40%;
-	border-right: 1px solid #BBB;
+	border-right: 1px solid #EEE;
 }
 .recommend-three .recommend-right {
 	width: 60%;
@@ -78,7 +67,7 @@ export default {
 	height: 50%;
 }
 .recommend-three .recommend-right-top {
-	border-bottom: 1px solid #BBB;
+	border-bottom: 1px solid #EEE;
 }
 
 .recommend-three .recommend-left > div {

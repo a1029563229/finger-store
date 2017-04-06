@@ -68,3 +68,9 @@ a {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    display: none;
+}
