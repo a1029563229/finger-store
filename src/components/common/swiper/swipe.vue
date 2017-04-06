@@ -42,14 +42,11 @@
 		},
 		mounted() {
 			var self = this;
-			var swiper = new Swiper('.swipe', {
-			// var swiper = new Swiper('.'+ self.swipeid, {
-				loop: true,
-				// loop: self.loop,
+			var swiper = new Swiper('.'+ self.swipeid, {
+				loop: self.loop,
 				pagination: '.swiper-pagination',
 				paginationType: self.paginationType,
-				// autoplay: self.autoplay,
-				autoplay: 1000,
+				autoplay: self.autoplay,
 				direction: self.direction,
 				effect: self.effect,
 				autoplayDisableOnInteraction: false,
@@ -59,7 +56,7 @@
 		},
 		data() {
 			return {
-				dom: "swiper"
+				dom: ''
 			}
 		},
 		

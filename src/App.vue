@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <transition name="router-fade" mode="out-in">
+    <transition :name="transitionName" mode="out-in">
       <router-view class="app-view"></router-view>
     </transition>
   </div>
@@ -8,7 +8,12 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data() {
+    return {
+      transitionName: 'slide-left',
+    }
+  },
 }
 </script>
 
