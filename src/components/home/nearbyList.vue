@@ -1,5 +1,5 @@
 <template>
-	<ul>
+	<ul class="nearby-list">
 		<li v-for="item in list" class="item">
 			<div class="img">
 				<img :src="item.image" >
@@ -8,7 +8,7 @@
 				<h1 class="ellipsis">{{ item.name }}</h1>
 				<p class="desc-item">
 					<span>月销量&nbsp;{{ item.num }}</span>
-					<span>&lt;&nbsp;{{ item.distance }}&nbsp;km</span>
+					<span class="item-distance">&lt;&nbsp;{{ item.distance }}&nbsp;km</span>
 				</p>
 				<router-link to="hello" class="btn-map" @click="toMap()">到这里去</router-link>
 			</div>
@@ -23,7 +23,7 @@ export default {
 	data() {
 		return {
 			list: [
-				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
+				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg'},
 				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
 			],
 		}
@@ -33,6 +33,10 @@ export default {
 </script>
 
 <style scoped>
+
+.nearby-list {
+	margin-bottom: 1.39rem;
+}
 
 .item {
 	width: 100%;
@@ -51,6 +55,7 @@ export default {
 
 .desc {
 	float: left;
+	width: 68%;
 }
 
 .desc h1 {
@@ -62,12 +67,15 @@ export default {
 	color: #999;
 }
 .desc-item span {
-	margin-right: 0.3rem;
 	font-size: 0.35rem;
+}
 
+.item-distance {
+	float: right;
 }
 
 .btn-map {
+	float: right;
 	margin-top: 0.25rem;
 	display: block;
 	width: 2.2rem;

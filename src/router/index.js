@@ -3,9 +3,12 @@
  */
 import Vue from 'vue'
 import Router from 'vue-router'
+
 import Home from './home'
 import Order from './order'
 import Search from './search'
+import Store from './store'
+import StoreList from './storeList'
 
 Vue.use(Router)
 
@@ -14,6 +17,8 @@ export default new Router({
 	 	Home,
 	 	Order,
 	 	Search,
+	 	Store,
+	 	StoreList,
 	 	{
 	 		path: '*',
 	 		redirect: '/home'
