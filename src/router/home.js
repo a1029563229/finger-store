@@ -7,6 +7,12 @@
 export default {
 	path: '/home',
 	name: 'home',
-	title: 'home',
+	/*beforeEnter: (to, from, next) => {
+    console.log('to:', to,'from',from);
+    next({
+    	to.query = {token: '123'}
+    })
+  },*/
+
 	component: resolve => require(['../page/home'], resolve)
 }

@@ -1,13 +1,23 @@
 <template>
 	<div class="search">
 		<search-bar @search="toSearch()" v-model="searchResult"></search-bar>
-		<search-section title="热门搜索">
-			<keyword-list :list="list" slot="search-list"></keyword-list>
+		<search-section class="clear" title="热门搜索" :show="hotSearchWords.length">
+			<ul class="keyword-list clear">
+				<li class="keyword-item" v-for="item in hotSearchWords">
+					{{ item.Word }}
+				</li>
+			</ul>
 		</search-section>
-		<search-section title="历史搜索">
-			<keyword-list :list="list" slot="search-list"></keyword-list>
+
+		<search-section class="clear" title="历史搜索" :show="historyWords.length">
+			<ul class="keyword-list clear">
+				<li class="keyword-item" v-for="item in historyWords">
+					{{ item }}
+				</li>
+			</ul>
+			<!-- <keyword-list :list="historyWords"></keyword-list> -->
 		</search-section>
-		<button class="btn-clear">清空历史搜索记录</button>
+		<button class="btn-clear" @click.prevent="deleteSearchRecord">清空历史搜索记录</button>
 	</div>
 </template>
 
@@ -15,30 +25,41 @@
 
 import searchBar from '@/components/search/searchBar'
 import searchSection from '@/components/search/searchSection'
-import keywordList from '@/components/search/keywordList'
-
+// import keywordList from '@/components/search/keywordList'
+import { getToken, getHotSearchWords, getHistoryWords, deleteSearchWords } from '@/service/getData'
 export default {
 	name: 'search',
 	data() {
 		return {
 			searchResult: '',
-			list: [
-			'荣耀V8', '苹果', '魅蓝5s', '美图V8', '华为honor','荣耀V8', '苹果', '魅蓝5s'
-			]
+			hotSearchWords: [],
+			historyWords: [],
 		}
+	},
+	created() {
+	  this.toHotSearchWords();
 	},
 	components: {
 		searchBar,
 		searchSection,
-		keywordList,
 	},
 	methods: {
 		toSearch() {
 			console.log('toSearch',this.searchResult);
 		},
-		/*toWatch(value) {
-			console.log(value);
-		}*/
+		async toHotSearchWords() {
+			let token = await getToken();
+			let hotdata =  await getHotSearchWords(token.data.Data);
+			this.hotSearchWords = hotdata.data.Data;
+			console.log('hotdata:', this.hotSearchWords);
+
+			let historydata =  await getHistoryWords(token.data.Data);
+			this.historyWords = historydata.data.Data;
+			console.log('historydata:', this.historyWords);
+		},
+		async deleteSearchRecord() {
+			let deleteInfo = await deleteSearchWords();
+		}
 	}
 }
 </script>
@@ -53,5 +74,32 @@ export default {
 		margin: 1.4rem auto 0;
 		background: #FFF;
 		border: 1px solid #333;
+	}
+	.keyword-list {
+		width: 100%;
+		height: auto;
+		margin-bottom: 0.46rem;
+	}
+	.keyword-item {
+		float: left;
+		margin: 0.46rem 0 0 4%;
+		width: 20%;
+		height: 0.7rem;
+		line-height: 0.7rem;
+		border: 1px solid #333;
+		border-radius: 0.08rem;
+		color: #333;
+		text-align: center;
+	}
+
+	.search-title {
+		width: 100%;
+		height: 1rem;
+		line-height: 1rem;
+		font-size: 0.36rem;
+		color: #222;
+		font-weight: 600;
+		padding-left: 5%;
+		background-color: #F4F4F4;
 	}
 </style>

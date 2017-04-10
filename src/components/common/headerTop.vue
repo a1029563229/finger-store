@@ -1,23 +1,22 @@
 <template>
 	<div class="page-header">
-		<button class="header-back" @click="toBack()"></button>
+		<button class="header-back" @click="toBack()" v-if="goBack"></button>
 		<h1 class="header-title">{{ title }}</h1>
 	</div>
 </template>
 <script>
 	export default {
 		name: 'page-header',
-		/*props: {
+		props: {
 			title: {
 				type: String,
-				default: ''
-			}
-		},*/
-		data() {
-			return {
-				title: '我的订单'
+			},
+			goBack: {
+				type: Boolean,
+				default: true
 			}
 		},
+		
 		methods: {
 			toBack() {
 				this.$router.go(-1);

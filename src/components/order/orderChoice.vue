@@ -26,6 +26,7 @@
 		width: 100%;
 		height: 1.8rem;
 		border-bottom: 1px solid #EEE;
+		background-color: #FFF;
 	}
 	.choice-item {
 		float: left;

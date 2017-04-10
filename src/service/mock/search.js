@@ -1,0 +1,1 @@
+export const hotSearchWords = {"ResultCode":1000,"Message":"获取热门搜索关键字成功!","Data":[{"Num":2,"Word":"华为"},{"Num":1,"Word":"诺基亚"},{"Num":1,"Word":"苹果"},{"Num":1,"Word":"三星"},{"Num":1,"Word":"索尼"},{"Num":1,"Word":"小米"},{"Num":1,"Word":"中兴"},{"Num":1,"Word":"OPP"}]}

@@ -1,8 +1,6 @@
 <template>
-	<div>
-		<div class="order-title">
-			我的
-		</div>
+	<div class="order">
+		<header-top title="我的" :goBack="false"></header-top>
 		<div class="order-myall">
 			<i class="myall-icon"></i>
 			我的订单
@@ -12,21 +10,30 @@
 			</div>
 		</div>
 		<order-choice></order-choice>
+		<order-list></order-list>
 	</div>
 </template>
 <script>
-import pageHeader from '@/components/common/pageHeader'
+import headerTop from '@/components/common/headerTop'
 import orderChoice from '@/components/order/orderChoice'
+import orderList from '@/components/order/orderList'
 export default {
 	name: 'order',
 	components: {
-		pageHeader,
+		headerTop,
 		orderChoice,
+		orderList,
 	}
 }
 </script>
 <style scoped>
-	.order-title {
+	
+	.order {
+		padding-top: 1.28rem;
+		background-color: #F5F5F5;
+	}
+
+	/* .order-title {
 		width: 100%;
 		height: 1.28rem;
 		line-height: 1.28rem;
@@ -36,7 +43,7 @@ export default {
 		border-bottom: 1px solid #EEE;
 		text-align: center;
 	}
-
+	 */
 	.order-myall {
 		position: relative;
 		width: 100%;
@@ -45,6 +52,8 @@ export default {
 		padding: 0 3%;
 		border-bottom: 1px solid #EEE;
 		overflow: hidden;
+		background-color: #FFF;
+
 	}
 
 	.myall-icon {

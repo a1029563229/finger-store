@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<h1 class="search-title">
+		<h1 class="search-title" v-if="show">
 			{{ title }}
 		</h1>
-		<slot name="search-list"></slot>
+		<slot></slot>
 	</div>
 </template>
 <script>
@@ -12,7 +12,8 @@ export default {
 		title: {
 			type: String,
 			default: ''
-		}
+		},
+		show: {}
 	}
 }
 </script>

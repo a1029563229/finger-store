@@ -28,7 +28,6 @@
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
-import api from '@/config/api'
 // 轮播图
 import swiper from '@/components/common/swiper/swipe'
 /* home */
@@ -42,6 +41,8 @@ import navigation from '@/components/common/navigation'
 import sortList from '@/components/home/sortList'
 // 附近店铺-列表
 import nearbyList from '@/components/home/nearbyList'
+
+import { getSearchAttrList, getSlides, getToken, getTodayRecommend } from '@/service/getData'
 
 export default {
 	name: 'home',
@@ -60,23 +61,34 @@ export default {
 	},
 	computed: {
 	},
+	created() {
+		this.initial();
+	},
 	mounted() {
 		let swiper = this.$refs.swiper;
 		if (swiper.dom) {
 			this.swiper = swiper.dom;
 		}
-		/*this.axios.get('https://zhihu-agent.herokuapp.com/get?api=/4/news/latest').then(data => {
-			console.log('axios', data);
-		})*/
-		console.log('aaa');
-		this.initial();
+		// this.initial();
+		// this.slides = slideData.data;
+		// console.log('search-attr-list', attrData);
 	},
 	methods: {
-		initial() {
-			api.getSlides().then(data => {
+	  async initial() {
+			/*api.getSlides().then(data => {
 				console.log('slides:',data);
 				this.slides = data.data;
-			})
+			});*/
+		const tokenValue = await getToken(); 
+		console.log('tokenValue',tokenValue.data.Data);
+		let slideData = await getSlides();
+	 	this.slides = slideData.data;
+	 	let attrData = await getSearchAttrList();
+		console.log('search-attr-list', attrData);
+	 	let todayData = await getTodayRecommend(tokenValue.data.Data);
+	 	console.log('todayRecommend',todayData);
+	 	let bannerData = await getTodayRecommend(tokenValue.data.Data);
+	 	console.log('bannerData',bannerData);
 		}
 	}
 
