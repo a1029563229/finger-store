@@ -42,7 +42,7 @@
 import axios from 'axios'
 import { baseUrl, appkey, testUrl } from '../config/env'
 
-import slides from '../mock/home-swipe'
+import slides from './mock/home-swipe'
 
 const setPromise = data => {
 	return new Promise((resolve, reject) => {

@@ -1,16 +1,52 @@
 <template>
 	<ul class="selection">
-		<li v-for="(item, index) in list" :key="item.name" :class="[item.class, {active: item.isActive},{up: item.isUp}]" @click="choose(index)">
+		<li v-for="(item, index) in list" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
 			{{ item.name }}
 		</li>
+		<div class="sort" :class="{active: isSelect}" >
+			<p>综合排序</p>
+			<p>价格由低到高</p>
+			<p>价格由高到低</p>
+		</div>
+		<div class="classify" :class="{active: isClassify}">
+			 <h1>品牌</h1>
+			 <!-- v-for="item in classifyNames" -->
+			<ol class="classify-name clear" >
+				<dd>不限</dd>
+				<dd>不限</dd>
+				<dd>不限</dd>
+				<dd>不限</dd>
+			</ol>
+			<h1>价格区间</h1>
+			<ol class="classify-price clear">
+				<dd>最低价</dd>
+					-
+				<dd>最高价</dd>
+			</ol>
+			<h1>内存</h1>
+			<ol class="classify-capacity clear">
+				<dd>不限</dd>
+				<dd>不限</dd>
+				<dd>不限</dd>
+			</ol>
+			<h1>机身颜色</h1>
+			<ol class="classify-color clear">
+				<dd>不限</dd>
+				<dd>不限</dd>
+				<dd>不限</dd>
+				<dd>不限</dd>
+			</ol>
+			<div class="classify-btn">
+				<button>重置</button>
+				<button>确定</button>
+			</div>
+		</div>
 	</ul>
 </template>
 <script>
 	export default {
 		name: 'selection',
-		props: {
-
-		},
+		props: ['isMask'],
 		data() {
 			return {
 				list: [
@@ -19,17 +55,59 @@
 					{name: '销量', class: 'arrow-up',  up: true, active:false },
 					{name: '筛选', class: 'screen ',  up: false, active:false },
 				],
+				isSelect: false,
+				isClassify: false,
 			}
+		},
+		computed: {
 		},
 		methods: {
 			choose(index) {
 				console.log(index);
-				this.list[index].isActive = !this.list[index].isActive;
-				let active = this.list[index].isActive;
-				let up = this.list[index].isUp;
+				// this.list[index].isActive = !this.list[index].isActive;
+				let active = this.list[index].active;
+				let up = this.list[index].up;
+				this.list.forEach((item,index) => {
+					this.list[index].active = false;
+				})
 				switch(index) {
 					case 0: 
-						// active ?  
+						if (this.isMask && !active) {
+							
+						} else {
+							this.$emit('mask');
+						}
+						if (this.isClassify) this.isClassify = false;
+						this.list[index].active = !active;
+						this.isSelect = !active;
+						// this.list[index].isActive = !active; 
+						 return
+					case 1: 
+						if (this.isMask) this.$emit('mask');
+						if (this.isSelect) this.isSelect = false;
+						if (this.isClassify) this.isClassify = false;
+
+						this.list[index].up = !up; 
+						this.list[index].active = !active;
+						return
+					case 2: 
+						if (this.isMask) this.$emit('mask');
+						if (this.isSelect) this.isSelect = false;
+						if (this.isClassify) this.isClassify = false;
+						if (!active) this.list[index].active = !active;
+						this.list[index].up = !up; 
+						return
+					case 3: 
+						if (this.isMask && !active) {
+								
+							} else {
+								this.$emit('mask');
+							}
+						if (this.isSelect) this.isSelect = false;
+						this.isSelect = false;
+						this.isClassify = !active;
+						this.list[index].active = !active;
+						return
 				}
 			}
 		}
@@ -91,7 +169,7 @@ li::after {
 	opacity: 1;
 }
 
-.active {
+ li.active {
 	color: #E40277;
 }
 .active::before {
@@ -106,5 +184,79 @@ li::after {
 	top: 0.65rem;
 }
 
+/* 下拉菜单 */
+.sort {
+	display: none;
+	position: absolute;
+	padding: 0.1rem 5% 0;
+	top: 1.4rem;
+	visibility: hidden;
+	/* transform: translate3d(0, -2rem, 0); */
+	left: 0;
+	width: 100%;
+	height: 2rem;
+	z-index: 20;
+	line-height: 0.6rem;
+	color: inherit;
+	/* transition: transform 0.3s ease; */
+	background-color: #fff;
+	border-bottom: 1px solid #EEE;
+}
+
+.sort.active {
+	visibility: visible;
+	display: block;
+	/* transform: translate3d(0, 0, 0); */
+}
+
+.classify {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 1.4rem;
+	width: 60%;
+	height: auto;
+	z-index: 20;
+	line-height: 0.6rem;
+	background-color: #FFF;
+}
+.classify.active {
+	display: block;
+}
+
+.classify h1 {
+	font-size: 0.35rem;
+	font-weight: 600;
+	line-height: 0.8rem;
+	padding: 0 2%;
+}
+.classify ol {
+	display: flex;
+	padding: 0 2%;
+	justify-content: space-between;
+}
+
+.classify .classify-price {
+	justify-content: space-around;
+}
+
+.classify dd {
+	padding: 0.02rem 0.1rem;
+	border: 1px solid #EEE;
+	border-radius: 0.04rem;
+	font-size: 0.28rem;
+}
+.classify-btn {
+	display: flex;
+	width: 100%;
+	height: 1rem;
+	margin-top: 0.4rem;
+}
+.classify-btn button {
+	display: block;
+	width: 50%;
+	height: 1rem;
+	border-right: 1px solid #eee;
+}
 
 </style>

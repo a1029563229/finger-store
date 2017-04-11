@@ -25,6 +25,9 @@ export default {
 			list: [
 				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg'},
 				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
+				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
+				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
+				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
 			],
 		}
 	}

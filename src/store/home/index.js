@@ -6,11 +6,13 @@ import actions from './actions'
 import getters from './getters'
 
 const state = {
+	login: true,
+	loginToken: '', //登录成功后的sessionkey
 	list: [],
 	slides: [],
 }
 
-export default {
+export {
 	state,
 	mutations,
 	actions,

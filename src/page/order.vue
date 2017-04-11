@@ -4,7 +4,7 @@
 		<div class="order-myall">
 			<i class="myall-icon"></i>
 			我的订单
-			<div class="myall-right">
+			<div class="myall-right" @click="toMyorder">
 				<span>全部订单</span>
 				<i class="arrow-right"></i>
 			</div>
@@ -23,6 +23,11 @@ export default {
 		headerTop,
 		orderChoice,
 		orderList,
+	},
+	methods: {
+		toMyorder() {
+			this.$router.push('myorder');
+		}
 	}
 }
 </script>

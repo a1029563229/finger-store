@@ -5,12 +5,13 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 // 模块数据
-import home from './home'
+import { state,actions,mutations,getters } from './home'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-	modules: {
-		home
-	}
+	state,
+	getters,
+	actions,
+	mutations
 })

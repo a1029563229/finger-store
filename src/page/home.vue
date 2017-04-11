@@ -1,5 +1,5 @@
 <template>
-	<div class="home">
+	<div class="home" :data-login="loginToken">
 		<!-- 轮播 -->
 		<swiper swipeid="swipe" ref="swiper" class="home-swipe">
 			<div class="swiper-slide home-slide" slot="swiper-item" v-for="top in slides">
@@ -7,7 +7,7 @@
 			</div>
 		</swiper>
 		<!-- 顶部搜索栏 -->
-		<div class="home-search">
+		<div class="home-search" :class="{active: isScroll}">
 			<router-link class="search-input" href="javascript:;" to="search">
 				请输入关键字
 			</router-link>
@@ -18,12 +18,14 @@
 			<recommend-today></recommend-today>
 		</section-item>
 		<!-- 附近店铺 -->
-		<section-item :title="require('../assets/icon/home_activity_nearby@3x.png')">
-			<sort-list></sort-list>
+		<section-item class="section-item-mask" :title="require('../assets/icon/home_activity_nearby@3x.png')">
+			<sort-list @mask="changeMask" :isMask="isMask"></sort-list>
 			<nearby-list></nearby-list>
+			<div class="mask" v-show="isMask"></div>
 		</section-item>
 		<!-- 底部导航栏 -->
 		<navigation></navigation>
+		<watch-scroll :scroller="scroller" overflow="overflow"></watch-scroll>
 	</div>
 </template>
 <script>
@@ -49,6 +51,8 @@ export default {
 	data() {
 		return {
 			slides: [],
+			isMask: false,
+			isScroll: false,
 		}
 	},
 	components: {
@@ -60,8 +64,12 @@ export default {
 		navigation,
 	},
 	computed: {
+		...mapState([
+			'loginToken'
+			]),
 	},
 	created() {
+		this.getUserInfo();
 		this.initial();
 	},
 	mounted() {
@@ -74,21 +82,31 @@ export default {
 		// console.log('search-attr-list', attrData);
 	},
 	methods: {
+		...mapActions([
+			'getUserInfo'
+			]),
 	  async initial() {
 			/*api.getSlides().then(data => {
 				console.log('slides:',data);
 				this.slides = data.data;
 			});*/
-		const tokenValue = await getToken(); 
-		console.log('tokenValue',tokenValue.data.Data);
+		/*const tokenValue = await getToken(); 
+		console.log('tokenValue',tokenValue.data.Data);*/
 		let slideData = await getSlides();
 	 	this.slides = slideData.data;
 	 	let attrData = await getSearchAttrList();
 		console.log('search-attr-list', attrData);
-	 	let todayData = await getTodayRecommend(tokenValue.data.Data);
+	 	let todayData = await getTodayRecommend(this.loginToken);
 	 	console.log('todayRecommend',todayData);
-	 	let bannerData = await getTodayRecommend(tokenValue.data.Data);
+	 	let bannerData = await getTodayRecommend(this.loginToken);
 	 	console.log('bannerData',bannerData);
+		},
+		changeMask() {
+			console.log(111);
+			this.isMask = !this.isMask;
+		},
+		overflow() {
+			this.isScroll = !this.isScroll;
 		}
 	}
 
@@ -123,6 +141,9 @@ export default {
 	background: rgba(255, 255, 255, 0.1);
 	z-index: 9;
 }
+.home-search.active {
+	background-color: rgba(128, 128, 128, 0.9);
+}
 .home-search .search-input {
 	float: left;
 	display: block;
@@ -143,5 +164,23 @@ export default {
 	background: url('../assets/icon/icon_search@2x.png') no-repeat center;
 	background-size: 0.72rem;
 }
+
+/* 遮罩处理 */
+.section-item-mask {
+	position: relative;
+}
+.mask {
+	position: absolute;
+	display: block;
+	top: 2.44rem;
+	right: 0;
+	bottom: 1.4rem;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 19;
+	background-color: rgba(0,0,0,0.5);
+}
+
 
 </style>
