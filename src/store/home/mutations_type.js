@@ -4,3 +4,5 @@
 
  // 获取用户信息
  export const GET_USERINFO = 'GET_USERINFO'
+ 
+ export const CHANGE_HOME_SORT = 'CHANGE_HOME_SORT'

@@ -34,11 +34,11 @@ export default {
 			const isWindow = scroller === window;
 			const scrollTop = isWindow ? scroller.scrollY : scroller.scrollTop;
 			const scrollHeight = isWindow ? document.documentElement.scrollHeight || document.body.scrollHeight : scroller.scrollHeight;
-			let contentHeight = scrollHeight - scrollTop - 5;
+			let contentHeight = scrollHeight - scrollTop - 50;
 			let slideHeight = isWindow ? window.innerHeight : scroller.offsetHeight;
 			// 滑动距离大于内容高度触发加载事件
 			if (contentHeight <= slideHeight) {
-				console.warn('emit-load');
+				console.warn('emit-load',contentHeight,slideHeight);
 				this.$emit('load');
 			}
 		}

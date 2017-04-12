@@ -4,12 +4,12 @@
 			{{ item.name }}
 		</li>
 		<div class="sort" :class="{active: isSelect}" >
-			<p>综合排序</p>
-			<p>价格由低到高</p>
-			<p>价格由高到低</p>
+			<p v-for="(item,index) in sortPrices" @click="toSortPrice(index)" :class="{active: (index+1) == searchStoreKey.sort}">{{item}}</p>
 		</div>
 		<div class="classify" :class="{active: isClassify}">
-			 <h1>品牌</h1>
+			 <h1>品牌
+			 <i></i>
+			 </h1>
 			 <!-- v-for="item in classifyNames" -->
 			<ol class="classify-name clear" >
 				<dd>不限</dd>
@@ -37,16 +37,20 @@
 				<dd>不限</dd>
 			</ol>
 			<div class="classify-btn">
-				<button>重置</button>
-				<button>确定</button>
+				<button @click="reset">重置</button>
+				<button @click="confirm">确定</button>
 			</div>
 		</div>
 	</ul>
 </template>
 <script>
+import { mapState } from 'vuex'
+
 	export default {
 		name: 'selection',
-		props: ['isMask'],
+		props: {
+			isMask: {},
+		},
 		data() {
 			return {
 				list: [
@@ -55,11 +59,18 @@
 					{name: '销量', class: 'arrow-up',  up: true, active:false },
 					{name: '筛选', class: 'screen ',  up: false, active:false },
 				],
+				sortPrices: ['综合排序', '距离', '销量'],
 				isSelect: false,
 				isClassify: false,
 			}
 		},
 		computed: {
+			...mapState([
+				'searchStoreKey'
+			]),
+		},
+		mounted() {
+			console.info('search',this.search);
 		},
 		methods: {
 			choose(index) {
@@ -109,6 +120,16 @@
 						this.list[index].active = !active;
 						return
 				}
+			},
+			toSortPrice(index) {
+				this.$store.dispatch('switch_home_sort',index+1);
+			},
+			// 重置
+			reset() {
+
+			},
+			confirm() {
+				this.$emit('isMask');
 			}
 		}
 	}
@@ -207,6 +228,10 @@ li::after {
 	visibility: visible;
 	display: block;
 	/* transform: translate3d(0, 0, 0); */
+}
+
+.sort p.active {
+	color: #E40277;
 }
 
 .classify {

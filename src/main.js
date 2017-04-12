@@ -8,9 +8,13 @@ import store from './store'
 // plugin
 import './plugins/flexible'
 import FastClick from 'fastclick'
+import BaiduMap from 'vue-baidu-map'
 // import vueAxios from './plugins/vue-axios'
 
 // Vue.use(vueAxios, axios)
+Vue.use(BaiduMap, {
+	ak: 'x7weekL5BrZISrSgMl0swHR2jDxUiZYO'
+})
 
 Vue.config.productionTip = false
 

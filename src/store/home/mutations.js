@@ -15,5 +15,9 @@ export default {
 		if (info) {
 			state.loginToken = info;
 		}
+	},
+	[type.CHANGE_HOME_SORT](state,info) {
+		console.log('info', info.index);
+		state.searchStoreKey.sort = info.index;
 	}
 }

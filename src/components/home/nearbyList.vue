@@ -1,16 +1,16 @@
 <template>
 	<ul class="nearby-list">
-		<li v-for="item in list" class="item">
+		<li v-for="item in list" class="item" :key="item.StoreID">
 			<div class="img">
-				<img :src="item.image" >
+				<img :src="item.StoreLogo" >
 			</div>
 			<div class="desc">
-				<h1 class="ellipsis">{{ item.name }}</h1>
+				<h1 class="ellipsis">{{ item.StoreName }}</h1>
 				<p class="desc-item">
-					<span>月销量&nbsp;{{ item.num }}</span>
-					<span class="item-distance">&lt;&nbsp;{{ item.distance }}&nbsp;km</span>
+					<span>月销量&nbsp;{{ item.SellCount }}</span>
+					<span class="item-distance">&lt;&nbsp;{{ item.Distanct }}&nbsp;km</span>
 				</p>
-				<router-link to="hello" class="btn-map" @click="toMap()">到这里去</router-link>
+				<router-link to="hello" class="btn-map" @click="toMap(item.StoreID)">到这里去</router-link>
 			</div>
 		</li>
 	</ul>
@@ -20,7 +20,14 @@
 
 export default {
 	name: 'nearby-list',
-	data() {
+	props: ['list'],
+	methods: {
+		toMap(id) {
+			console.log('StoreID:',StoreID);
+			this.$router.push('map');
+		}
+	}
+	/*data() {
 		return {
 			list: [
 				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg'},
@@ -30,16 +37,12 @@ export default {
 				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
 			],
 		}
-	}
+	}*/
 }
 
 </script>
 
 <style scoped>
-
-.nearby-list {
-	margin-bottom: 1.39rem;
-}
 
 .item {
 	width: 100%;

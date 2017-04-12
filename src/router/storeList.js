@@ -7,6 +7,5 @@
 export default {
 	path: '/storelist',
 	name: 'storeList',
-	title: 'storeList',
 	component: storeList
 }

@@ -99,7 +99,7 @@ var getTodayRecommend = (token) => axios({
 });
 
 // 获取Banner广告
-var getTodayRecommend = (token) => axios({
+var getBanner = (token) => axios({
 	url: service + '/GetZZDBannerList',
 	method: 'post',
 	data: {
@@ -108,9 +108,22 @@ var getTodayRecommend = (token) => axios({
 	}
 });
 
-// 获取热门搜索关键字
-var getHotSearchWords = (token) => axios({
-	url: service + '/GetHotSearchWords',
+
+
+
+// 获取商品列表
+var searchProductList = (searchData) => axios({
+	url: service + '/SearchProductList',
+	method: 'post',
+	data: {
+		searchData
+	}
+});
+
+
+// 获取店铺列表
+var searchStoreList = (token) => axios({
+	url: service + '/SearchStoreByGoodsParam',
 	method: 'post',
 	data: {
 		appkey: appkey,
@@ -214,6 +227,6 @@ var getSlides = () => {
 
 // 导出相关方法
 export { 
-	getSearchAttrList, getSlides, getToken, getTodayRecommend, getHotSearchWords, getHistoryWords, deleteSearchWords, 
-	addStoreCollect, addStoreSuperb, getContractStoreInfo, getStoreQrcode, 
+	getSearchAttrList, getSlides, getToken, getTodayRecommend, getBanner, getHotSearchWords, getHistoryWords, deleteSearchWords, 
+	addStoreCollect, addStoreSuperb, getContractStoreInfo, getStoreQrcode, searchProductList, searchStoreList, 
 }

@@ -2,16 +2,16 @@
 	<div class="home" :data-login="loginToken">
 		<!-- 轮播 -->
 		<swiper swipeid="swipe" ref="swiper" class="home-swipe">
-			<div class="swiper-slide home-slide" slot="swiper-item" v-for="top in slides">
-				<img :src="top.image">
+			<div class="swiper-slide home-slide" slot="swiper-item" v-for="top in slides" @click="bannerToDetail(top.activityUrl)">
+				<img :src="top.activityImage">
 			</div>
 		</swiper>
 		<!-- 顶部搜索栏 -->
 		<div class="home-search" :class="{active: isScroll}">
-			<router-link class="search-input" href="javascript:;" to="search">
+			<router-link class="search-input" href="javascript:;" :to="{path: 'search',query:{storeid:0}}">
 				请输入关键字
 			</router-link>
-			<router-link to="search" class="search-icon"></router-link>
+			<router-link :to="{path: 'search',query:{storeid:0}}" class="search-icon"></router-link>
 		</div>
 		<!-- 今日精品推荐 -->
 		<section-item :title="require('../assets/icon/home_activity_recommended@3x.png')">
@@ -19,13 +19,14 @@
 		</section-item>
 		<!-- 附近店铺 -->
 		<section-item class="section-item-mask" :title="require('../assets/icon/home_activity_nearby@3x.png')">
-			<sort-list @mask="changeMask" :isMask="isMask"></sort-list>
-			<nearby-list></nearby-list>
+			<sort-list @mask="isMask = !isMask" :isMask="isMask"></sort-list>
+			<nearby-list :list="nearbyListData"></nearby-list>
 			<div class="mask" v-show="isMask"></div>
 		</section-item>
 		<!-- 底部导航栏 -->
 		<navigation></navigation>
-		<watch-scroll :scroller="scroller" overflow="overflow"></watch-scroll>
+		<watch-scroll :scroller="scroller" @overflow="overflow"></watch-scroll>
+		<!-- <infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore"></infinite-scroll> -->
 	</div>
 </template>
 <script>
@@ -44,7 +45,13 @@ import sortList from '@/components/home/sortList'
 // 附近店铺-列表
 import nearbyList from '@/components/home/nearbyList'
 
-import { getSearchAttrList, getSlides, getToken, getTodayRecommend } from '@/service/getData'
+import watchScroll from '@/components/common/watchScroll'
+import infiniteScroll from '@/components/common/infiniteScroll'
+
+
+import { 
+	getSearchAttrList, getSlides, getToken, getTodayRecommend, getBanner, searchProductList, searchStoreList, 
+} from '@/service/getData'
 
 export default {
 	name: 'home',
@@ -53,6 +60,9 @@ export default {
 			slides: [],
 			isMask: false,
 			isScroll: false,
+			scroller: null,
+			loading: false,
+			nearbyListData: [],
 		}
 	},
 	components: {
@@ -62,10 +72,12 @@ export default {
 		sortList,
 		nearbyList,
 		navigation,
+		watchScroll,
+		infiniteScroll,
 	},
 	computed: {
 		...mapState([
-			'loginToken'
+			'loginToken', 'searchProductKey', 'searchStoreKey'
 			]),
 	},
 	created() {
@@ -74,45 +86,58 @@ export default {
 	},
 	mounted() {
 		let swiper = this.$refs.swiper;
+		this.scroller = this.$el;
 		if (swiper.dom) {
 			this.swiper = swiper.dom;
 		}
-		// this.initial();
-		// this.slides = slideData.data;
-		// console.log('search-attr-list', attrData);
+
+		this.getNearbyStore();
 	},
 	methods: {
 		...mapActions([
 			'getUserInfo'
 			]),
 	  async initial() {
-			/*api.getSlides().then(data => {
-				console.log('slides:',data);
-				this.slides = data.data;
-			});*/
-		/*const tokenValue = await getToken(); 
-		console.log('tokenValue',tokenValue.data.Data);*/
-		let slideData = await getSlides();
-	 	this.slides = slideData.data;
+		/*let slideData = await getSlides();
+	 	this.slides = slideData.data;*/
 	 	let attrData = await getSearchAttrList();
 		console.log('search-attr-list', attrData);
+
 	 	let todayData = await getTodayRecommend(this.loginToken);
 	 	console.log('todayRecommend',todayData);
-	 	let bannerData = await getTodayRecommend(this.loginToken);
+
+	 	let bannerData = await getBanner(this.loginToken);
+	 	this.slides = bannerData.data.Data;
 	 	console.log('bannerData',bannerData);
+
 		},
-		changeMask() {
-			console.log(111);
-			this.isMask = !this.isMask;
-		},
+		// 监听滚动，设置搜索栏背景色
 		overflow() {
-			this.isScroll = !this.isScroll;
+			// console.log(1123);
+			this.isScroll = true;
+		},
+		// 跳转到商品详情
+		bannerToDetail(url) {
+			window.location.href = url;
+		},
+		// 获取店铺数据
+		async getNearbyStore() {
+			let searchData = await searchStoreList(this.searchStoreKey);
+			console.info('getNearbyStore:', searchData);
+			this.nearbyListData = searchData.data.Data;
+		},
+		loadmore() {
+			// console.info('loadmore');
 		}
 	}
 
 }
 </script>
 <style scoped>
+
+.home {
+	padding-bottom: 1.4rem;
+}
 
 	/* swiper */
 .home-swipe {

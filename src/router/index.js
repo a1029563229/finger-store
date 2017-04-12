@@ -11,6 +11,7 @@ import store from './store'
 import storeList from './storeList'
 import myorder from './myorder'
 import orderdetail from './orderdetail'
+import map from './map'
 
 Vue.use(Router)
 
@@ -23,6 +24,7 @@ export default new Router({
 	 	storeList,
 	 	myorder,
 	 	orderdetail,
+	 	map,
 	 	{
 	 		path: '*',
 	 		redirect: '/home'
