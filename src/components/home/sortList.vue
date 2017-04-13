@@ -3,38 +3,38 @@
 		<li v-for="(item, index) in list" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
 			{{ item.name }}
 		</li>
-		<div class="sort" :class="{active: isSelect}" >
+		<div class="sort" :class="{active: isSortList}" >
 			<p v-for="(item,index) in sortPrices" @click="toSortPrice(index)" :class="{active: (index+1) == searchStoreKey.sort}">{{item}}</p>
 		</div>
 		<div class="classify" :class="{active: isClassify}">
-			 <h1>品牌
-			 <i></i>
-			 </h1>
-			 <!-- v-for="item in classifyNames" -->
-			<ol class="classify-name clear" >
-				<dd>不限</dd>
-				<dd>不限</dd>
-				<dd>不限</dd>
-				<dd>不限</dd>
+			<h1 class="classify-title">
+			 	品牌
+			 	<i class="arrow-down" :class="{active: brandarrow}" @click="brandarrow = !brandarrow"></i>
+			</h1>
+			<ol class="classify-name clear" :class="{active: brandarrow}">
+				<dd v-for="item in brandsList">{{ item.Title }}</dd>
 			</ol>
-			<h1>价格区间</h1>
+			<h1 class="classify-title">
+				价格区间
+			</h1>
 			<ol class="classify-price clear">
-				<dd>最低价</dd>
-					-
-				<dd>最高价</dd>
+				<dd><input type="text" placeholder="最低价"></dd>
+				<dd class="classify-price-line">-</dd>
+				<dd><input type="text" placeholder="最高价"></dd>
 			</ol>
-			<h1>内存</h1>
-			<ol class="classify-capacity clear">
-				<dd>不限</dd>
-				<dd>不限</dd>
-				<dd>不限</dd>
+			<h1 class="classify-title">
+				内存
+				<i class="arrow-down" :class="{active: memoryArrow}" @click="memoryArrow = !memoryArrow"></i>
+			</h1>
+			<ol class="classify-capacity clear" :class="{active: memoryArrow}">
+				<dd v-for="item in memoryList">{{item.Title}}</dd>
 			</ol>
-			<h1>机身颜色</h1>
-			<ol class="classify-color clear">
-				<dd>不限</dd>
-				<dd>不限</dd>
-				<dd>不限</dd>
-				<dd>不限</dd>
+			<h1 class="classify-title">
+				机身颜色
+				<i class="arrow-down" :class="{active: colorArrow}" @click="colorArrow = !colorArrow"></i>
+			</h1>
+			<ol class="classify-color clear" :class="{active: colorArrow}">
+				<dd v-for="(item,index) in colorList" :class="{active: index === colorSelect}" @click="colorSelect = index;selectedWord.color = item.Title">{{ item.Title }}</dd>
 			</ol>
 			<div class="classify-btn">
 				<button @click="reset">重置</button>
@@ -44,7 +44,8 @@
 	</ul>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
+import { getSearchAttrList } from '@/service/getData'
 
 	export default {
 		name: 'selection',
@@ -54,14 +55,23 @@ import { mapState } from 'vuex'
 		data() {
 			return {
 				list: [
-					{name: '综合', class: 'total', up: false, active:false },
+					{name: '综合', class: 'total', up: false, active:true },
 					{name: '距离', class: 'arrow-up', up: false, active:false },
-					{name: '销量', class: 'arrow-up',  up: true, active:false },
+					{name: '销量', class: 'arrow-up',  up: false, active:false },
 					{name: '筛选', class: 'screen ',  up: false, active:false },
 				],
 				sortPrices: ['综合排序', '距离', '销量'],
-				isSelect: false,
+				isSortList: false,
 				isClassify: false,
+				classifyList: [],
+				brandsList: [],
+				memoryList: [],
+				colorList: [],
+				selectedWord: {},
+				brandarrow: false,
+				memoryArrow: false,
+				colorArrow: false,
+				colorSelect: null,
 			}
 		},
 		computed: {
@@ -70,12 +80,23 @@ import { mapState } from 'vuex'
 			]),
 		},
 		mounted() {
+			this.getAttrList();
 			console.info('search',this.search);
 		},
 		methods: {
+			...mapMutations([
+				'CHANG_HOME_SEQUENCE'
+			]),
+		 async getAttrList() {
+				let attrData = await getSearchAttrList();
+				this.classifyList = attrData.data.Data;
+				this.colorList = this.classifyList[0];
+				this.memoryList = this.classifyList[1];
+				this.brandsList = this.classifyList[2];
+				console.info('brandsList', this.brandsList);
+				console.log('search-attr-list', this.classifyList);
+			},
 			choose(index) {
-				console.log(index);
-				// this.list[index].isActive = !this.list[index].isActive;
 				let active = this.list[index].active;
 				let up = this.list[index].up;
 				this.list.forEach((item,index) => {
@@ -83,53 +104,63 @@ import { mapState } from 'vuex'
 				})
 				switch(index) {
 					case 0: 
-						if (this.isMask && !active) {
-							
-						} else {
-							this.$emit('mask');
-						}
-						if (this.isClassify) this.isClassify = false;
-						this.list[index].active = !active;
-						this.isSelect = !active;
-						// this.list[index].isActive = !active; 
+						this.isMask ? '' : this.$emit('mask');
+						this.isClassify ? this.isClassify = false : '';
+
+						this.list[0].active = true;
+						this.isSortList = true;
 						 return
 					case 1: 
-						if (this.isMask) this.$emit('mask');
-						if (this.isSelect) this.isSelect = false;
-						if (this.isClassify) this.isClassify = false;
-
-						this.list[index].up = !up; 
-						this.list[index].active = !active;
+						this.isMask ? this.$emit('mask') : '';
+						this.isSortList ? this.isSortList = false : '';
+						this.isClassify ? this.isClassify = false : '';
+						if (!active) {
+							this.$store.dispatch('switch_home_sort', 2);
+							this.$emit('reload');
+						} else {
+							this.list[1].up = !up;
+							this.CHANG_HOME_SEQUENCE();
+							this.$emit('reload');
+						}
+						this.list[1].active = true;
 						return
 					case 2: 
-						if (this.isMask) this.$emit('mask');
-						if (this.isSelect) this.isSelect = false;
-						if (this.isClassify) this.isClassify = false;
-						if (!active) this.list[index].active = !active;
-						this.list[index].up = !up; 
+						this.isMask ? this.$emit('mask') : '';
+						this.isSortList ? this.isSortList = false : '';
+						this.isClassify ? this.isClassify = false : '';
+						if (!active) {
+							this.$store.dispatch('switch_home_sort', 3);
+							this.$emit('reload');
+						} else {
+							this.list[2].up = !up;
+							this.CHANG_HOME_SEQUENCE();
+							this.$emit('reload');
+						}
+						this.list[2].active = true;
 						return
 					case 3: 
-						if (this.isMask && !active) {
-								
-							} else {
-								this.$emit('mask');
-							}
-						if (this.isSelect) this.isSelect = false;
-						this.isSelect = false;
-						this.isClassify = !active;
-						this.list[index].active = !active;
+						this.isMask ? '' :  this.$emit('mask');
+						if (this.isSortList) this.isSortList = false;
+						
+						this.isClassify = true;
+						this.list[3].active = true;
 						return
 				}
 			},
 			toSortPrice(index) {
 				this.$store.dispatch('switch_home_sort',index+1);
+				this.$emit('mask');
+				this.list[0].active = false;
+				this.isSortList = false;
+				this.$emit('reload');
 			},
 			// 重置
 			reset() {
-
+				this.selectedWord = {};
 			},
 			confirm() {
-				this.$emit('isMask');
+				console.log('selectedWord', this.selectedWord);
+				// if (this.isMask) this.$emit('mask');
 			}
 		}
 	}
@@ -190,7 +221,7 @@ li::after {
 	opacity: 1;
 }
 
- li.active {
+li.active {
 	color: #E40277;
 }
 .active::before {
@@ -250,6 +281,7 @@ li::after {
 }
 
 .classify h1 {
+	position: relative;
 	font-size: 0.35rem;
 	font-weight: 600;
 	line-height: 0.8rem;
@@ -258,18 +290,45 @@ li::after {
 .classify ol {
 	display: flex;
 	padding: 0 2%;
-	justify-content: space-between;
+	justify-content: space-around;
+	flex-wrap: wrap;
 }
 
 .classify .classify-price {
+	display: flex;
 	justify-content: space-around;
+	
+}
+.classify .classify-price dd {
+	float: left;
+	width: 30%;
+	height: 0.5rem;
+	margin: 0;
+	padding: 0;
 }
 
+.classify dd.active {
+	border-color: #E52951;
+	background-color: #E52951;
+	color: #FFF;
+}
+
+.classify-price input {
+	display: block;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	border-radius: 0.03rem;
+	border: 1px;
+}
+
+
 .classify dd {
-	padding: 0.02rem 0.1rem;
+	padding: 0.01rem 0.1rem;
 	border: 1px solid #EEE;
 	border-radius: 0.04rem;
 	font-size: 0.28rem;
+	margin: 0.06rem;
 }
 .classify-btn {
 	display: flex;
@@ -282,6 +341,62 @@ li::after {
 	width: 50%;
 	height: 1rem;
 	border-right: 1px solid #eee;
+}
+
+/* brands */
+.classify .classify-name {
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	height: 0.75rem;
+	overflow-y: scroll;
+	transition: height 0.3s ease;
+}
+.classify .classify-name.active {
+	height: 3rem;
+}
+
+ .arrow-down {
+	position: absolute;
+	right: 0;
+	top: 0;
+	display: block;
+	width: 0.8rem;
+	height: 0.8rem;
+	margin-right: 0.2rem;
+	background: url('../../assets/icon/arrow_down.png') no-repeat center;
+	background-size: 0.6rem;
+	transform: rotate(-90deg);
+	transition: transform 0.3s ease;
+}
+.arrow-down.active {
+	transform: rotate(0deg);
+}
+
+ .classify .classify-price	.classify-price-line {
+ 	border: none;
+ 	text-align: center;
+ 	width: 20%;
+ }
+
+
+.classify .classify-capacity {
+	height: 0.75rem;
+	overflow-y: scroll;
+	transition: height 0.3s ease;
+}
+.classify .classify-color {
+	height: 0.75rem;
+	overflow-y: scroll;
+	transition: height 0.3s ease;
+}
+
+.classify .classify-capacity.active {
+	height: 1.5rem;
+}
+
+.classify .classify-color.active {
+	height: 3rem;
 }
 
 </style>

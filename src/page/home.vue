@@ -19,18 +19,18 @@
 		</section-item>
 		<!-- 附近店铺 -->
 		<section-item class="section-item-mask" :title="require('../assets/icon/home_activity_nearby@3x.png')">
-			<sort-list @mask="isMask = !isMask" :isMask="isMask"></sort-list>
-			<nearby-list :list="nearbyListData"></nearby-list>
+			<sort-list @mask="isMask = !isMask" :isMask="isMask" @reload="reloadNearbyStore"></sort-list>
+			<nearby-list :list="nearbyListData" ></nearby-list>
 			<div class="mask" v-show="isMask"></div>
 		</section-item>
 		<!-- 底部导航栏 -->
 		<navigation></navigation>
 		<watch-scroll :scroller="scroller" @overflow="overflow"></watch-scroll>
-		<!-- <infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore"></infinite-scroll> -->
+		<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore"></infinite-scroll>
 	</div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 // 轮播图
 import swiper from '@/components/common/swiper/swipe'
 /* home */
@@ -50,7 +50,7 @@ import infiniteScroll from '@/components/common/infiniteScroll'
 
 
 import { 
-	getSearchAttrList, getSlides, getToken, getTodayRecommend, getBanner, searchProductList, searchStoreList, 
+	getSlides, getToken, getTodayRecommend, getBanner, searchProductList, searchStoreList, 
 } from '@/service/getData'
 
 export default {
@@ -82,7 +82,7 @@ export default {
 	},
 	created() {
 		this.getUserInfo();
-		this.initial();
+		
 	},
 	mounted() {
 		let swiper = this.$refs.swiper;
@@ -90,23 +90,24 @@ export default {
 		if (swiper.dom) {
 			this.swiper = swiper.dom;
 		}
-
+		console.info('searchStoreKey',this.searchStoreKey);
+		this.initial();
 		this.getNearbyStore();
 	},
 	methods: {
 		...mapActions([
 			'getUserInfo'
 			]),
+		...mapMutations([
+			'ADD_HOME_PAGEINDEX'
+		]),
 	  async initial() {
-		/*let slideData = await getSlides();
-	 	this.slides = slideData.data;*/
-	 	let attrData = await getSearchAttrList();
-		console.log('search-attr-list', attrData);
+		const token = await getToken();
 
-	 	let todayData = await getTodayRecommend(this.loginToken);
+	 	let todayData = await getTodayRecommend(token.data.Data);
 	 	console.log('todayRecommend',todayData);
 
-	 	let bannerData = await getBanner(this.loginToken);
+	 	let bannerData = await getBanner(token.data.Data);
 	 	this.slides = bannerData.data.Data;
 	 	console.log('bannerData',bannerData);
 
@@ -122,12 +123,31 @@ export default {
 		},
 		// 获取店铺数据
 		async getNearbyStore() {
+			console.info(this.searchStoreKey);
 			let searchData = await searchStoreList(this.searchStoreKey);
-			console.info('getNearbyStore:', searchData);
+			const data = searchData.data.Data;
+			data.forEach(item => {
+				this.nearbyListData.push(item);
+			});
+			this.loading = false;
+			console.info('getNearbyStore:', this.nearbyListData);
+		},
+		// 重新加载 附近商店列表 
+		async reloadNearbyStore() {
+			console.log('reloadNearbyStore',JSON.stringify(this.searchStoreKey));
+			let searchData = await searchStoreList(this.searchStoreKey);
 			this.nearbyListData = searchData.data.Data;
+			console.info('reloadNearbyStore:', this.nearbyListData);
 		},
 		loadmore() {
-			// console.info('loadmore');
+			console.info('loadmore');
+			let self = this;
+			this.loading = true;
+			setTimeout(() => {
+				this.ADD_HOME_PAGEINDEX();
+				console.log('reload - list');
+				self.getNearbyStore();
+			},500);
 		}
 	}
 

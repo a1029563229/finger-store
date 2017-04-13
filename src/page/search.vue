@@ -25,7 +25,6 @@
 import { mapState, mapActions } from 'vuex'
 import searchBar from '@/components/search/searchBar'
 import searchSection from '@/components/search/searchSection'
-// import keywordList from '@/components/search/keywordList'
 import { getToken, getHotSearchWords, getHistoryWords, deleteSearchWords } from '@/service/getData'
 export default {
 	name: 'search',
@@ -67,6 +66,7 @@ export default {
 		},
 		async deleteSearchRecord() {
 			let deleteInfo = await deleteSearchWords();
+			this.historyWords = [];
 			console.log('deleteInfo',deleteInfo);
 		},
 		getlocal() {

@@ -20,7 +20,7 @@ export default {
 	props: {
 		loading: {
 			type: Boolean,
-			default: false
+			default: true
 		},
 		loadingText: {
 			type: String,
@@ -53,14 +53,14 @@ export default {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding-bottom: 0.1rem;
-	line-height: 0.4rem;
+	padding-bottom: 0rem;
+	line-height: 1rem;
 	width: 100%;
 }
 .infinite-loader {
 	position: relative;
-	width: 0.35rem;
-	height: 0.35rem;
+	width: 0.6rem;
+	height: 0.6rem;
 }
 .loader-circular {
 	position: absolute;
@@ -81,8 +81,8 @@ export default {
 }
 
 .infinite-scroll-text {
-	margin-left: 0.2rem;
-	font-size: 0.2rem;
+	margin-left: 0.3rem;
+	font-size: 0.4rem;
 }
 
 @keyframes rotate {

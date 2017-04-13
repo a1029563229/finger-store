@@ -43,6 +43,7 @@ import axios from 'axios'
 import { baseUrl, appkey, testUrl } from '../config/env'
 
 import slides from './mock/home-swipe'
+import {nearbyList} from './mock/nearbyList'
 
 const setPromise = data => {
 	return new Promise((resolve, reject) => {
@@ -116,20 +117,21 @@ var searchProductList = (searchData) => axios({
 	url: service + '/SearchProductList',
 	method: 'post',
 	data: {
-		searchData
+		...searchData
 	}
 });
 
-
+/*
 // 获取店铺列表
-var searchStoreList = (token) => axios({
+var searchStoreList = (store) => axios({
 	url: service + '/SearchStoreByGoodsParam',
 	method: 'post',
 	data: {
-		appkey: appkey,
-		token: token
+		 ...store 
 	}
 });
+*/
+var searchStoreList = (store) => setPromise(nearbyList);
 
 // 获取历史搜索关键字
 var getHistoryWords = (token) => axios({

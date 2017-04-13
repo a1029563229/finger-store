@@ -10,7 +10,7 @@
 					<span>月销量&nbsp;{{ item.SellCount }}</span>
 					<span class="item-distance">&lt;&nbsp;{{ item.Distanct }}&nbsp;km</span>
 				</p>
-				<router-link to="hello" class="btn-map" @click="toMap(item.StoreID)">到这里去</router-link>
+				<router-link :to="{path:'map', query: {name: item.StoreName}}" class="btn-map" @click="toMap(item.StoreName)">到这里去</router-link>
 			</div>
 		</li>
 	</ul>
@@ -22,22 +22,11 @@ export default {
 	name: 'nearby-list',
 	props: ['list'],
 	methods: {
-		toMap(id) {
-			console.log('StoreID:',StoreID);
-			this.$router.push('map');
+		toMap(storeName) {
+			// console.log('StoreID:',StoreID);
+			// this.$router.push({path:'map', query: {name: storeName}});
 		}
 	}
-	/*data() {
-		return {
-			list: [
-				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg'},
-				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
-				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
-				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
-				{ name: '河南省郑州市苹果手机卖店', num: 90, distance: 10.9, image: 'http://h9.86.cc/walls/20160108/1024x768_ec6f991dc0b233c.jpg'},
-			],
-		}
-	}*/
 }
 
 </script>
