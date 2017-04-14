@@ -109,7 +109,6 @@ export default {
 		color: #333;
 		text-align: center;
 	}
-
 	.search-title {
 		width: 100%;
 		height: 1rem;
