@@ -1,28 +1,65 @@
 <template>
 	<ul>
-		<li class="list-wrap">
+		<li class="list-wrap" v-for="(item,index) in listData">
 			<div class="list-img">
-				<img src="http://vpchina.vpclub.cn/images/201612/goods_img/121_G_1482906158633.jpg" >
+				<img :src="item.productImage_300_300" >
 			</div>
 			<div class="list-desc">
 				<h1>
-					移动4G手机移动4G手机
-				<!-- 双卡双待双卡双待双卡移动4G手机移动4G手机双卡双待双卡双待双卡 -->
+					{{item.product}}
 				</h1>
 				<p>
-					颜色：黑色      机器型号：MX4 PRO    包邮
-					<!-- 包邮包邮包包包邮包邮包邮包包邮包邮包邮包包邮包邮包邮包包邮 -->
+					{{item.consignee}}
 				</p>
 				<h2>
-					<span class="list-price">¥779.00</span>
-					<i>X 1</i>
+					<span class="list-price">{{item.productPrice}}</span>
+					<i>X{{item.order_amount}}</i>
 				</h2>
 			</div>
 		</li>
 	</ul>
 </template>
 <script>
+  import { appkey, token, GainOrderList } from '../../config/env'
 	export default {
+	    data(){
+	        return{
+
+          }
+      },
+      computed:{
+          listData(){
+              return this.$store.state.list.listData
+          }
+      },
+    mounted(){
+      this.getOrderList()
+    },
+    methods:{
+      getOrderList(){
+//          return new Promise( (resolve, reject) =>{
+        let obj = {
+          token: token,
+          appkey: appkey,
+          timestamp: Date.now(),
+          pageindex: 1,
+          pagesize: 10
+        }
+
+        this.$http.post(GainOrderList,obj)
+          .then( res =>{
+//                this.listData = res.data.Data
+            console.log(this.listData)
+            this.$store.state.list.listData = res.data.Data
+//                resolve()
+          })
+//          })
+      }
+    },
+      created(){
+
+      }
+
 
 	}
 </script>

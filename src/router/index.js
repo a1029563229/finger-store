@@ -12,24 +12,26 @@ import storeList from './storeList'
 import myorder from './myorder'
 import orderdetail from './orderdetail'
 import map from './map'
+import shopdes from './shopdes'
 
 Vue.use(Router)
 
 export default new Router({
-	 routes: [
-	 	home,
-	 	order,
-	 	search,
-	 	store,
-	 	storeList,
-	 	myorder,
-	 	orderdetail,
-	 	map,
-	 	{
-	 		path: '*',
-	 		redirect: '/home'
-	 	}
-	 ]
+  routes: [
+    home,
+    order,
+    search,
+    store,
+    storeList,
+    myorder,
+    orderdetail,
+    map,
+    shopdes,
+    {
+      path: '*',
+      redirect: '/home'
+    }
+  ]
 })
 
 

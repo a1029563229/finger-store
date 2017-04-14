@@ -14,8 +14,17 @@
 				itemNum: 0
 			}
 		},
+    mounted(){
+
+    },
+    computed: {
+//      itemNum(){
+//          return this.itemNum = this.$store.state.list.listTabIndex
+//      }
+    },
 		methods: {
 			chooseItem(index) {
+        this.$store.dispatch('switchTab',index)
 				this.itemNum = index;
 			}
 		}
