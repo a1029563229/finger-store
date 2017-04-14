@@ -21,9 +21,9 @@ export default {
 			// 监听页面已滑动的位置，当页面滑动半屏之后，显示‘返回顶部’按钮
 			if (scrollTop > height) {
 				// !this.flag && console.log(scrollTop,height);
-				!this.flag && this.$emit('overflow');
+				this.$emit('overflow',true);
 			} else {
-				this.flag && this.$store.commit('toggle');
+				this.$emit('overflow',false);;
 			}
 
 		}

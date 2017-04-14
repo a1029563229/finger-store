@@ -12,8 +12,8 @@ export default {
 		commit, state
 	}) {
 		let res = await getToken();
-		console.info(res.data.Data);
-		commit(GET_USERINFO, res.data.Data);
+		console.warn('token:::',res);
+		commit(GET_USERINFO, res);
 	},
 	switch_home_sort: ({commit}, param) => commit('CHANGE_HOME_SORT', {index: param}),
 	// add_page_index: ({commit}, param) => commit('CHANGE_HOME_SORT', {index: param})

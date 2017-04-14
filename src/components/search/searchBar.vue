@@ -19,10 +19,9 @@ export default {
 		},
 		toBack() {
 			this.$router.go(-1);
-			// this.$emit('back');
 		},
 		toSearch() {
-			this.$emit('search');
+			this.$emit('search', value);
 		}
 	}
 }

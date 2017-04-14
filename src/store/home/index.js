@@ -7,7 +7,7 @@ import getters from './getters'
 
 const state = {
 	login: true,
-	loginToken: '', //登录成功后的sessionkey
+	loginToken: '514004170e8f40c5a351bd0ecf685575', //登录成功后的sessionkey
 	searchProductKey: {
 		appkey: 100000029,
 		sort: 1, 				// int 1.综合（销量+价格）2.销量 3.价格

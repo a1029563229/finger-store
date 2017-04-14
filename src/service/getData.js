@@ -47,7 +47,7 @@ import {nearbyList} from './mock/nearbyList'
 
 const setPromise = data => {
 	return new Promise((resolve, reject) => {
-		resolve(data)
+		resolve(data.data.Data)
 	})
 };
 
@@ -110,8 +110,6 @@ var getBanner = (token) => axios({
 });
 
 
-
-
 // 获取商品列表
 var searchProductList = (searchData) => axios({
 	url: service + '/SearchProductList',
@@ -121,8 +119,8 @@ var searchProductList = (searchData) => axios({
 	}
 });
 
-/*
-// 获取店铺列表
+
+/*// 获取店铺列表
 var searchStoreList = (store) => axios({
 	url: service + '/SearchStoreByGoodsParam',
 	method: 'post',
@@ -136,6 +134,16 @@ var searchStoreList = (store) => setPromise(nearbyList);
 // 获取历史搜索关键字
 var getHistoryWords = (token) => axios({
 	url: service + '/GetHistorySearchWords',
+	method: 'post',
+	data: {
+		appkey: appkey,
+		token: token
+	}
+});
+
+// 获取历史搜索关键字
+var getHotSearchWords = (token) => axios({
+	url: service + '/GetHotSearchWords',
 	method: 'post',
 	data: {
 		appkey: appkey,
@@ -206,6 +214,34 @@ var deleteSearchWords = (token) => fetch(service + '/DeleteSearchWords', {
 	token: token
 })*/
 
+
+// 响应拦截
+axios.interceptors.response.use(function (response){
+ 	// 处理响应数据
+ 	console.info('response',response.data.ResultCode, response);
+
+ 	if (response.status === 200) {
+ 		if (response.data.ResultCode === 1000) {
+			return response.data.Data;
+	 	} else if (response.data.ResultCode === 1009) {
+			console.warn('token失效，重新登录');
+	 	} else {
+	 		console.warn(response.data.ResultCode);
+	 	}
+	} else {
+		alert('网络连接错误，请重试');
+	} 
+
+}, function (error){
+ // 处理响应失败
+ return Promise.reject(error);
+});
+
+ //错误处理
+function errorHandle(name, errorMessage) {
+    servicePostCount[name] = undefined;
+    Popup.alert(errorMessage);
+}
 
 
 /*
