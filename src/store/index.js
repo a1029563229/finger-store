@@ -3,9 +3,10 @@
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {list} from './home/list'
 
 // 模块数据
-import { state,actions,mutations,getters } from './home'
+import { state,actions,mutations,getters} from './home'
 
 Vue.use(Vuex)
 
@@ -13,5 +14,8 @@ export default new Vuex.Store({
 	state,
 	getters,
 	actions,
-	mutations
+	mutations,
+  modules: {
+	  list
+  }
 })

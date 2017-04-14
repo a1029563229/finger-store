@@ -7,17 +7,19 @@
 			<span class="title-tip">待付款</span>
 		</div>
 		<commodity-item></commodity-item>
-		<commodity-item></commodity-item>
+
 		<!-- <commodity-item></commodity-item> -->
-		<div class="item-total">
-			共2件商品&nbsp;&nbsp;&nbsp;合计:￥0.01
-		</div>
-		<div class="item-btn">
-			<button>催发货</button>
-			<button>取消订单</button>
-			<button class="item-btn-confirm">确认付款</button>
-		</div>
-	</div>
+    <div v-show="orderLength>0">
+      <div class="item-total">
+        共{{orderLength}}件商品&nbsp;&nbsp;&nbsp;合计:￥{{totalPrice}}
+      </div>
+      <div class="item-btn">
+        <button>催发货</button>
+        <button>取消订单</button>
+        <button class="item-btn-confirm">确认付款</button>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import commodityItem from '@/components/order/commodityItem'
@@ -30,11 +32,26 @@ export default {
 	},
 	components: {
 		commodityItem,
-	}
+	},
+  computed: {
+	    orderLength(){
+	        return this.$store.state.list.listData.length
+      },
+      totalPrice(){
+        let allPrice = 0;
+        if( this.orderLength == 0 ){
+          return 0
+        }
+        this.$store.state.list.listData.forEach( (item,idx) =>{
+          allPrice += parseInt(item.productPrice)
+        })
+        return allPrice
+      }
+  }
 }
 </script>
 <style scoped>
-	
+
 .list-title {
 	background-color: #FFF;
 	width: 100%;

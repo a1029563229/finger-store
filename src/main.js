@@ -15,6 +15,10 @@ import BaiduMap from 'vue-baidu-map'
 Vue.use(BaiduMap, {
 	ak: 'x7weekL5BrZISrSgMl0swHR2jDxUiZYO'
 })
+Vue.prototype.$http = axios;
+
+
+
 
 Vue.config.productionTip = false
 

@@ -19,11 +19,11 @@ const state = {
 		brandName: '',  // string	品牌名称
 		maxPrice: '',		// string	价格区间最大值
 		minPrice: '',   // string	价格区间最小值
-		color: '', 			// string	颜色 
-		memory: ''     // string	内存	
+		color: '', 			// string	颜色
+		memory: ''     // string	内存
 	},
 	searchStoreKey: {
-		appkey: 100000029, 
+		appkey: 100000029,
 		lat: '120.14563', // String	纬度
 		lng: '30.242523', // String	经度
 		pageIndex: 1,  		// int	页码
@@ -34,8 +34,8 @@ const state = {
 		brandName: '',  // string	品牌名称
 		maxPrice: '',		// string	价格区间最大值
 		minPrice: '',   // string	价格区间最小值
-		color: '', 			// string	颜色 
-		memory: ''     // string	内存	
+		color: '', 			// string	颜色
+		memory: ''     // string	内存
 	}
 }
 
@@ -43,5 +43,5 @@ export {
 	state,
 	mutations,
 	actions,
-	getters
+	getters,
 }

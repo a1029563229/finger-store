@@ -40,10 +40,18 @@
 
 
 import axios from 'axios'
-import { baseUrl, appkey, testUrl } from '../config/env'
+import { baseUrl, appkey, testUrl,GainOrderList } from '../config/env'
 
 import slides from './mock/home-swipe'
 import {nearbyList} from './mock/nearbyList'
+
+
+
+
+
+
+
+
 
 const setPromise = data => {
 	return new Promise((resolve, reject) => {
@@ -60,7 +68,7 @@ axios.defaults.transformRequest = [function (data) {
   for (let it in data) {
     ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
   }
-  console.log('param:', ret);
+  // console.log('param:', ret);
   return ret
 }];
 
@@ -264,7 +272,7 @@ var getSlides = () => {
 
 
 // 导出相关方法
-export { 
-	getSearchAttrList, getSlides, getToken, getTodayRecommend, getBanner, getHotSearchWords, getHistoryWords, deleteSearchWords, 
-	addStoreCollect, addStoreSuperb, getContractStoreInfo, getStoreQrcode, searchProductList, searchStoreList, 
+export {
+	getSearchAttrList, getSlides, getToken, getTodayRecommend, getBanner, getHotSearchWords, getHistoryWords, deleteSearchWords,
+	addStoreCollect, addStoreSuperb, getContractStoreInfo, getStoreQrcode, searchProductList, searchStoreList,
 }

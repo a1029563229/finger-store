@@ -1,22 +1,46 @@
 <template>
 	<ul class="order-choice">
 		<li class="choice-item" v-for="(item,index) in list" @click="selected(index)">
-			<i></i>
-			<span>{{item}}</span>
+      <img :src="item.url" alt="">
+			<span>{{item.name}}</span>
 		</li>
 	</ul>
 </template>
 <script>
+  import router from '../../router'
+
 	export default {
 		name: 'order-choice',
 		data() {
 			return {
-				list: ['待付款', '待发货', '待收货', '已完成', '退款'],
+        list: [
+          {
+              name: '待付款',
+              url: 'static/img/my_buy_toptabs_waitpay@2x.png'
+          },
+          {
+            name: '待发货',
+            url: 'static/img/my_buy_waitsend@2x.png'
+          },
+          {
+            name: '待收货',
+            url: 'static/img/my_buy_toptabs_waittake@2x.png'
+          },
+          {
+            name: '已完成',
+            url: 'static/img/my_buy_toptabs_completed@2x.png'
+          },
+          {
+            name: '退款',
+            url: 'static/img/my_buy_toptabs_return@2x.png'
+          }
+        ]
 			}
 		},
 		methods: {
 			selected(index) {
-				console.log(index);
+        this.$store.dispatch('setTabIndex',index)
+        router.replace({path:'/myOrder'})
 			}
 		}
 	}
@@ -29,18 +53,19 @@
 		background-color: #FFF;
 	}
 	.choice-item {
-		float: left;
-		width: 20%;
-		height: 100%;
-		font-size: 0.35rem;
-		line-height: 0.65rem;
-		text-align: center;
+    float: left;
+    width: 20%;
+    height: 100%;
+    font-size: 0.35rem;
+    line-height: 0.65rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 	}
-	.choice-item i {
-		display: block;
-		width: 100%;
-		height: 1.0rem;
-		background: url('../../assets/icon/common_collection_press@2x.png') no-repeat center;
-		background-size: 0.8rem;
-	}
+  .choice-item>img{
+    width: 1rem
+  }
+
 </style>
