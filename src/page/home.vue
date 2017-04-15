@@ -8,10 +8,10 @@
 		</swiper>
 		<!-- 顶部搜索栏 -->
 		<div class="home-search" :class="{active: isScroll}">
-			<router-link class="search-input" href="javascript:;" :to="{path:'search', query:{storeid:0,token: token}}">
+			<router-link class="search-input" :to="{path:'search', query:{storeid: 0, token: token}}">
 				请输入关键字
 			</router-link>
-			<router-link :to="{path: 'search',query:{storeid:0,token: token}}" class="search-icon"></router-link>
+			<router-link :to="{path: 'search',query:{storeid: 0,token: token}}" class="search-icon"></router-link>
 		</div>
 		<!-- 今日精品推荐 -->
 		<section-item :title="require('../assets/icon/home_activity_recommended@3x.png')">
@@ -31,7 +31,7 @@
 </template>
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex'
-// 轮播图
+// 轮播
 import swiper from '@/components/common/swiper/swipe'
 // 分节
 import sectionItem from '@/components/home/sectionItem'
@@ -43,10 +43,10 @@ import navigation from '@/components/common/navigation'
 import sortList from '@/components/home/sortList'
 // 附近店铺-列表
 import nearbyList from '@/components/home/nearbyList'
-
+// 改变搜索栏背景色
 import watchScroll from '@/components/common/watchScroll'
+// 加载更多
 import infiniteScroll from '@/components/common/infiniteScroll'
-
 
 import { 
 	getSlides, getToken, getTodayRecommend, getBanner, searchProductList, searchStoreList, getSearchAttrList
@@ -69,8 +69,8 @@ export default {
 			local: { lat: '', lng: '' },
 			searchStoreKey: {
 				appkey: 100000029, 
-				lat: '', // String	纬度  120.14563
-				lng: '', // String	经度  30.242523
+				lat: '', 					// String	纬度  120.14563
+				lng: '', 					// String	经度  30.242523
 				pageIndex: 1,  		// int	页码
 				pageSize: 10,			// int	每页多少条数据
 				sort: 1, 					// int 1.综合（销量+价格）2.销量 3.价格
@@ -99,11 +99,10 @@ export default {
 			'loginToken', 
 			]),
 		location() {
-			let local = {
+			return {
 				lat: this.searchStoreKey.lat,
 				lng: this.searchStoreKey.lng
 			}
-			return local
 		}
 	},
 	created() {
@@ -116,27 +115,27 @@ export default {
 		}
 		console.info('searchStoreKey',this.searchStoreKey);
 		this.init();
-		this.getNearbyStore();
-		this.getAttrList();
-		this.getlocalation();
+		
 	},
 	methods: {
-	  async init() {
-		 this.token = await getToken();
-		console.warn('token::',this.token);
-		// 获取今日推荐
-	 	let todayData = await getTodayRecommend(this.token);
-	 	this.showType = todayData[0].show_type;
-	 	this.recommendData = todayData[0].list_floor_product;
-	 	// console.log('todayRecommend',this.recommendData);
-	 	// 获取banner 
-	 	this.slides = await getBanner(this.token);
-	 	// console.log('bannerData',this.slides);
+		async init() {
+			this.token = await getToken();
+			console.warn('token::',this.token);
+			// 获取今日推荐
+			let todayData = await getTodayRecommend(this.token);
+			this.showType = todayData[0].show_type;
+			this.recommendData = todayData[0].list_floor_product;
+			// console.log('todayRecommend',this.recommendData);
+			// 获取banner 
+			this.slides = await getBanner(this.token);
+			// console.log('bannerData',this.slides);
+			this.getNearbyStore();
+			this.getAttrList();
+			this.getlocalation();
 
 		},
 		// 监听滚动，设置搜索栏背景色
 		overflow(state) {
-			// console.log(1123);
 			this.isScroll = state;
 		},
 		// 跳转到商品详情
@@ -155,14 +154,16 @@ export default {
 		},
 		// 重新加载 附近商店列表 
 		async reloadNearbyStore(searchkey) {
-			// alert('reloadNearbyStore' + JSON.stringify(searchkey));
+			console.info('reloadNearbyStore' + JSON.stringify(searchkey));
 			this.nearbyListData = await searchStoreList(this.searchStoreKey);
 			// console.info('reloadNearbyStore:', this.nearbyListData);
 		},
 		// 获取筛选栏-属性列表
 		async getAttrList() {
+			this.loading = true;
 			this.dataAttr = await getSearchAttrList();
-			console.info('attrData', this.dataAttr);
+			this.loading = false;
+			// console.info('attrData', this.dataAttr);
 		},
 		loadmore() {
 			let self = this;

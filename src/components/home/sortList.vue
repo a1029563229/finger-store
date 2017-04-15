@@ -4,7 +4,7 @@
 			{{ item.name }}
 		</li>
 		<div class="sort" :class="{active: isSortList}" >
-			<p v-for="(item,index) in sortPrices" @click="toSortPrice(index)" :class="{active: (index+1) == searchStoreKey.sort}">{{item}}</p>
+			<p v-for="(item,index) in sortPrices" @click="toSortPrice(index)" :class="{active: (index+1) == dataSearch.sort}">{{item}}</p>
 		</div>
 		<div class="classify" :class="{active: isClassify}">
 			<h1 class="classify-title">
@@ -12,29 +12,29 @@
 			 	<i class="arrow-down" :class="{active: brandarrow}" @click="brandarrow = !brandarrow"></i>
 			</h1>
 			<ol class="classify-name clear" :class="{active: brandarrow}">
-				<dd v-for="(item,index) in brandsList" :class="{active: index === brandSelect}" @click="brandSelect = index;searchStoreKey.brandName = item.Title">{{ item.Title }}</dd>
+				<dd v-for="(item,index) in brandsList" :class="{active: index === brandSelect}" @click="brandSelect = index;dataSearch.brandName = item.Title">{{ item.Title }}</dd>
 			</ol>
 			<h1 class="classify-title">
 				价格区间
 			</h1>
 			<ol class="classify-price clear">
-				<dd><input type="text" placeholder="最低价" v-model="priceMin"></dd>
+				<dd><input type="number" placeholder="最低价" v-model="priceMin"></dd>
 				<dd class="classify-price-line">-</dd>
-				<dd><input type="text" placeholder="最高价" v-model="priceMax"></dd>
+				<dd><input type="number" placeholder="最高价" v-model="priceMax"></dd>
 			</ol>
 			<h1 class="classify-title">
 				内存
 				<i class="arrow-down" :class="{active: memoryArrow}" @click="memoryArrow = !memoryArrow"></i>
 			</h1>
 			<ol class="classify-capacity clear" :class="{active: memoryArrow}">
-				<dd v-for="(item,index) in memoryList" :class="{active: index === memorySelect}" @click="memorySelect = index;searchStoreKey.memory = item.Title">{{item.Title}}</dd>
+				<dd v-for="(item,index) in memoryList" :class="{active: index === memorySelect}" @click="memorySelect = index;dataSearch.memory = item.Title">{{item.Title}}</dd>
 			</ol>
 			<h1 class="classify-title">
 				机身颜色
 				<i class="arrow-down" :class="{active: colorArrow}" @click="colorArrow = !colorArrow"></i>
 			</h1>
 			<ol class="classify-color clear" :class="{active: colorArrow}">
-				<dd v-for="(item,index) in colorList" :class="{active: index === colorSelect}" @click="colorSelect = index;searchStoreKey.color = item.Title">{{ item.Title }}</dd>
+				<dd v-for="(item,index) in colorList" :class="{active: index === colorSelect}" @click="colorSelect = index;dataSearch.color = item.Title">{{ item.Title }}</dd>
 			</ol>
 			<div class="classify-btn">
 				<button @click="reset">重置</button>
@@ -56,10 +56,10 @@
 					{name: '筛选', class: 'screen ',  up: false, active:false },
 				],
 				sortPrices: ['综合排序', '距离', '销量'],	//下拉框
-				isSortList: false,
-				isClassify: false,
-				priceMin: '',
-				priceMax: '',
+				isSortList: false,		//综合
+				isClassify: false,		// 筛选
+				priceMin: '',					// 最低价
+				priceMax: '',					// 最高价			
 				brandarrow: false, 		//品牌下拉列表
 				memoryArrow: false,		//内存下拉列表
 				colorArrow: false,		//颜色下拉列表
@@ -93,15 +93,8 @@
 			brandsList() {
 				return this.dataAttr[2]
 			},
-			searchStoreKey() {
-				 // this.searchStore.lat = this.dataLocal.lat;
-				 
-				 // this.searchStore.lng = this.dataLocal.lng;
-				return this.dataSearch
-			}
 		},
 		mounted() {
-			console.log('sortList:-data', this.dataAttr);
 		},
 		methods: {
 			choose(index) {
@@ -119,29 +112,31 @@
 						 return
 					case 1: 
 						this.$emit('mask', false);
-						this.isSortList ? this.isSortList = false : '';
-						this.isClassify ? this.isClassify = false : '';
+						this.isSortList = false;
+						this.isClassify = false;
 						if (!active) {
-							this.searchStoreKey.sort = 2;
-							this.$emit('reload',this.searchStoreKey);
+							this.dataSearch.sort = 2;
+							this.list[1].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;
+							this.$emit('reload',this.dataSearch);
 						} else {
 							this.list[1].up = !up;
-							this.list[1].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;
-							this.$emit('reload', this.searchStoreKey);
+							this.list[1].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;
+							this.$emit('reload', this.dataSearch);
 						}
 						this.list[1].active = true;
 						return
 					case 2: 
 						this.$emit('mask', false);
-						this.isSortList ? this.isSortList = false : '';
-						this.isClassify ? this.isClassify = false : '';
+						this.isSortList = false;
+						this.isClassify = false;
 						if (!active) {
-							this.searchStoreKey.sort = 3;
-							this.$emit('reload', this.searchStoreKey);
+							this.dataSearch.sort = 3;
+							this.list[2].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;							
+							this.$emit('reload', this.dataSearch);
 						} else {
 							this.list[2].up = !up;
-							this.list[2].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;
-							this.$emit('reload',this.searchStoreKey);
+							this.list[2].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;
+							this.$emit('reload',this.dataSearch);
 						}
 						this.list[2].active = true;
 						return
@@ -154,34 +149,34 @@
 				}
 			},
 			toSortPrice(index) {
-				// this.$store.dispatch('switch_home_sort',index+1);
-				this.searchStoreKey.sort = index + 1;
+				this.dataSearch.sort = index + 1;
 				this.$emit('mask');
 				this.list[0].active = false;
 				this.isSortList = false;
-				this.$emit('reload',this.searchStoreKey);
+				this.$emit('reload',this.dataSearch);
 			},
 			// 重置
 			reset() {
 				this.colorSelect = null;
 				this.brandSelect = null;
 				this.memorySelect = null;
-				this.searchStoreKey.brandName = '';
-				this.searchStoreKey.minPrice = '';
-				this.searchStoreKey.maxPrice = '';
+				this.dataSearch.brandName = '';
+				this.dataSearch.minPrice = '';
+				this.dataSearch.maxPrice = '';
 				this.priceMin = '';
 				this.priceMax = '';
-				this.searchStoreKey.memory = '';
-				this.searchStoreKey.color = '';
+				this.dataSearch.memory = '';
+				this.dataSearch.color = '';
 			},
 			confirm() {
-				this.searchStoreKey.priceMin = this.priceMin;
-				this.searchStoreKey.priceMax = this.priceMax;
-				console.log('searchStoreKey', this.searchStoreKey);
+				if (this.priceMax < this.priceMin) this.priceMax = this.priceMin;
+				this.dataSearch.priceMin = this.priceMin;
+				this.dataSearch.priceMax = this.priceMax;
+				console.log('dataSearch', this.dataSearch);
 
 				this.isClassify = false;
 				this.$emit('mask', false);
-				this.$emit('reload',this.searchStoreKey);
+				this.$emit('reload',this.dataSearch);
 				
 			}
 		}
