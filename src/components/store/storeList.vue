@@ -51,7 +51,6 @@
 		height: auto;
 		margin: 0 0 1.4rem 1.5%;
 		padding-top: 0.15rem;
-		background: #F4F4F4;
 	}
 	.store-item {
 		float: left;

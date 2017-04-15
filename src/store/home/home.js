@@ -6,6 +6,7 @@ export const home = {
 	state: {
 		login: false,
 		loginToken: '', //登录成功后的sessionkey
+		storeInfo: {},
 		searchProductKey: {
 			appkey: 100000029,
 			sort: 1, 				// int 1.综合（销量+价格）2.销量 3.价格
@@ -37,10 +38,22 @@ export const home = {
 		}
 	},
 	mutations: {
-
+	  RECORD_TOKEN(state, params) {
+	  	console.warn('TOKEN',params);
+	  	state.token = params;
+	  },
+		RECORD_STOREINFO(state,params) {
+			console.log('RECORD_STOREINFO',params);
+			state.storeInfo = params;
+		}
 	},
 	actions: {
-		
+		recordToken: ({commit, state}, params) => {
+			commit('RECORD_TOKEN', params)
+		},
+		recordStoreInfo: ({commit,state}, params) =>{
+      commit('RECORD_STOREINFO',params)
+    },
 	}
 }
 

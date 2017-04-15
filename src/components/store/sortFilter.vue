@@ -1,10 +1,10 @@
 <template>
 	<ul class="selection">
-		<li v-for="(item, index) in dataInit" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
+		<li v-for="(item, index) in list" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
 			{{ item.name }}
 		</li>
 		<div class="sort" :class="{active: isSortList}" >
-			<p v-for="(item,index) in dataSelectInit" @click="toSortPrice(index)" :class="{active: (index+1) == dataSearch.sort}">{{item}}</p>
+			<p v-for="(item,index) in sortPrices" @click="toSortPrice(index)" :class="{active: (index+1) == dataSearch.sort}">{{item}}</p>
 		</div>
 		<div class="classify" :class="{active: isClassify}">
 			<h1 class="classify-title">
@@ -44,12 +44,18 @@
 	</ul>
 </template>
 <script>
-
 export default {
-	name: 'sort-dataInit',
-	props: ['dataAttr', 'dataSearch', 'dataInit', 'dataSelectInit'],		// 属性列表 
+	name: 'sort-filter',
+	props: ['dataAttr','dataLocal', 'dataSearch'],		// 属性列表 
 	data() {
 		return {
+			list: [
+				{name: '综合', class: 'total', up: false, active:true },
+				{name: '距离', class: 'arrow-up', up: false, active:false },
+				{name: '销量', class: 'arrow-up',  up: false, active:false },
+				{name: '筛选', class: 'screen ',  up: false, active:false },
+			],
+			sortPrices: ['综合排序', '距离', '销量'],	//下拉框
 			isSortList: false,		//综合
 			isClassify: false,		// 筛选
 			priceMin: '',					// 最低价
@@ -92,17 +98,17 @@ export default {
 	},
 	methods: {
 		choose(index) {
-			let active = this.dataInit[index].active;
-			let up = this.dataInit[index].up;
-			this.dataInit.forEach((item,index) => {
-				this.dataInit[index].active = false;
+			let active = this.list[index].active;
+			let up = this.list[index].up;
+			this.list.forEach((item,index) => {
+				this.list[index].active = false;
 			})
 			switch(index) {
 				case 0: 
 					this.$emit('mask', true);
 					this.isClassify = false;
 					this.isSortList = true;
-					this.dataInit[0].active = true;
+					this.list[0].active = true;
 					 return
 				case 1: 
 					this.$emit('mask', false);
@@ -110,14 +116,14 @@ export default {
 					this.isClassify = false;
 					if (!active) {
 						this.dataSearch.sort = 2;
-						this.dataInit[1].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;
+						this.list[1].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;
 						this.$emit('reload',this.dataSearch);
 					} else {
-						this.dataInit[1].up = !up;
-						this.dataInit[1].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;
+						this.list[1].up = !up;
+						this.list[1].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;
 						this.$emit('reload', this.dataSearch);
 					}
-					this.dataInit[1].active = true;
+					this.list[1].active = true;
 					return
 				case 2: 
 					this.$emit('mask', false);
@@ -125,27 +131,27 @@ export default {
 					this.isClassify = false;
 					if (!active) {
 						this.dataSearch.sort = 3;
-						this.dataInit[2].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;							
+						this.list[2].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;							
 						this.$emit('reload', this.dataSearch);
 					} else {
-						this.dataInit[2].up = !up;
-						this.dataInit[2].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;
+						this.list[2].up = !up;
+						this.list[2].up ? this.dataSearch.sequence = 0 : this.dataSearch.sequence = 1;
 						this.$emit('reload',this.dataSearch);
 					}
-					this.dataInit[2].active = true;
+					this.list[2].active = true;
 					return
 				case 3: 
 					this.$emit('mask', true);
 					this.isClassify = true;
 					this.isSortList = false;
-					this.dataInit[3].active = true;
+					this.list[3].active = true;
 					return
 			}
 		},
 		toSortPrice(index) {
 			this.dataSearch.sort = index + 1;
-			this.$emit('mask',false);
-			this.dataInit[0].active = false;
+			this.$emit('mask');
+			this.list[0].active = false;
 			this.isSortList = false;
 			this.$emit('reload',this.dataSearch);
 		},
@@ -167,6 +173,7 @@ export default {
 			this.dataSearch.priceMin = this.priceMin;
 			this.dataSearch.priceMax = this.priceMax;
 			console.log('dataSearch', this.dataSearch);
+
 			this.isClassify = false;
 			this.$emit('mask', false);
 			this.$emit('reload',this.dataSearch);
@@ -179,7 +186,6 @@ export default {
 .selection {
 	position: relative;
 	height: 1.4rem;
-	background-color: #FFF;
 }
 .selection::after {
 	content: '';

@@ -1,6 +1,6 @@
 <template>
 	<ul class="nearby-list">
-		<li v-for="item in list" class="item" :key="item.StoreID">
+		<li v-for="item in list" class="item" :key="item.StoreID" @click="toStore(item.StoreName,item.StoreID,item.StoreLogo)">
 			<div class="img">
 				<img :src="item.StoreLogo" >
 			</div>
@@ -25,7 +25,16 @@ export default {
 		toMap(storeName) {
 			// console.log('StoreID:',StoreID);
 			// this.$router.push({path:'map', query: {name: storeName}});
-		}
+		},
+		toStore(name, id, img) {
+			let params = {
+				name: name,
+				id: id,
+				logo: img
+			};
+			this.$store.dispatch('recordStoreInfo',params);
+			this.$router.push({ path:'/store' });
+		} 
 	}
 }
 

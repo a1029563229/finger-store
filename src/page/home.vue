@@ -19,7 +19,7 @@
 		</section-item>
 		<!-- 附近店铺 -->
 		<section-item class="section-item-mask" :title="require('../assets/icon/home_activity_nearby@3x.png')">
-			<sort-list @mask="changeMask" @reload="reloadNearbyStore" :data-search="searchStoreKey" :data-attr="dataAttr" :data-local="local"></sort-list>
+			<sort-list @mask="changeMask" @reload="reloadNearbyStore" :data-init="dataSortInit" :data-select-init="dataSelectInit" :data-search="searchStoreKey" :data-attr="dataAttr"></sort-list>
 			<nearby-list :list="nearbyListData" :local="location"></nearby-list>
 			<div class="mask" v-show="isMask"></div>
 		</section-item>
@@ -66,7 +66,6 @@ export default {
 			recommendData: [],		// 今日推荐
 			nearbyListData: [],
 			dataAttr: [],
-			local: { lat: '', lng: '' },
 			searchStoreKey: {
 				appkey: 100000029, 
 				lat: '', 					// String	纬度  120.14563
@@ -82,6 +81,13 @@ export default {
 				color: '', 			// string	颜色 
 				memory: ''     // string	内存	
 			},
+			dataSortInit: [		// 筛选数据初始化
+				{name: '综合', class: 'total', up: false, active:true },
+				{name: '距离', class: 'arrow-up', up: false, active:false },
+				{name: '销量', class: 'arrow-up',  up: false, active:false },
+				{name: '筛选', class: 'screen ',  up: false, active:false },
+			],
+			dataSelectInit: ['综合排序', '距离', '销量'],	//下拉框
 		}
 	},
 	components: {
@@ -113,13 +119,14 @@ export default {
 		if (swiper.dom) {
 			this.swiper = swiper.dom;
 		}
-		console.info('searchStoreKey',this.searchStoreKey);
+		// 初始化
 		this.init();
 		
 	},
 	methods: {
 		async init() {
 			this.token = await getToken();
+			this.$store.dispatch('recordToken',this.token);
 			console.warn('token::',this.token);
 			// 获取今日推荐
 			let todayData = await getTodayRecommend(this.token);
@@ -160,9 +167,7 @@ export default {
 		},
 		// 获取筛选栏-属性列表
 		async getAttrList() {
-			this.loading = true;
 			this.dataAttr = await getSearchAttrList();
-			this.loading = false;
 			// console.info('attrData', this.dataAttr);
 		},
 		loadmore() {

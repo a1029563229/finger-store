@@ -1,15 +1,15 @@
 <template>
 	<div class="store-info">
 		<div class="info-img">
-			<img :src="image">
+			<img :src="storeInfo.logo">
 		</div>
-		<h1>{{ name }}</h1>
+		<h1 class="info-name">{{ storeInfo.name }}</h1>
 		<ul class="info-btn">
-			<li>
+			<li @click="toPraise">
 				<i class="btn-praise"></i>
 				点赞
 			</li>
-			<li>
+			<li @click="toCollect">
 				<i class="btn-collect"></i>
 				收藏
 			</li>
@@ -18,12 +18,25 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg',
-				name: '郑州苹果手机卖店',
+	import { mapState } from 'vuex'
+	import { addStoreSuperb, addStoreCollect } from '../../service/getData'
 
+	export default {
+		computed: {
+			...mapState({
+				storeInfo: state => state.home.storeInfo,
+				token: state => state.home.token,
+			})
+		},
+		methods: {
+			async toPraise() {
+				console.log('praiseResult');
+				let praiseResult = await addStoreSuperb(this.token);
+				console.log('praiseResult',praiseResult);
+			},
+			async toCollect() {
+				let collectResult = await addStoreCollect(this.token);
+				console.log('collectResult',collectResult);
 			}
 		}
 	}
@@ -52,7 +65,7 @@
 		max-width: 100%;
 	}
 	
-	h1 {
+	.info-name {
 		float: left;
 		line-height: 1.6rem;
 		font-size: 0.45rem;

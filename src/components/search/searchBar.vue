@@ -1,8 +1,8 @@
 <template>
 	<div class="search-bar">
-		<span class="btn-back" @click="toBack()"></span>
+		<span class="searchBtnDefault btn-back" @click="toBack()"></span>
 		<input class="search-input" type="text" ref="input" :value="value" @input="updateValue($event.target.value)" placeholder="请输入关键字" />
-		<span class="btn-search" @click="toSearch()"></span>
+		<span class="searchBtnDefault btn-search" @click="toSearch()"></span>
 	</div>
 </template>
 <script>
@@ -46,7 +46,7 @@ export default {
 	transform: scaleY(0.5);
 }
 
-span {
+.searchBtnDefault {
 	display: block;
 	width: 14%;
 	height: 100%;
