@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--1+2-->
-    <div class="recommend-default recommend-three" v-show="show_type==0">
+    <div class="recommend-default recommend-three" v-if="showType==0">
       <div class="recommend-left">
         <div>
           <img :src="recomendData[0].img_url" >
@@ -35,7 +35,7 @@
     </div>
 
     <!--1+1-->
-    <div v-show="show_type==1">
+    <div v-if="showType==1">
       <div class="recommend-one-one"  v-for="item in recomendData">
         <img :src="item.img_url" >
         <div class="recommend-one-right">
@@ -48,7 +48,7 @@
 
 
     <!--1+3-->
-    <div class="recommend-default recommend-three" v-show="show_type==4">
+    <div class="recommend-default recommend-three" v-if="showType==4">
       <div class="recommend-left">
         <div>
           <img :src="recomendData[0].img_url" >
@@ -93,7 +93,7 @@
 
 
     <!--2+1-->
-    <div class="recommend-default recommend-three" v-show="show_type==2">
+    <div class="recommend-default recommend-three" v-if="showType==2">
       <div class="recommend-right recommend-right-two-one">
         <div class="recommend-right-top">
           <div class="right-img">
@@ -127,7 +127,7 @@
     </div>
 
     <!--3+1-->
-    <div class="recommend-default recommend-three" v-show="show_type==5">
+    <div class="recommend-default recommend-three" v-if="showType==5">
       <div class="recommend-right recommend-right-three-one">
         <div class="recommend-right-top recommend-right-top-one-three">
           <div class="right-img right-img-one-three">
@@ -172,7 +172,7 @@
 
 
     <!--2+2-->
-    <div v-show="show_type==3">
+    <div v-if="showType==3">
       <div class="two-two clear" >
         <li class="twoItem" v-for="item in recomendData">
           <div class="twoItemImg">
@@ -186,7 +186,7 @@
     </div>
 
     <!--3+3-->
-    <div v-show="show_type==6">
+    <div v-if="showType==6">
       <div class="three-three clear" >
         <li class="twoItem threeItem" v-for="item in recomendData">
           <div class="twoItemImg">
@@ -204,19 +204,21 @@
 </template>
 <script>
   import {GetZZDTodayRecommed,appkey,token} from '../../config/env'
+  import { getTodayRecommend } from '../../service/getData'
   export default {
     name: 'recommend-today',
+    props: ['showType', 'recomendData'],
     data(){
       return {
-        show_type: 0,
-        recomendData: []
+        // show_type: 0,
+        // recomendData: []
       }
     },
     mounted(){
-      this.getRecomend()
+      // this.getRecomend()
     },
     methods:{
-      getRecomend(){
+       /* getRecomend(){
         let obj = {
           appkey: appkey,
           token: token
@@ -229,10 +231,8 @@
                 console.log(this.show_type)
                 this.recomendData = res.data.Data[0].list_floor_product
               }
-
           })
-
-      }
+      },*/
     },
     computed: {
 

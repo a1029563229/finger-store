@@ -46,13 +46,6 @@ import slides from './mock/home-swipe'
 import {nearbyList} from './mock/nearbyList'
 
 
-
-
-
-
-
-
-
 const setPromise = data => {
 	return new Promise((resolve, reject) => {
 		resolve(data.data.Data)
@@ -226,8 +219,6 @@ var deleteSearchWords = (token) => fetch(service + '/DeleteSearchWords', {
 // 响应拦截
 axios.interceptors.response.use(function (response){
  	// 处理响应数据
- 	console.info('response',response.data.ResultCode, response);
-
  	if (response.status === 200) {
  		if (response.data.ResultCode === 1000) {
 			return response.data.Data;
@@ -245,11 +236,6 @@ axios.interceptors.response.use(function (response){
  return Promise.reject(error);
 });
 
- //错误处理
-function errorHandle(name, errorMessage) {
-    servicePostCount[name] = undefined;
-    Popup.alert(errorMessage);
-}
 
 
 /*

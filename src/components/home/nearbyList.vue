@@ -10,7 +10,7 @@
 					<span>月销量&nbsp;{{ item.SellCount }}</span>
 					<span class="item-distance">&lt;&nbsp;{{ item.Distanct }}&nbsp;km</span>
 				</p>
-				<router-link :to="{path:'map', query:{name:item.StoreName}}" class="btn-map" @click="toMap(item.StoreName)">到这里去</router-link>
+				<router-link :to="{path:'map', query:{name:item.StoreName,lat:local.lat,lng:local.lng}}" class="btn-map" @click="toMap(item.StoreName)">到这里去</router-link>
 			</div>
 		</li>
 	</ul>
@@ -20,7 +20,7 @@
 
 export default {
 	name: 'nearby-list',
-	props: ['list'],
+	props: ['list','local'],
 	methods: {
 		toMap(storeName) {
 			// console.log('StoreID:',StoreID);

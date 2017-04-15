@@ -15,12 +15,12 @@
 		</div>
 		<!-- 今日精品推荐 -->
 		<section-item :title="require('../assets/icon/home_activity_recommended@3x.png')">
-			<recommend-today></recommend-today>
+			<recommend-today :token="token" :show-type="showType" :recomend-data="recommendData" v-if="recommendData.length"></recommend-today>
 		</section-item>
 		<!-- 附近店铺 -->
 		<section-item class="section-item-mask" :title="require('../assets/icon/home_activity_nearby@3x.png')">
 			<sort-list @mask="changeMask" @reload="reloadNearbyStore" :data-search="searchStoreKey" :data-attr="dataAttr" :data-local="local"></sort-list>
-			<nearby-list :list="nearbyListData" ></nearby-list>
+			<nearby-list :list="nearbyListData" :local="location"></nearby-list>
 			<div class="mask" v-show="isMask"></div>
 		</section-item>
 		<!-- 底部导航栏 -->
@@ -33,7 +33,6 @@
 import { mapState, mapActions, mapMutations } from 'vuex'
 // 轮播图
 import swiper from '@/components/common/swiper/swipe'
-/* home */
 // 分节
 import sectionItem from '@/components/home/sectionItem'
 // 今日精品推荐
@@ -62,7 +61,9 @@ export default {
 			isMask: false,
 			isScroll: false,
 			scroller: null,
-			loading: false,
+			loading: false,				// 是否显示loading
+			showType: 0,					// 今日推荐模式
+			recommendData: [],		// 今日推荐
 			nearbyListData: [],
 			dataAttr: [],
 			local: { lat: '', lng: '' },
@@ -97,6 +98,13 @@ export default {
 		...mapState([
 			'loginToken', 
 			]),
+		location() {
+			let local = {
+				lat: this.searchStoreKey.lat,
+				lng: this.searchStoreKey.lng
+			}
+			return local
+		}
 	},
 	created() {
 	},
@@ -107,21 +115,23 @@ export default {
 			this.swiper = swiper.dom;
 		}
 		console.info('searchStoreKey',this.searchStoreKey);
-		this.initial();
+		this.init();
 		this.getNearbyStore();
 		this.getAttrList();
 		this.getlocalation();
 	},
 	methods: {
-	  async initial() {
+	  async init() {
 		 this.token = await getToken();
 		console.warn('token::',this.token);
 		// 获取今日推荐
 	 	let todayData = await getTodayRecommend(this.token);
-	 	console.log('todayRecommend',todayData);
+	 	this.showType = todayData[0].show_type;
+	 	this.recommendData = todayData[0].list_floor_product;
+	 	// console.log('todayRecommend',this.recommendData);
 	 	// 获取banner 
 	 	this.slides = await getBanner(this.token);
-	 	console.log('bannerData',this.slides);
+	 	// console.log('bannerData',this.slides);
 
 		},
 		// 监听滚动，设置搜索栏背景色
@@ -135,19 +145,19 @@ export default {
 		},
 		// 获取 附近商店列表
 		async getNearbyStore() {
-			console.info(this.searchStoreKey);
+			// console.info(this.searchStoreKey);
 			const data = await searchStoreList(this.searchStoreKey);
 			data.forEach(item => {
 				this.nearbyListData.push(item);
 			});
 			this.loading = false;
-			console.info('getNearbyStore:', this.nearbyListData);
+			// console.info('getNearbyStore:', this.nearbyListData);
 		},
 		// 重新加载 附近商店列表 
 		async reloadNearbyStore(searchkey) {
-			alert('reloadNearbyStore' + JSON.stringify(searchkey));
+			// alert('reloadNearbyStore' + JSON.stringify(searchkey));
 			this.nearbyListData = await searchStoreList(this.searchStoreKey);
-			console.info('reloadNearbyStore:', this.nearbyListData);
+			// console.info('reloadNearbyStore:', this.nearbyListData);
 		},
 		// 获取筛选栏-属性列表
 		async getAttrList() {
@@ -182,7 +192,7 @@ export default {
      onSuccess(position){
         this.searchStoreKey.lng =position.coords.longitude;  //返回用户位置  //经度
         this.searchStoreKey.lat = position.coords.latitude;   //纬度
-         alert('经度'+this.searchStoreKey.lng +'，纬度'+this.searchStoreKey.lat);   //根据经纬度获取地理位置，不太准确，获取城市区域还是可以的
+         // alert('经度'+this.searchStoreKey.lng +'，纬度'+this.searchStoreKey.lat);   //根据经纬度获取地理位置，不太准确，获取城市区域还是可以的
     },
  		onError(error){
       switch(error.code){

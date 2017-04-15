@@ -1,8 +1,8 @@
 <template>
 	<div class="page-map">
 		<header-top title="店铺位置"></header-top>
-		<baidu-map class="map" :center="{lng: 113.94185, lat: 22.54865}" :zoom="80">
-			<bm-marker :position="{lng: 113.94185, lat: 22.54865}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" :label="{content: storeName, opts: {offset: {width: 20, height: -10}}}"></bm-marker>
+		<baidu-map class="map" :center="{lng: $route.query.lng, lat: $route.query.lat}" :zoom="80">
+			<bm-marker :position="{lng: $route.query.lng, lat: $route.query.lat}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" :label="{content: storeName, opts: {offset: {width: 20, height: -10}}}"></bm-marker>
 	  </baidu-map>
   </div>
 </template>

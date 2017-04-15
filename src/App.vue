@@ -11,7 +11,7 @@ export default {
   name: 'app',
   data() {
     return {
-      transitionName: 'slide-left',
+      transitionName: 'router-fade',
     }
   },
 }
@@ -20,16 +20,13 @@ export default {
 <style>
 @import './assets/css/common.css';
 
-.slide-left-enter,
-.slide-right-leave-active {
+.router-fade-enter-active, .router-fade-leave-active  {
   opacity: 0;
-  transform: translate3d(50vw, 0, 0);
+  transition: opacity .3s;
 }
 
-.slide-left-leave-active,
-.slide-right-enter {
-  opacity: 0.1;
-  transform: translate3d(-50vw, 0, 0);
+.router-fade-enter, .router-fade-leave-active {
+  opacity: 0;
 }
 
 .app-view {

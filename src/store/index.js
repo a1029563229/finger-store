@@ -6,16 +6,13 @@ import Vuex from 'vuex'
 import {list} from './home/list'
 
 // 模块数据
-import { state,actions,mutations,getters} from './home'
+import { home} from './home/home'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-	state,
-	getters,
-	actions,
-	mutations,
   modules: {
-	  list
+	  home,
+	  list,
   }
 })
