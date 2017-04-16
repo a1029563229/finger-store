@@ -3,10 +3,10 @@
 		<li v-for="(item, index) in dataInit" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
 			{{ item.name }}
 		</li>
-		<div class="sort" :class="{active: isSortList}" >
+		<aside class="sort" :class="{active: isSortList}" >
 			<p v-for="(item,index) in dataSelectInit" @click="toSortPrice(index)" :class="{active: (index+1) == dataSearch.sort}">{{item}}</p>
-		</div>
-		<div class="classify" :class="{active: isClassify}">
+		</aside>
+		<aside class="classify" :class="{active: isClassify}">
 			<h1 class="classify-title">
 			 	品牌
 			 	<i class="arrow-down" :class="{active: brandarrow}" @click="brandarrow = !brandarrow"></i>
@@ -40,14 +40,14 @@
 				<button @click="reset">重置</button>
 				<button @click="confirm">确定</button>
 			</div>
-		</div>
+		</aside>
 	</ul>
 </template>
 <script>
 
 export default {
 	name: 'sort-dataInit',
-	props: ['dataAttr', 'dataSearch', 'dataInit', 'dataSelectInit'],		// 属性列表 
+	props: ['dataAttr', 'dataSearch', 'dataInit', 'dataSelectInit','closeMask'],		// 属性列表 
 	data() {
 		return {
 			isSortList: false,		//综合
@@ -99,12 +99,14 @@ export default {
 			})
 			switch(index) {
 				case 0: 
+					this.reset();
 					this.$emit('mask', true);
 					this.isClassify = false;
 					this.isSortList = true;
 					this.dataInit[0].active = true;
 					 return
 				case 1: 
+					this.reset();
 					this.$emit('mask', false);
 					this.isSortList = false;
 					this.isClassify = false;
@@ -120,6 +122,7 @@ export default {
 					this.dataInit[1].active = true;
 					return
 				case 2: 
+					this.reset();
 					this.$emit('mask', false);
 					this.isSortList = false;
 					this.isClassify = false;
@@ -135,6 +138,7 @@ export default {
 					this.dataInit[2].active = true;
 					return
 				case 3: 
+
 					this.$emit('mask', true);
 					this.isClassify = true;
 					this.isSortList = false;

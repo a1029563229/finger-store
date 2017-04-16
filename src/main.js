@@ -22,11 +22,11 @@ Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false
 
-if ('addEventListener' in document) {
+/*if ('addEventListener' in document) {
   document.addEventListener('DOMContentLoaded', function() {
     FastClick.attach(document.body);
   }, false);
-}
+}*/
 
 /* eslint-disable no-new */
 new Vue({

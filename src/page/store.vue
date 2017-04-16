@@ -6,9 +6,6 @@
 			<span class="searchBtnDefault btn-search" @click="toSearch"></span>
 		</div>
 		<div class="sort-filter">
-			<sort-list @mask="changeMask" @reload="reloadCommodity" :data-init="dataSortInit" :data-select-init="dataSelectInit" :data-search="searchProductKey" :data-attr="dataAttr"></sort-list>
-			<div class="mask" v-show="isMask"></div>
-		
 			<div class="store-info">
 				<div class="info-img">
 					<img :src="storeInfo.logo">
@@ -25,18 +22,22 @@
 					</li>
 				</ul>
 			</div>
+			<sort-list class="clear" @mask="changeMask" @reload="reloadCommodity" :data-init="dataSortInit" :data-select-init="dataSelectInit" :data-search="searchProductKey" :data-attr="dataAttr" :close-mask="closeMask"></sort-list>
+			<div class="mask" v-show="isMask" @click="closeMask = true"></div>
+		
+
 			<ul class="store-list clear">
-			<li class="store-item" v-for="item in list">
+			<li class="store-item" v-for="item in commodityList" @click="toProduct(item.ProductUrl)">
 				<div class="item-image">
-					<img :src="item.image">
+					<img :src="item.ImgUrl">
 				</div>
-				<h1 class="item-title">{{ item.name }}</h1>
+				<h1 class="item-title">{{ item.ProductTitle }}</h1>
 				<p>
 					<span class="item-price">
-						{{ item.price | currency }}
+						{{ item.SellPrice | currency }}
 					</span>
 					<span class="item-num">
-						月销量&nbsp;{{ item.num }}
+						月销量&nbsp;{{ item.SellCount }}
 					</span>
 				</p>
 			</li>
@@ -51,19 +52,13 @@
 	import storeList from '@/components/store/storeList'
 	import navigation from '@/components/common/navigation'
 	import { mapState } from 'vuex'
-	import { addStoreSuperb, addStoreCollect } from '../service/getData'
+	import { appkey } from '../config/env'
+	import { addStoreSuperb, addStoreCollect, searchProductList, getSearchAttrList } from '../service/getData'
 	export default {
 		name: 'store',
 		data() {
 			return {
-				list: [
-					{name: '苹果iPhone 6s全网通4G苹果iPhone 6s全网通4G', num: 18888, price: 5288, image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg'},
-					{name: '苹果iPhone 6s全网通4G苹果iPhone 6s全网通4G', num: 18888, price: 5288, image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg'},
-					{name: '苹果iPhone 6s全网通4G苹果iPhone 6s全网通4G', num: 18888, price: 5288, image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg'},
-					{name: '苹果iPhone 6s全网通4G苹果iPhone 6s全网通4G', num: 18888, price: 5288, image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg'},
-					{name: '苹果iPhone 6s全网通4G苹果iPhone 6s全网通4G', num: 18888, price: 5288, image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg'},
-					{name: '苹果iPhone 6s全网通4G苹果iPhone 6s全网通4G', num: 18888, price: 5288, image: 'http://vpchina.vpclub.cn/images/201702/goods_img/356_G_1486692191132.jpg'},
-				],
+				commodityList: [],
 				dataSortInit: [		// 筛选数据初始化
 					{name: '综合', class: 'total', up: false, active:true },
 					{name: '距离', class: 'arrow-up', up: false, active:false },
@@ -73,8 +68,9 @@
 				dataSelectInit: ['综合排序', '距离', '价格'],	//下拉框
 				dataAttr: [],
 				isMask: false,
+				closeMask: false,
 				searchProductKey: {
-					appkey: 100000029,
+					appkey: appkey,
 					sort: 1, 				// int 1.综合（销量+价格）2.销量 3.价格
 					storeid: 0,			// int	店铺id（0 代表全站，不为0代表搜索店铺内商品）
 					sequence: 0,		// 顺序排列：1 倒序：0正序
@@ -102,6 +98,7 @@
 		},
 		mounted() {
 			this.getAttrList();
+			this.reloadCommodity(this.token);
 			console.log(this.storeInfo);
 		},
 		filters: {
@@ -127,13 +124,16 @@
 			},
 			// 改变 遮罩层
 			changeMask(mask) {
-				console.info('changeMask:',mask);
+				console.info('changeMask:',this.isMask);
+				console.log('changeMask:',mask);
+
+				this.closeMask = !mask;
 				this.isMask = mask;
 			},
 			// 重新加载 商品列表 
 			async reloadCommodity(searchkey) {
 				console.info('reloadNearbyStore' + JSON.stringify(searchkey));
-				this.nearbyListData = await searchStoreList(this.searchStoreKey);
+				this.commodityList = await searchProductList(this.searchProductKey);
 				// console.info('reloadNearbyStore:', this.nearbyListData);
 			},
 			// 获取筛选栏-属性列表
@@ -141,6 +141,12 @@
 				this.dataAttr = await getSearchAttrList();
 				// console.info('attrData', this.dataAttr);
 			},
+			// 跳转到商品详情
+			toProduct(url) {
+				console.log('url:',url);
+				window.location.href = url;
+			},
+			
 		}
 	}
 </script>
@@ -325,11 +331,13 @@
 /* sort-filter */
 .sort-filter {
 	position: relative;
+	width: 100%;
+	height: 100%;
 }
 .mask {
 	position: absolute;
 	display: block;
-	top: 1.4rem;
+	top: 3rem;
 	right: 0;
 	bottom: 1.4rem;
 	left: 0;
