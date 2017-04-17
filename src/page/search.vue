@@ -1,11 +1,16 @@
 <template>
 	<div class="search">
-		<search-bar @search="toSearch()" v-model="searchResult"></search-bar>
+		<div class="search-bar">
+			<span class="searchBtnDefault btn-back" @click="toBack()"></span>
+			<input class="search-input" type="text" v-model="searchResult" placeholder="请输入关键字" />
+			<span class="searchBtnDefault btn-search" @click="toSearch(searchResult)"></span>
+		</div>
+
 			<h1 class="search-title" v-if="hotSearchWords.length">
 				热门搜索
 			</h1>
 			<ul class="keyword-list clear">
-				<li class="keyword-item" v-for="item in hotSearchWords">
+				<li class="keyword-item" v-for="item in hotSearchWords" @click="searchRecommend(item.Word)">
 					{{ item.Word }}
 				</li>
 			</ul>
@@ -35,9 +40,17 @@ export default {
 			token: '',
 		}
 	},
+	computed: {
+		...mapState({
+			token: state => state.home.token,
+			})
+	},
 	created() {
 		console.log('search-token',this.$route.query.token); 
 		this.token = this.$route.query.token;
+		
+	},
+	mounted() {
 		this.toHistoryWords();
 		this.toHotSearchWords();
 	},
@@ -45,20 +58,22 @@ export default {
 		searchBar,
 	},
 	methods: {
-		toSearch() {
-			console.log('search-type',this.$route.query.storeid); 
+		toSearch(word) {
+			console.log('search-type',this.$router.query.storeid,word); 
+
+			// this.$router.push({path:'storelist', query:{name:word}});
 			console.log('toSearch',this.searchResult);
 		},
 		// 获取热门搜索关键词
 		async toHotSearchWords() {
 			const hotData = await getHotSearchWords(this.token);
-			this.hotSearchWords = hotData ? hotData : [];
+			this.hotSearchWords = hotData.Data ? hotData.Data : [];
 			console.log('hotdata:', this.hotSearchWords);
 		},
 		// 获取历史搜索关键词
 		async toHistoryWords() {
 			const historyData =  await getHistoryWords(this.token);
-			this.historyWords = historyData ? historyData : [];
+			this.historyWords = historyData.Data ? historyData.Data : [];
 			console.log('historydata:', this.historyWords);
 		},
 		async deleteSearchRecord() {
@@ -66,57 +81,119 @@ export default {
 			this.historyWords = [];
 			console.log('deleteInfo',deleteInfo);
 		},
+		searchRecommend(word) {
+
+		},
+		searchResult(word) {
+
+		},
+		toBack() {
+			this.$router.go(-1);
+		},
 	}
 }
 </script>
 <style scoped>
 
-	.search-title {
-		width: 100%;
-		height: 1rem;
-		line-height: 1rem;
-		font-size: 0.36rem;
-		color: #222;
-		font-weight: 600;
-		padding-left: 5%;
-		background-color: #F4F4F4;
-	}
+.search-title {
+	width: 100%;
+	height: 1rem;
+	line-height: 1rem;
+	font-size: 0.36rem;
+	color: #222;
+	font-weight: 600;
+	padding-left: 5%;
+	background-color: #F4F4F4;
+}
 
-	.btn-clear {
-		display: block;
-		width: 40%;
-		height: 0.8rem;
-		line-height: 0.8rem;
-		text-align: center;
-		border-radius: 0.08rem;
-		margin: 1.4rem auto 0;
-		background: #FFF;
-		border: 1px solid #333;
-	}
-	.keyword-list {
-		width: 100%;
-		height: auto;
-		margin-bottom: 0.46rem;
-	}
-	.keyword-item {
-		float: left;
-		margin: 0.46rem 0 0 4%;
-		width: 20%;
-		height: 0.7rem;
-		line-height: 0.7rem;
-		border: 1px solid #333;
-		border-radius: 0.08rem;
-		color: #333;
-		text-align: center;
-	}
-	.search-title {
-		width: 100%;
-		height: 1rem;
-		line-height: 1rem;
-		font-size: 0.36rem;
-		color: #222;
-		font-weight: 600;
-		padding-left: 5%;
-		background-color: #F4F4F4;
-	}
+.btn-clear {
+	display: block;
+	width: 40%;
+	height: 0.8rem;
+	line-height: 0.8rem;
+	text-align: center;
+	border-radius: 0.08rem;
+	margin: 1.4rem auto 0;
+	background: #FFF;
+	border: 1px solid #333;
+}
+.keyword-list {
+	width: 100%;
+	height: auto;
+	margin-bottom: 0.46rem;
+}
+.keyword-item {
+	float: left;
+	margin: 0.46rem 0 0 4%;
+	width: 20%;
+	height: 0.7rem;
+	line-height: 0.7rem;
+	border: 1px solid #333;
+	border-radius: 0.08rem;
+	color: #333;
+	text-align: center;
+}
+.search-title {
+	width: 100%;
+	height: 1rem;
+	line-height: 1rem;
+	font-size: 0.36rem;
+	color: #222;
+	font-weight: 600;
+	padding-left: 5%;
+	background-color: #F4F4F4;
+}
+
+/* search-bar */
+.search-bar {
+	position: relative;
+	width: 100%;
+	height: 1.28rem;
+}
+
+.search-bar::before {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	height: 1px;
+	background: #D8D8D8;
+	transform: scaleY(0.5);
+}
+
+.searchBtnDefault {
+	display: block;
+	width: 14%;
+	height: 100%;
+	padding: 0 2%;
+}
+
+.btn-back {
+	float: left;
+	background: url('../assets/icon/topbar_back@2x.png') no-repeat center;
+	background-size: 0.6rem;
+}
+
+.btn-search {
+	float: right;
+	background: url('../assets/icon/title_icon_search@2x.png') no-repeat center;
+	background-size: 0.6rem;
+}
+
+.search-input::-webkit-input-placeholder {
+	color: #999;
+}
+
+.search-input {
+	width: 72%;
+	height: 0.8rem;
+	border: 1px solid #222;
+	border-radius: 1rem;
+	margin: 0.24rem auto;
+	font-size: 0.32rem;
+	padding: 0 4%;
+}
+
 </style>

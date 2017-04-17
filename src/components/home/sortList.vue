@@ -1,8 +1,10 @@
 <template>
-	<ul class="selection">
-		<li v-for="(item, index) in dataInit" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
-			{{ item.name }}
-		</li>
+	<div class="sortList">
+		<ul class="selection">
+			<li v-for="(item, index) in dataInit" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
+				{{ item.name }}
+			</li>
+		</ul>
 		<aside class="sort" :class="{active: isSortList}" >
 			<p v-for="(item,index) in dataSelectInit" @click="toSortPrice(index)" :class="{active: (index+1) == dataSearch.sort}">{{item}}</p>
 		</aside>
@@ -41,7 +43,7 @@
 				<button @click="confirm">确定</button>
 			</div>
 		</aside>
-	</ul>
+	</div>
 </template>
 <script>
 
@@ -100,10 +102,10 @@ export default {
 			switch(index) {
 				case 0: 
 					this.reset();
-					this.$emit('mask', true);
 					this.isClassify = false;
 					this.isSortList = true;
 					this.dataInit[0].active = true;
+					this.$emit('mask', true);
 					 return
 				case 1: 
 					this.reset();
@@ -180,8 +182,13 @@ export default {
 </script>
 <style scoped>
 
-.selection {
+.sortList {
 	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.selection {
 	height: 1.4rem;
 	background-color: #FFF;
 }

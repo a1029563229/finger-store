@@ -8,6 +8,10 @@
 		<span class="infinite-scroll-text" v-show="loading">
 			{{ loadingText }}
 		</span>
+		<span class="infinite-scroll-text" v-show="loadingEnd">
+			{{ loadingEndText }}
+		</span>
+
 	</div>
 </template>
 
@@ -22,9 +26,17 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		loadingEnd:{
+			type: Boolean,
+			default: false,
+		},
 		loadingText: {
 			type: String,
 			default: '正在加载...'
+		},
+		loadingEndText: {
+			type: String,
+			default: '已全部加载完毕'
 		}
 	},
 	methods: {
@@ -37,8 +49,8 @@ export default {
 			let contentHeight = scrollHeight - scrollTop - 50;
 			let slideHeight = isWindow ? window.innerHeight : scroller.offsetHeight;
 			// 滑动距离大于内容高度触发加载事件
-			if (contentHeight <= slideHeight) {
-				console.warn('emit-load',contentHeight,slideHeight);
+			if (contentHeight <= slideHeight && !this.loadingEnd) {
+				console.warn('emit-load',this.loadingEnd,contentHeight,slideHeight);
 				this.$emit('load');
 			}
 		}
@@ -53,8 +65,8 @@ export default {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding-bottom: 0rem;
-	line-height: 1rem;
+	padding-bottom: 1.4rem;
+	line-height: 1.4rem;
 	width: 100%;
 }
 .infinite-loader {

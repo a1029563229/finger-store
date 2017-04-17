@@ -1,12 +1,14 @@
 <template>
-	<ul class="selection">
-		<li v-for="(item, index) in list" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
-			{{ item.name }}
-		</li>
-		<div class="sort" :class="{active: isSortList}" >
+	<section class="sort-filter">
+		<ul class="selection">
+			<li class="selection-item" v-for="(item, index) in list" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
+				{{ item.name }}
+			</li>
+		</ul>
+		<aside class="sort" :class="{active: isSortList}" >
 			<p v-for="(item,index) in sortPrices" @click="toSortPrice(index)" :class="{active: (index+1) == dataSearch.sort}">{{item}}</p>
-		</div>
-		<div class="classify" :class="{active: isClassify}">
+		</aside>
+		<aside class="classify" :class="{active: isClassify}">
 			<h1 class="classify-title">
 			 	品牌
 			 	<i class="arrow-down" :class="{active: brandarrow}" @click="brandarrow = !brandarrow"></i>
@@ -40,8 +42,8 @@
 				<button @click="reset">重置</button>
 				<button @click="confirm">确定</button>
 			</div>
-		</div>
-	</ul>
+		</aside>
+	</section>
 </template>
 <script>
 export default {
@@ -183,8 +185,12 @@ export default {
 </script>
 <style scoped>
 
-.selection {
+.sort-filter {
 	position: relative;
+	width: 100%;
+	height: 100%;
+}
+.selection {
 	height: 1.4rem;
 }
 .selection::after {
@@ -199,7 +205,7 @@ export default {
 	transform: scaleY(0.5);
 }
 
-li {
+.selection-item {
 	float: left;
 	position: relative;
 	width: 25%;
@@ -211,7 +217,7 @@ li {
 
 
 .arrow-up::before,
-li::after {
+.selection-item::after {
 	content: '';
 	position: absolute;
 	right: 19%;
@@ -225,7 +231,7 @@ li::after {
 	opacity: 0.4;
 	border-bottom-color: #333;
 }
- li::after {
+.selection-item::after {
 	top: 0.75rem;
 	border-top-color: #333;
 }
@@ -237,7 +243,7 @@ li::after {
 	opacity: 1;
 }
 
-li.active {
+.selection-item.active {
 	color: #E40277;
 }
 .active::before {

@@ -82,7 +82,7 @@ var searchProductList = (searchData) => axios({
 	}
 });
 
-/*
+
 // 获取附近店铺列表
 var searchStoreList = (store) => axios({
     url: service + '/SearchStoreByGoodsParam',
@@ -90,8 +90,8 @@ var searchStoreList = (store) => axios({
     data: {
         ...store
     }
-  });  */
-  var searchStoreList = (store) => setPromise(nearbyList);
+  });  
+ // var searchStoreList = (store) => setPromise(nearbyList);
 
 // 获取热门搜索关键字
 var getHotSearchWords = (token) => axios({
@@ -168,8 +168,8 @@ axios.interceptors.response.use(function(response) {
     // 处理响应数据
     if (response.status === 200) {
     	if (response.data.ResultCode === 1000) {
-    		console.log(response.data);
-    		return response.data.Data;
+    		console.info(response.data);
+    		return response.data;
     	} else if (response.data.ResultCode === 1009) {
     		console.warn('token失效，重新登录');
     	} else {
