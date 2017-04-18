@@ -14,11 +14,19 @@
         <span class="shop-name">{{totalInfo.Name}}</span>
         <div class="shopBarRight">
           <div class="shopBarRightItem">
+<<<<<<< HEAD
             <img src="static/img/common_like_press@2x.png" @click="collect($event.target)">
             <span>点赞</span>
           </div>
           <div class="shopBarRightItem">
             <img src="static/img/common_collection_press@2x.png" @click="zan($event.target)">
+=======
+            <img src="static/img/common_like_press@2x.png" @click="zan($event.target)">
+            <span>点赞</span>
+          </div>
+          <div class="shopBarRightItem" >
+            <img src="static/img/common_collection_press@2x.png" @click="collect($event.target)">
+>>>>>>> 5c910a85194df5e148c8b9b864bb80360dab3cb7
             <span>收藏</span>
           </div>
         </div>
@@ -66,6 +74,7 @@
       return {
         qrCode: '',
         totalInfo:'',
+        qrCode: '',
         zanImg: 'static/img/common_like_press@2x.png',
         collectImg: 'static/img/common_collection_press@2x.png',
         position: {
@@ -87,9 +96,16 @@
       }
 
     },
+    mounted(){
+      this.init()
+    },
     methods: {
       init: async function(){
+
         await this.getshopInfo()
+
+        await this.getSoreInfo()
+
         await this.getQrcode()
       },
       showMap(){
@@ -98,6 +114,52 @@
       mapHide(){
         this.mapFlag = false
       },
+
+
+      zan(ev){
+        let obj = {
+          appkey: appkey,
+          token: token
+        }
+        this.$http.post(AddStoreSuperb, obj)
+          .then( res =>{
+            if(res.data.ResultCode != 1000){
+              alert(res.data.Message)
+            } else {
+              console.log(ev.src = '22')
+            }
+          })
+      },
+      collect(ev){
+        let obj = {
+          appkey: appkey,
+          token: token
+        }
+        this.$http.post(AddStoreCollect, obj)
+          .then( res =>{
+            if(res.data.ResultCode != 1000){
+              alert(res.data.Message)
+            } else {
+              console.log(ev.src = '22')
+            }
+          })
+      },
+      getSoreInfo(){
+        return new Promise( (resolve, reject) =>{
+          let obj = {
+            appkey: appkey,
+            token: token
+          }
+          console.log(obj)
+          this.$http.post(GetContractStoreInfo, obj)
+            .then( res =>{
+              console.log(res.data.Data)
+              this.totalInfo = res.data.Data
+              resolve()
+            })
+        })
+      },
+
       getQrcode(){
         return new Promise( (resolve, reject) =>{
           let obj = {
@@ -106,7 +168,10 @@
           }
           this.$http.post(GetStoreQrCode, this.$qs.stringify(obj))
             .then( res =>{
+
               console.log(res)
+
+//              console.log(res.data)
               this.qrCode = res.data
               resolve()
             })
@@ -157,7 +222,7 @@
       }
     },
     created(){
-      this.init()
+
     },
     watch:{
 

@@ -19,7 +19,10 @@ export {
 }
 
 export const appkey = 100000029;
-export const token = '44e7955478094713a3dcc82f64ba1110'
+
+
+export const token = '2e8e26f783f54dd2bf86897b279d9d73'
+
 export const testUrl = 'http://218.17.39.178:7092';
 
 export const BASE_URL = 'https://dev-ydyd-app.vpclub.cn/api/1.0';
