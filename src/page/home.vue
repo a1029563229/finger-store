@@ -69,18 +69,20 @@
 				<ul class="nearby-list">
 					<li v-for="item in nearbyListData" class="nearby-item" :key="item.StoreID" @click="toStore(item.StoreName,item.StoreID,item.StoreLogo)">
 						<div class="img">
-							<img :src="item.StoreLogo" >
+							<img :src="item.StoreLogo">
 						</div>
 						<div class="desc">
 							<h1 class="ellipsis">{{ item.StoreName }}</h1>
 							<p class="desc-item">
 								<span>月销量&nbsp;{{ item.SellCount }}</span>
 								<span class="item-distance" v-show="searchStoreKey.lat && searchStoreKey.lng">&lt;&nbsp;{{ item.Distanct }}&nbsp;km</span>
+								<span class="item-distance" v-show="!(searchStoreKey.lat && searchStoreKey.lng)">&nbsp;0&nbsp;km</span>
 							</p>
-							<router-link :to="{path:'map', query:{name:item.StoreName,lat:location.lat,lng:location.lng}}" class="btn-map" @click="toMap(item.StoreName)">到这里去</router-link>
+							<button class="btn-map" @click.stop="toMap(item.StoreName, item.CoordsX, item.CoordsY)">到这里去</button>
 						</div>
 					</li>
 				</ul>
+				<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关店铺 </div>
 			<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
 			</section>
 		</section-item>
@@ -104,36 +106,36 @@ import watchScroll from '@/components/common/watchScroll'
 // 加载更多
 import infiniteScroll from '@/components/common/infiniteScroll'
 
-import { 
-	getSlides, getToken, getTodayRecommend, getBanner, searchProductList, searchStoreList, getSearchAttrList
-} from '@/service/getData'
+import { appkey } from '@/config/env'
+import { getSlides, getToken, getTodayRecommend, getBanner, searchStoreList, getSearchAttrList } from '@/service/getData'
 
 export default {
 	name: 'home',
 	data() {
 		return {
-			token: '6d230d8e958840018cb689c757cc8ecb',
+			token: '2eba04f0df7348769233ece29b670d10',
 			slides: [],
-			isMask: false,
-			isScroll: false,
-			scroller: null,
-			loading: false,				// 是否显示loading
+			isMask: false,				// 遮罩
+			isScroll: false,			// 是否滚动
+			scroller: null,				// window对象
+			loading: true,				// 是否显示loading
 			showType: 0,					// 今日推荐模式
 			recommendData: [],		// 今日推荐
-			nearbyListData: [],
-			dataAttr: [],
-			isSortList: false,		//综合
+			nearbyListData: [],		// 店铺列表
+			dataAttr: [],					// 筛选数据
+			dataNone: false, 			// 数据为空时显示
+			isSortList: false,		// 综合
 			isClassify: false,		// 筛选
 			priceMin: '',					// 最低价
 			priceMax: '',					// 最高价			
-			brandarrow: false, 		//品牌下拉列表
-			memoryArrow: false,		//内存下拉列表
-			colorArrow: false,		//颜色下拉列表
+			brandarrow: false, 		// 品牌下拉列表
+			memoryArrow: false,		// 内存下拉列表
+			colorArrow: false,		// 颜色下拉列表
 			brandSelect: null,		// 选中品牌
 			memorySelect: null,		// 选中内存
 			colorSelect: null,		// 选中颜色
 			searchStoreKey: {
-				appkey: 100000029, 
+				appkey: appkey, 
 				lat: '', 					// String	纬度  120.14563
 				lng: '', 					// String	经度  30.242523
 				pageIndex: 1,  		// int	页码
@@ -167,12 +169,15 @@ export default {
 	},
 	computed: {
 		...mapState([
-			'loginToken', 
+			'token', 'userLocal'
 			]),
-		location() {
+		location(name,storelng,storelat) {
 			return {
-				lat: this.searchStoreKey.lat,
-				lng: this.searchStoreKey.lng
+				storename: name,
+				userlat: this.searchStoreKey.lat,
+				userlng: this.searchStoreKey.lng,
+				storelat: storelat, 
+				storelng: storelng, 
 			}
 		},
 		colorList() {
@@ -187,6 +192,14 @@ export default {
 	},
 	created() {
 		this.init();
+		console.warn('this.userLocal',this.userLocal);
+		if (!this.userLocal) {
+			this.getlocalation();
+		} else {
+			this.searchStoreKey.lat = this.userLocal.lat;
+			this.searchStoreKey.lng = this.userLocal.lng;
+			this.reloadNearbyStore();
+		}
 	},
 	mounted() {
 		let swiper = this.$refs.swiper;
@@ -195,12 +208,9 @@ export default {
 			this.swiper = swiper.dom;
 		}
 		// 初始化
-		
-		this.getlocalation();
 		this.BannerInit();
 		this.recommendTodayInit();
 		this.getAttrList();
-		this.reloadNearbyStore();
 	},
 	methods: {
 		async init() {
@@ -241,20 +251,21 @@ export default {
 		},
 		// 重新加载 附近商店列表 
 		async reloadNearbyStore() {
-			// console.info('reloadNearbyStore' + JSON.stringify());
+			this.searchStoreKey.pageIndex = 1;
 			let nearbyListData = await searchStoreList(this.searchStoreKey);
 			console.warn('nearbyListData',nearbyListData);
+			this.loading = false;
 			this.nearbyListData = nearbyListData.Data;
 			if (nearbyListData.PageIndex >= nearbyListData.totalPage ) this.isLoadEnd = true;
-			// this.searchStoreKey.pageIndex == nearbyListData.
+			this.dataNone = this.nearbyListData.length ? false : true;
 			// console.info('reloadNearbyStore:', this.nearbyListData);
 		},
 		// 获取筛选栏-属性列表
 		async getAttrList() {
 			let dataAttrData = await getSearchAttrList();
 			this.dataAttr = dataAttrData.Data;
-			// console.info('attrData', this.dataAttr);
 		},
+		// 加载更多
 		loadmore() {
 			let self = this;
 			this.loading = true;
@@ -264,31 +275,28 @@ export default {
 				self.getNearbyStore();
 			},500);
 		},
-		// 改变 遮罩层
-		changeMask(mask) {
-			this.isMask = mask;
-		},
 		// 获取用户地理位置
-		getlocalation() {
-			var options={
-        enableHighAccuracy:true,
-        maximumAge:1000
-      }
+		async getlocalation() {
+			var options={enableHighAccuracy:true, maximumAge:1000 }
       if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(this.onSuccess,this.onError,options);  //浏览器支持geolocation
+      await navigator.geolocation.getCurrentPosition(this.onSuccess,this.onError,options);  //浏览器支持geolocation\
       }else{
         alert('您的浏览器不支持地理位置定位');  //浏览器不支持geolocation
       }
 		},
     onSuccess(position){
-        this.searchStoreKey.lng =position.coords.longitude;  //返回用户位置  //经度
-        this.searchStoreKey.lat = position.coords.latitude;   //纬度
-        console.log('position::',position);
-        reloadNearbyStore();
-         // alert('经度'+this.searchStoreKey.lng +'，纬度'+this.searchStoreKey.lat);   //根据经纬度获取地理位置，不太准确，获取城市区域还是可以的
+    	this.searchStoreKey.lng = position.coords.longitude;  //返回用户位置  //经度
+      this.searchStoreKey.lat = position.coords.latitude;   //纬度
+      this.reloadNearbyStore();
+      let userLocal = {lat: position.coords.latitude, lng: position.coords.longitude};
+      this.$store.dispatch('recordUserLocal', userLocal);
+      return 
+       // 根据经纬度获取地理位置，不太准确，获取城市区域还是可以的
+       // alert('经度'+this.searchStoreKey.lng +'，纬度'+this.searchStoreKey.lat); 
     },
  		onError(error){
  			this.reloadNearbyStore();
+ 			return
       // switch(error.code){
        /* case 1: alert("位置服务被拒绝"); break;
         case 2: alert("暂时获取不到位置信息"); break;
@@ -304,14 +312,23 @@ export default {
 				logo: img
 			};
 			this.$store.dispatch('recordStoreInfo',params);
-			this.$router.push({ path:'/store' });
+			this.$router.push({ path:'/shop' });
 		}, 
   	// 跳转到地图 - 到这里去
-  	toMap(name) {
-
+  	toMap(name,storelat,storelng) {
+  		let local = {
+  			storename: name,
+				userlat: this.searchStoreKey.lat,
+				userlng: this.searchStoreKey.lng,
+				storelat: storelat, 
+				storelng: storelng, 
+  		};
+  		this.$store.dispatch('recordStoreLocal', local);
+  		this.$router.push({path:'map', query:{name:name,lat:location.lat,lng:location.lng}});
   	},
   	// 切换筛选
 		choose(index) {
+			this.isLoadEnd = false;
 			let active = this.dataSortInit[index].active;
 			let up = this.dataSortInit[index].up;
 			this.dataSortInit.forEach((item,index) => {
@@ -389,7 +406,7 @@ export default {
 		},
 		// 确认筛选
 		confirm() {
-			if (this.priceMax < this.priceMin) this.priceMax = this.priceMin;
+			if (this.priceMax < this.priceMin) this.priceMax = "";
 			this.searchStoreKey.priceMin = this.priceMin;
 			this.searchStoreKey.priceMax = this.priceMax;
 			console.log('searchStoreKey', this.searchStoreKey);
@@ -501,10 +518,6 @@ export default {
 	height: 100%;
 }
 
-.nearby-list {
-	/* padding-bottom: 1.4rem; */
-}
-
 .mask {
 	position: absolute;
 	display: block;
@@ -531,7 +544,7 @@ export default {
 	right: 0;
 	width: 100%;
 	height: 1px;
-	background: #DDD;
+	background-color: #D8D8D8;
 	transform: scaleY(0.5);
 }
 
@@ -544,7 +557,6 @@ export default {
 	line-height: 1.4rem;
 	color: #333;
 }
-
 
 .arrow-up::before,
 .selection-item::after {
@@ -797,16 +809,29 @@ export default {
 }
 
 .btn-map {
+	position: relative;
+	z-index: 10;
 	float: right;
 	margin-top: 0.2rem;
 	display: block;
 	width: 2.2rem;
 	height: 0.7rem;
-	line-height: 0.7rem;
+	line-height: 0.65rem;
 	text-align: center;
 	color: #E52951;
+	background-color: #FFF;
 	border: 1px solid #E52951;
 	border-radius: 0.06rem;
+}
+
+/* 匹配不到数据 */
+.data-none {
+	width: 100%;
+	height: 1.28rem;
+	line-height: 1.2rem;
+	text-align: center;
+	font-size: 0.35rem;
+	background-color: #FFF;
 }
 
 </style>

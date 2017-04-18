@@ -12,11 +12,11 @@
 			<h1 class="info-name ellipsis">{{ storeInfo.name }}</h1>
 			<ul class="info-btn">
 				<li @click="toPraise">
-					<i class="btn-praise"></i>
+					<i class="btn-praise" :class="{active: isLike}"></i>
 					点赞
 				</li>
 				<li @click="toCollect">
-					<i class="btn-collect"></i>
+					<i class="btn-collect" :class="{active: isCollect}"></i>
 					收藏
 				</li>
 			</ul>
@@ -73,7 +73,7 @@
 					<img :src="item.ImgUrl">
 				</div>
 				<h1 class="item-title">{{ item.ProductTitle }}</h1>
-				<p>
+				<p class="item-desc">
 					<span class="item-price">
 						{{ item.SellPrice | currency }}
 					</span>
@@ -83,6 +83,8 @@
 				</p>
 			</li>
 		</ul>
+		<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关商品 </div>
+		<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
 		</section>
 		<navigation></navigation>
 	</div>
@@ -90,11 +92,12 @@
 <script>
 	import storeList from '@/components/store/storeList'
 	import navigation from '@/components/common/navigation'
+	import infiniteScroll from '@/components/common/infiniteScroll'
 	import { mapState } from 'vuex'
 	import { appkey } from '../config/env'
 	import { addStoreSuperb, addStoreCollect, searchProductList, getSearchAttrList } from '../service/getData'
 	export default {
-		name: 'store',
+		name: 'shop',
 		data() {
 			return {
 				commodityList: [],
@@ -108,7 +111,10 @@
 				dataAttr: [],
 				isMask: false,
 				closeMask: false,
-
+				loading: false,				//显示加载
+				isLoadEnd: false,			// 加载完毕
+				scroller: null,       // 加载更多
+				dataNone: false,			// 数据为空时显示
 				isSortList: false,		//综合
 				isClassify: false,		// 筛选
 				priceMin: '',					// 最低价
@@ -133,6 +139,8 @@
 					color: '', 			// string	颜色
 					memory: ''     // string	内存
 				},
+				isCollect: false,
+				isLike: false,
 			}
 		},
 		computed: {
@@ -153,11 +161,16 @@
 		components: {
 			storeList,
 			navigation,
+			infiniteScroll,
+		},
+		created() {
+			this.searchProductKey.storeid = this.storeInfo.id;
+			console.warn('this.searchProductKey.storeid:'+ this.searchProductKey.storeid,this.storeInfo.id);
+			this.reloadCommodity();
+			this.getAttrList();
 		},
 		mounted() {
-			this.getAttrList();
-			this.reloadCommodity(this.token);
-			console.log(this.storeInfo);
+			this.scroller = this.$el;
 		},
 		filters: {
 			currency(value) {
@@ -167,25 +180,47 @@
 		methods: {
 			// 点赞
 			async toPraise() {
-				console.log('praiseResult');
+				this.isLike = true;
 				let praiseResult = await addStoreSuperb(this.token);
 				console.log('praiseResult',praiseResult);
 			},
 			// 收藏
 			async toCollect() {
+				this.isCollect = true;
 				let collectResult = await addStoreCollect(this.token);
 				console.log('collectResult',collectResult);
 			},
 			// 搜索
 			toSearch() {
-				this.$router.push({path:'search', query:{storeid:1}});
+				this.$router.push({path:'search', query:{storeid: this.storeInfo.id}});
 			},
 			// 重新加载 商品列表 
-			async reloadCommodity(searchkey) {
-				console.info('reloadNearbyStore' + JSON.stringify(searchkey));
+			async reloadCommodity() {
+				this.isLoadEnd = false;
+				this.loading = true;
 				let commodityListData = await searchProductList(this.searchProductKey);
 				this.commodityList = commodityListData.Data;
-				// console.info('reloadNearbyStore:', this.nearbyListData);
+				this.loading = false;
+				this.dataNone = this.commodityList.length ? false : true;
+			},
+			// 加载更多
+			loadmore() {
+				let self = this;
+				this.loading = true;
+				setTimeout(() => {
+					this.searchProductKey.pageindex++;
+					console.log('reload - list');
+					self.getMore();
+				},500);
+			},
+			// 获取更多
+			async getMore() {
+				const data = await searchProductList(this.searchProductKey);
+				data.Data.forEach(item => {
+					this.commodityList.push(item);
+				});
+				if (data.PageIndex > data.TotalPage) this.isLoadEnd = true;
+				this.loading = false;
 			},
 			// 获取筛选栏-属性列表
 			async getAttrList() {
@@ -195,15 +230,16 @@
 			},
 			// 跳转到商品详情
 			toProduct(url) {
-				console.log('url:',url);
-				window.location.href = url;
+				console.log(this.token)
+				console.warn(url+ '&token=' + this.token);
+				window.location.href = url + '&token=' + this.token;
 			},
 			toBack() {
-
 				this.$router.go(-1);
 			},
 			// 切换筛选
 			choose(index) {
+				this.searchProductKey.pageindex = 1;
 				let active = this.dataSortInit[index].active;
 				let up = this.dataSortInit[index].up;
 				this.dataSortInit.forEach((item,index) => {
@@ -216,7 +252,7 @@
 						this.isClassify = false;
 						this.isSortList = true;
 						this.dataSortInit[0].active = true;
-						 return
+						return
 					case 1: 
 						this.reset();
 						this.isMask = false;
@@ -326,9 +362,10 @@
 <style scoped>
 
 .store {
+	position: relative;
 	width: 100%;
 	height: 100%;
-	padding-bottom: 1.4rem;
+	/*padding-bottom: 1.4rem;*/
 	background-color: #F4F4F4;
 }
 
@@ -351,6 +388,7 @@
 	background: #D8D8D8;
 	transform: scaleY(0.5);
 }
+
 
 .searchBtnDefault {
 	display: block;
@@ -439,16 +477,33 @@
 	width: 0.8rem;
 	height: 0.8rem;
 	margin-bottom: 0.05rem;
+	transition: background 0.3s;
 }
 
 .btn-praise  {
-	background: url('../assets/icon/common_like_press@2x.png') center no-repeat;
+	background: url('../assets/icon/common_like_nor@2x.png') center no-repeat;
 	background-size: 0.7rem;
+}
+.btn-praise.active {
+	background-image: url('../assets/icon/common_like_press@2x.png');
+	animation: tipMove 0.3s;
 }
 .btn-collect  {
-	background: url('../assets/icon/common_collection_press@2x.png') center no-repeat;
+	background: url('../assets/icon/common_collection_nor@2x.png') center no-repeat;
 	background-size: 0.7rem;
 }
+.btn-collect.active  {
+	background-image: url('../assets/icon/common_collection_press@2x.png');
+	animation: tipMove 0.3s;
+}
+
+@keyframes tipMove{
+   0%   { background-size: 0.7rem }
+   35%  { background-size: 1rem }
+   70%  { background-size: 0.8rem  }
+   100% { background-size: 0.7rem }
+}
+
 
 /* commodity-list */
 .store-list {
@@ -458,6 +513,7 @@
 	padding-top: 0.15rem;
 }
 .store-item {
+	position: relative;
 	float: left;
 	margin: 0.15rem 1.5%;
 	width: 45.5%;
@@ -473,12 +529,14 @@
 	margin-bottom: 0.1rem;
 	height: 0;
 	padding-bottom: 100%;
-	background: #DDD;
+	background-color: #FFF;
+	overflow: hidden;
 }
 .item-image img {
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 	max-width: 100%;
 }
 
@@ -489,13 +547,22 @@
 	line-height: 0.6rem;
 }
 
+.item-desc {
+	position: absolute;
+	display: flex;
+	justify-content: space-between;
+	bottom: 0.1rem;
+	left: 0;
+	right: 0;
+	padding: 0 4%;
+}
+
 .item-price {
 	line-height: 0.8rem;
 	font-size: 0.4rem;
 	color: #E52951;
 }
 .item-num {
-	float: right;
 	line-height: 0.8rem;
 	color: #999;
 	font-size: 0.3rem;
@@ -521,12 +588,6 @@
 }
 /* 筛选 */
 
-/* .sort-filter {
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
- */
 .selection {
 	background-color: #FFF;
 	height: 1.4rem;
@@ -539,7 +600,7 @@
 	right: 0;
 	width: 100%;
 	height: 1px;
-	background: #DDD;
+	background: #D8D8D8;
 	transform: scaleY(0.5);
 }
 
@@ -552,7 +613,6 @@
 	line-height: 1.4rem;
 	color: #333;
 }
-
 
 .arrow-up::before,
 .selection-item::after {
@@ -767,6 +827,15 @@
 
 .classify .classify-color.active {
 	height: 3rem;
+}
+/* 匹配不到数据 */
+.data-none {
+	width: 100%;
+	height: 1.28rem;
+	line-height: 1.2rem;
+	text-align: center;
+	font-size: 0.35rem;
+	background-color: #FFF;
 }
 
 

@@ -2,7 +2,7 @@
 	<div class="search">
 		<div class="search-bar">
 			<span class="searchBtnDefault btn-back" @click="toBack()"></span>
-			<input class="search-input" type="text" v-model="searchResult" placeholder="请输入关键字" />
+			<input class="search-input" type="text" v-model.trim="searchResult" placeholder="请输入关键字" />
 			<span class="searchBtnDefault btn-search" @click="toSearch(searchResult)"></span>
 		</div>
 
@@ -10,19 +10,19 @@
 				热门搜索
 			</h1>
 			<ul class="keyword-list clear">
-				<li class="keyword-item" v-for="item in hotSearchWords" @click="searchRecommend(item.Word)">
+				<li class="keyword-item" v-for="item in hotSearchWords" @click="toSearch(item.Word)">
 					{{ item.Word }}
 				</li>
 			</ul>
 			<h1 class="search-title" v-if="historyWords.length">
-				热门搜索
+				历史搜索
 			</h1>
 			<ul class="keyword-list clear">
 				<li class="keyword-item" v-for="item in historyWords">
 					{{ item }}
 				</li>
 			</ul>
-		<button class="btn-clear" @click.prevent="deleteSearchRecord">清空历史搜索记录</button>
+		<button class="btn-clear" v-show="historyWords.length" @click.prevent="deleteSearchRecord">清空历史搜索记录</button>
 	</div>
 </template>
 
@@ -37,60 +37,53 @@ export default {
 			searchResult: '',
 			hotSearchWords: [],
 			historyWords: [],
-			token: '',
+			storeid: null,
+			// token: '',
 		}
 	},
 	computed: {
 		...mapState({
 			token: state => state.home.token,
-			})
+			}),
 	},
 	created() {
-		console.log('search-token',this.$route.query.token); 
-		this.token = this.$route.query.token;
-		
-	},
-	mounted() {
+		this.getHotWords();
 		this.toHistoryWords();
-		this.toHotSearchWords();
 	},
-	components: {
-		searchBar,
+	mouted() {
+		this.storeid = this.$route.query.storeid;
 	},
 	methods: {
-		toSearch(word) {
-			console.log('search-type',this.$router.query.storeid,word); 
-
-			// this.$router.push({path:'storelist', query:{name:word}});
-			console.log('toSearch',this.searchResult);
-		},
-		// 获取热门搜索关键词
-		async toHotSearchWords() {
-			const hotData = await getHotSearchWords(this.token);
-			this.hotSearchWords = hotData.Data ? hotData.Data : [];
-			console.log('hotdata:', this.hotSearchWords);
-		},
-		// 获取历史搜索关键词
-		async toHistoryWords() {
-			const historyData =  await getHistoryWords(this.token);
-			this.historyWords = historyData.Data ? historyData.Data : [];
-			console.log('historydata:', this.historyWords);
-		},
-		async deleteSearchRecord() {
-			let deleteInfo = await deleteSearchWords();
-			this.historyWords = [];
-			console.log('deleteInfo',deleteInfo);
-		},
-		searchRecommend(word) {
-
-		},
-		searchResult(word) {
-
-		},
-		toBack() {
-			this.$router.go(-1);
-		},
-	}
+	// 获取历史搜索关键词
+	async toHistoryWords() {
+		const historyData =  await getHistoryWords(this.token);
+		this.historyWords = historyData.Data ? historyData.Data : [];
+		console.log('historydata:', this.historyWords);
+	},
+	// 热门搜搜关键词
+	async getHotWords() {
+		const hotData = await getHotSearchWords(this.token);
+		this.hotSearchWords = hotData.Data;
+		console.log('hotData',hotData);
+	},
+	async deleteSearchRecord() {
+		let deleteInfo = await deleteSearchWords();
+		this.historyWords = [];
+		console.log('deleteInfo',deleteInfo);
+	},
+	toSearch(word) {
+		if (!word) return
+		if (this.$route.query.storeid) {
+			this.$router.push({path:'productlist', query:{name: word, storeid:this.$route.query.storeid}});
+		} else {
+			this.$router.push({path:'productlist', query:{name: word}});
+		}
+		console.log(this.$route.query.storeid, word);
+	},
+	toBack() {
+		this.$router.go(-1);
+	},
+}
 }
 </script>
 <style scoped>
