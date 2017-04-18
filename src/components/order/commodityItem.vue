@@ -28,15 +28,15 @@
 			</div>
       <div class="list-footer">
         <div class="listFootBtn" v-show="item.OrderStatus == 1">
-          <button class="btn btn1">取消订单</button>
+          <button class="btn btn1" :data-orderNo="item.orderNo" @click="deletOrder($event.target)">取消订单</button>
           <button class="btn btn2" :data-payUrl="item.payurl" @click="forPay($event.target)">确认付款</button>
         </div>
         <div class="listFootBtn" v-show="(item.OrderStatus == 2) || (item.OrderStatus == 3) || (item.OrderStatus == 4)">
-          <button class="btn btn1" :data-id="item.id" @click="refund($event.target)">申请退款</button>
+          <button class="btn btn1" :data-orderNo="item.orderNo"  :data-phone="item.phoneNumber" @click="refund($event.target)">申请退款</button>
           <button class="btn btn2" :data-orderStatusUrl="item.orderStatusUrl" @click="viewStatus($event.target)">查看物流</button>
         </div>
         <div class="listFootBtn" v-show="item.OrderStatus == 5">
-          <button class="btn btn1" :data-id="item.id" @click="refund($event.target)">申请退款</button>
+          <button class="btn btn1" :data-orderNo="item.orderNo" :data-phone="item.phoneNumber" @click="refund($event.target)">申请退款</button>
           <button class="btn btn2" :data-orderStatusUrl="item.orderStatusUrl" @click="viewStatus($event.target)">查看物流</button>
         </div>
       </div>
@@ -74,7 +74,7 @@
   }
 
 
-  import { appkey, token, GainZZDOrderList,GainBindBankById } from '../../config/env'
+  import { appkey, token, GainZZDOrderList,GainBindBankById,ZZDDeleteOrderByNo,GainZZDOrderDetail ,ZZDApplyDrawback} from '../../config/env'
 	export default {
 	    data(){
 	        return{
@@ -130,36 +130,40 @@
           let statusUrl = el.getAttribute('data-orderStatusUrl')
           location.href = statusUrl
       },
-      async refund(el){
-          await this.getBandInfo(el)
-          await this.getParam()
-
-      },
-      getBandInfo(el){
-          return new Promise( (resolve, reject) =>{
-              let id = el.getAttribute('data-id')-0
-              let obj = {
-                  appkey: appkey,
-                  token: token,
-                  timestamp: Date.now(),
-                  id: id
+      deletOrder(el){
+        let orderNo = el.getAttribute('data-orderNo')
+        let obj = {
+          appkey: appkey,
+          token: token,
+          orderno: orderNo
+        }
+        this.$http.post(ZZDDeleteOrderByNo, this.$qs.stringify(obj))
+          .then( res =>{
+              if( res.data.ResultCode === 1000 ){
+                location.reload()
+              }else {
+                  alert(res.data.Message)
               }
-              this.$http.post(GainBindBankById, this.$qs.stringify(obj))
-                .then( res =>{
-                  if( res.data.ResultCode !== 1000 ){
-                      return alert(res.data.Message)
-                  }else {
-                      reject(res.data.Data)
-                  }
-                })
           })
       },
-      getParam(){
-        return new Promise( (resolve, reject) =>{
-          this.getBandInfo().then( data =>{
-            console.log(data)
+      refund(el){
+        let orderNo = el.getAttribute('data-orderNo')
+        let mobile = el.getAttribute('data-phone')-0
+        let obj = {
+          appkey:appkey,
+          token:token,
+          orderNo: orderNo,
+          mobile: mobile
+        }
+        console.log(obj)
+        this.$http.post(ZZDApplyDrawback, this.$qs.stringify(obj))
+          .then( res =>{
+            if( res.data.ResultCode === 1000){
+              alert(res.data.Message)
+            }else {
+              alert(res.data.Message)
+            }
           })
-        })
       }
     },
     created(){

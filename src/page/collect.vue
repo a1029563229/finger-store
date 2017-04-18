@@ -23,7 +23,10 @@
     name: 'collect',
     data(){
       return {
-
+        searchStoreKey:{
+          lng: '',
+          lat: ''
+        }
       }
     },
     components:{
@@ -49,10 +52,10 @@
       },
       onError(error){
         switch (error.code) {
-          /* case 1: alert("位置服务被拒绝"); break;
+           case 1: alert("位置服务被拒绝"); break;
            case 2: alert("暂时获取不到位置信息"); break;
            case 3: alert("获取信息超时"); break;
-           case 4: alert("未知错误"); break;*/
+           case 4: alert("未知错误"); break;
         }
       }
     },

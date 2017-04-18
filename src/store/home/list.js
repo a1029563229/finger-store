@@ -4,12 +4,16 @@ import { appkey, token, GainZZDOrderList } from '../../config/env'
 import { Loading } from 'element-ui';
 import router from '../../router'
 
+
+
+
 export const list = {
   state: {
     listData:[],
     isfromMyorder:false,
     selectIdx: 0,
-    listDetail:[]
+    listDetail:[],
+    expressno: ''
   },
   mutations: {
     switchTab(state,params){

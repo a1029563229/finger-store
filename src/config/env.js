@@ -21,7 +21,7 @@ export {
 export const appkey = 100000029;
 
 
-export const token = '2e8e26f783f54dd2bf86897b279d9d73'
+export const token = '250c0367f4a842bb9f224a1127b31967'
 
 export const testUrl = 'http://218.17.39.178:7092';
 
@@ -33,10 +33,12 @@ export const GetStoreQrCode = BASE_URL + '/YupinhuiServer/ZZDHandle/GetStoreQrCo
 // export const GainZZDOrderList = BASE_URL + '/OrderServer/Order/ GainZZDOrderList'  //用于店主获取订单列表
 export const GainZZDOrderList = BASE_URL + '/YupinhuiServer/ZZDHandle/GainZZDOrderList'  //用于店主获取订单列表
 export const GainZZDOrderDetail = BASE_URL + '/YupinhuiServer/ZZDHandle/GainZZDOrderDetail'  //获取订单详细
-export const ZZDApplyDrawback = BASE_URL +'/OrderServer/OrderFlow/ZZDApplyDrawback'  //用于用户申请退款
+export const ZZDApplyDrawback = BASE_URL +'/YupinhuiServer/ZZDHandle/ZZDApplyDrawback'  //用于用户申请退款
 export const AddStoreSuperb = BASE_URL + '/YupinhuiServer/ZZDHandle/AddStoreSuperb'  //店铺点赞
 export const AddStoreCollect = BASE_URL + '/YupinhuiServer/ZZDHandle/AddStoreCollect' //店铺收藏
 export const GetZZDTodayRecommed = BASE_URL + '/YupinhuiServer/ZZDHandle/GetZZDTodayRecommed' //获取今日推荐
 
 
 export const  GainBindBankById = BASE_URL + '/FinanceServer/Verify/GainBindBankById'  //通过ID获取绑定银行卡信息
+export const  GetCollectSotres = BASE_URL + '/YupinhuiServer/ZZDHandle/GetCollectSotres'  //查询我的收藏店铺列表
+export const  ZZDDeleteOrderByNo = BASE_URL + '/YupinhuiServer/ZZDHandle/ZZDDeleteOrderByNo'  //根据订单号删除订单
