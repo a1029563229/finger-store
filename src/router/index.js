@@ -13,6 +13,7 @@ import myorder from './myorder'
 import orderdetail from './orderdetail'
 import map from './map'
 import shopdes from './shopdes'
+import collect from './collect'
 
 Vue.use(Router)
 
@@ -27,6 +28,7 @@ export default new Router({
     orderdetail,
     map,
     shopdes,
+    collect,
     {
       path: '*',
       redirect: '/home'

@@ -1,17 +1,22 @@
 import axios from 'axios'
-import { appkey, token, GainOrderList } from '../../config/env'
+import qs from 'qs'
+import { appkey, token, GainZZDOrderList } from '../../config/env'
 import { Loading } from 'element-ui';
+import router from '../../router'
 
 export const list = {
   state: {
     listData:[],
-    // listTabIndex: 3
+    isfromMyorder:false,
+    selectIdx: 0,
+    listDetail:[]
   },
   mutations: {
     switchTab(state,params){
       //1未支付 2待发货  3已发货 4已完成 5退款
       if( params ===  0){ //全部
         sendRequest(0).then( (data) =>{
+          console.log(data)
           state.listData = data
         })
       }else if(params ===  1){ //待付款
@@ -30,12 +35,55 @@ export const list = {
         sendRequest(4).then( (data) =>{
           state.listData = data
         })
+      }else if(params ===  5){ //退款
+        sendRequest(5).then( (data) =>{
+          state.listData = data
+        })
+      }
+    },
+    setTabIndex(state,params){
+      console.log(params)
+      state.isfromMyorder = true
+      // 0待付款 1待发货 2 待收货 3已完成 4退款
+      if( params == 0 ){
+        sendRequest(1).then( (data) =>{
+          state.listData = data
+        })
+        state.selectIdx = 1
+        router.replace({path:'/myOrder'})
+      }else if( params == 1 ){
+        sendRequest(2).then( (data) =>{
+          state.listData = data
+        })
+        state.selectIdx = 2
+        router.replace({path:'/myOrder'})
+      }else if( params == 2 ){
+        sendRequest(3).then( (data) =>{
+          state.listData = data
+        })
+        state.selectIdx = 3
+        router.replace({path:'/myOrder'})
+      }else if( params == 3 ){
+        sendRequest(4).then( (data) =>{
+          state.listData = data
+        })
+        state.selectIdx = 4
+        router.replace({path:'/myOrder'})
+      }else if( params == 4 ){
+        sendRequest(4).then( (data) =>{
+          state.listData = data
+        })
+        state.selectIdx = 5
+        router.replace({path:'/myOrder'})
       }
     }
   },
   actions:{
     switchTab: ({commit,state},params) =>{
       commit('switchTab',params)
+    },
+    setTabIndex: ({commit,state},params) =>{
+      commit('setTabIndex',params)
     }
   }
 }
@@ -45,13 +93,14 @@ function sendRequest( orderStatus ){
     let obj = {
       token: token,
       appkey: appkey,
-      timestamp: Date.now(),
       pageindex: 1,
       pagesize: 10,
       orderStatus: orderStatus
     }
-    axios.post(GainOrderList,obj)
+    axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    axios.post(GainZZDOrderList,qs.stringify(obj))
       .then( res =>{
+        console.log(res.data)
         resolve(res.data.Data)
       })
   })

@@ -1,6 +1,16 @@
 <template>
-	<ul>
+	<ul class="ct">
 		<li class="list-wrap" v-for="(item,index) in listData">
+      <div class="list-title">
+        <i class="title-icon"></i>
+        <span class="title-text">订单状态</span>
+        <i class="arrow-right"></i>
+        <span class="title-tip" v-show="item.OrderStatus == 1">待付款</span>
+        <span class="title-tip" v-show="item.OrderStatus == 2">待发货 </span>
+        <span class="title-tip" v-show="item.OrderStatus == 3">已发货 </span>
+        <span class="title-tip" v-show="item.OrderStatus == 4">已完成 </span>
+        <span class="title-tip" v-show="item.OrderStatus == 5">退款 </span>
+      </div>
 			<div class="list-img">
 				<img :src="item.productImage_300_300" >
 			</div>
@@ -12,15 +22,59 @@
 					{{item.consignee}}
 				</p>
 				<h2>
-					<span class="list-price">{{item.productPrice}}</span>
-					<i>X{{item.order_amount}}</i>
+					<span class="list-price">¥{{item.productPrice}}</span>
+					<i>X{{item.quantity}}</i>
 				</h2>
 			</div>
+      <div class="list-footer">
+        <div class="listFootBtn" v-show="item.OrderStatus == 1">
+          <button class="btn btn1">取消订单</button>
+          <button class="btn btn2" :data-payUrl="item.payurl" @click="forPay($event.target)">确认付款</button>
+        </div>
+        <div class="listFootBtn" v-show="(item.OrderStatus == 2) || (item.OrderStatus == 3) || (item.OrderStatus == 4)">
+          <button class="btn btn1" :data-id="item.id" @click="refund($event.target)">申请退款</button>
+          <button class="btn btn2" :data-orderStatusUrl="item.orderStatusUrl" @click="viewStatus($event.target)">查看物流</button>
+        </div>
+        <div class="listFootBtn" v-show="item.OrderStatus == 5">
+          <button class="btn btn1" :data-id="item.id" @click="refund($event.target)">申请退款</button>
+          <button class="btn btn2" :data-orderStatusUrl="item.orderStatusUrl" @click="viewStatus($event.target)">查看物流</button>
+        </div>
+      </div>
 		</li>
+    <span class="list-amount" v-show="listLength > 0">共{{listLength}}件商品 合计: ¥ {{totalPrice}}</span>
 	</ul>
 </template>
 <script>
-  import { appkey, token, GainOrderList } from '../../config/env'
+  var filters ={
+      tobePay(lists){  //待支付
+          return lists.filter( (item) =>{
+              return item.OrderStatus == 1
+          })
+      },
+      deliver(lists){  //代发货
+          return lists.filter( (item) =>{
+            return item.OrderStatus == 2
+          })
+      },
+      delivered(lists){  //已发货
+         return lists.filter( (item) =>{
+            return item.OrderStatus == 3
+         })
+      },
+      done(lists){ //已完成
+        return lists.filter( (item) =>{
+          return item.OrderStatus == 4
+        })
+      },
+      refund(lists){ //退款
+        return lists.filter( (item) =>{
+          return item.OrderStatus == 5
+        })
+      }
+  }
+
+
+  import { appkey, token, GainZZDOrderList,GainBindBankById } from '../../config/env'
 	export default {
 	    data(){
 	        return{
@@ -28,57 +82,150 @@
           }
       },
       computed:{
-          listData(){
-              return this.$store.state.list.listData
-          }
-      },
-    mounted(){
-      this.getOrderList()
-    },
-    methods:{
-      getOrderList(){
-//          return new Promise( (resolve, reject) =>{
-        let obj = {
-          token: token,
-          appkey: appkey,
-          timestamp: Date.now(),
-          pageindex: 1,
-          pagesize: 10
+        listData(){
+            return this.$store.state.list.listData
+        },
+        listLength(){
+            return this.listData.length
+        },
+        totalPrice(){
+            let price = 0;
+            this.listData.forEach( (item,idx) =>{
+              price += (item.productPrice-0)
+            })
+          return price
         }
 
-        this.$http.post(GainOrderList,obj)
+
+      },
+    mounted(){
+        this.getOrder()
+    },
+    methods:{
+      getOrder(){
+        let obj = {
+          appkey: appkey,
+          token: token,
+          pageindex: 1,
+          pagesize: 10,
+          orderStatus: 0
+        }
+        this.$http.post(GainZZDOrderList, this.$qs.stringify(obj))
           .then( res =>{
-//                this.listData = res.data.Data
-            console.log(this.listData)
-            this.$store.state.list.listData = res.data.Data
-//                resolve()
+          console.log(res.data.Data)
+        if( res.data.ResultCode === 1000 ){
+          this.$store.state.list.listData = res.data.Data
+        }
+      })
+      },
+      forPay(el){
+          var payUrl = el.getAttribute('data-payurl')
+           location.href = payUrl
+      },
+      viewStatus(el){
+          let statusUrl = el.getAttribute('data-orderStatusUrl')
+          location.href = statusUrl
+      },
+      async refund(el){
+          await this.getBandInfo(el)
+          await this.getParam()
+
+      },
+      getBandInfo(el){
+          return new Promise( (resolve, reject) =>{
+              let id = el.getAttribute('data-id')-0
+              let obj = {
+                  appkey: appkey,
+                  token: token,
+                  timestamp: Date.now(),
+                  id: id
+              }
+              this.$http.post(GainBindBankById, this.$qs.stringify(obj))
+                .then( res =>{
+                  if( res.data.ResultCode !== 1000 ){
+                      return alert(res.data.Message)
+                  }else {
+                      reject(res.data.Data)
+                  }
+                })
           })
-//          })
+      },
+      getParam(){
+        return new Promise( (resolve, reject) =>{
+          this.getBandInfo().then( data =>{
+            console.log(data)
+          })
+        })
       }
     },
-      created(){
+    created(){
 
-      }
+    }
 
 
 	}
 </script>
 <style scoped>
+
+  .ct{
+    position: relative;
+  }
+  .list-amount{
+    position: absolute;
+    right: 3%;
+    bottom: 1rem;
+  }
+
+  .list-title {
+    background-color: #FFF;
+    width: 100%;
+    height: 1rem;
+    line-height: 1rem;
+    padding: 0 4%;
+    font-size: 0.35rem;
+    position: absolute;
+  }
+  .list-title i {
+    display: block;
+    float: left;
+    width: 0.7rem;
+    height: 1rem;
+  }
+  .title-icon {
+    background: url('../../assets/icon/store_icon_mini.png') no-repeat center;
+    background-size: 0.5rem;
+    margin-right: 0.1rem;
+  }
+  .arrow-right {
+    background: url('../../assets/icon/arrow-right.png') no-repeat center;
+    background-size: 0.4rem;
+    opacity: 0.6;
+  }
+  .title-text {
+    float: left;
+  }
+  .title-tip {
+    float: right;
+    font-size: 0.3rem;
+  }
 	/* 商品列表 */
 
 .list-wrap {
 	display: flex;
 	width: 100%;
-	height: 2.72rem;
+	height: 5.5rem;
 	align-items: center;
 	justify-content: space-around;
 	align-items: stretch;
-	padding-right: 4%;
+	/*padding-right: 4%;*/
 	border-bottom: 1px solid #EEE;
+  position: relative;
 }
 .list-img {
 	flex: 1;
 	padding: 0.3rem;
+  height: 2.72rem;
+  margin-top: 1rem;
 }
 .list-desc {
 	display: flex;
@@ -88,6 +235,7 @@
 	height: 2.72rem;
 	justify-content: space-around;
 	overflow: hidden;
+  margin-top: 1rem;
 }
 .list-desc h1 {
 	flex: 2;
@@ -111,5 +259,57 @@
 .list-price {
 	color: #E52951;
 }
-
+.list-footer{
+  height: 1.5rem;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  background: #fff;
+}
+  .list-footer{
+    height: 1.5rem;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background: #fff;
+    padding-right: 3%;
+  }
+  .list-footer>span{
+    text-align: right;
+    width: 100%;
+    display: inherit;
+  }
+  .listFootBtn{
+    line-height: 1rem;
+    text-align: right;
+    margin-top: 0.5rem;
+  }
+  .btn{
+    line-height: 0.7rem;
+    width: 20%;
+    background: none;
+    font-size: 0.35rem;
+    border-radius: 5px;
+    color: #DEDEDE;
+  }
+  .btn1{
+    border: 1px solid #DEDEDE;
+    margin-right: 3%;
+  }
+  .btn2{
+    color: #E8496B;
+    border: 1px solid #E8496B;
+  }
+  .list-header{
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    display: flex;
+    line-height: 1rem;
+    top: 0;
+  }
+  .list-header>h4{
+    position: absolute;
+    right: 3%;
+  }
 </style>

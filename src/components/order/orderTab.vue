@@ -10,19 +10,24 @@
 		name: 'order-tab',
 		data() {
 			return {
-				tabList: ['全部', '待付款', '待发货', '待收货', '已完成'],
+				tabList: ['全部', '待付款', '待发货', '待收货', '已完成', '退款'],
 				itemNum: 0
 			}
 		},
     mounted(){
-
+      this.resetIdx()
     },
     computed: {
-//      itemNum(){
-//          return this.itemNum = this.$store.state.list.listTabIndex
-//      }
+
     },
 		methods: {
+      resetIdx(){
+          let isfromMyorder = this.$store.state.list.isfromMyorder
+          if( isfromMyorder ){
+              this.itemNum = this.$store.state.list.selectIdx
+              this.$store.state.list.isfromMyorder = false
+          }
+      },
 			chooseItem(index) {
         this.$store.dispatch('switchTab',index)
 				this.itemNum = index;
@@ -45,7 +50,7 @@
 	.tab-item {
 		float: left;
 		height: 100%;
-		width: 20%;
+    width: 16.666%;
 
 	}
 	.tab-item.active {

@@ -1,24 +1,23 @@
 <template>
 	<div class="orderitem">
-		<div class="list-title">
-			<i class="title-icon"></i>
-			<span class="title-text">东莞市申宇贸易有限公司</span>
-			<i class="arrow-right"></i>
-			<span class="title-tip">待付款</span>
-		</div>
+		<!--<div class="list-title">-->
+			<!--<i class="title-icon"></i>-->
+			<!--<span class="title-text">东莞市申宇贸易有限公司</span>-->
+			<!--<i class="arrow-right"></i>-->
+			<!--<span class="title-tip">待付款</span>-->
+		<!--</div>-->
 		<commodity-item></commodity-item>
 
-		<!-- <commodity-item></commodity-item> -->
-    <div v-show="orderLength>0">
-      <div class="item-total">
-        共{{orderLength}}件商品&nbsp;&nbsp;&nbsp;合计:￥{{totalPrice}}
-      </div>
-      <div class="item-btn">
-        <button>催发货</button>
-        <button>取消订单</button>
-        <button class="item-btn-confirm">确认付款</button>
-      </div>
-    </div>
+    <!--<div v-show="orderLength>0">-->
+      <!--<div class="item-total">-->
+        <!--共件商品&nbsp;&nbsp;&nbsp;合计:￥{{totalPrice}}-->
+      <!--</div>-->
+      <!--<div class="item-btn">-->
+        <!--<button>催发货</button>-->
+        <!--<button>取消订单</button>-->
+        <!--<button class="item-btn-confirm">确认付款</button>-->
+      <!--</div>-->
+    <!--</div>-->
   </div>
 </template>
 <script>
@@ -34,19 +33,22 @@ export default {
 		commodityItem,
 	},
   computed: {
-	    orderLength(){
-	        return this.$store.state.list.listData.length
-      },
-      totalPrice(){
-        let allPrice = 0;
-        if( this.orderLength == 0 ){
-          return 0
-        }
-        this.$store.state.list.listData.forEach( (item,idx) =>{
-          allPrice += parseInt(item.productPrice)
-        })
-        return allPrice
-      }
+//	    orderLength(){
+//	        return this.$store.state.list.listData.length
+//      },
+//      totalPrice(){
+//        let allPrice = 0;
+//        if( this.orderLength == 0 ){
+//          return 0
+//        }
+//        this.$store.state.list.listData.forEach( (item,idx) =>{
+//          allPrice += parseInt(item.productPrice)
+//        })
+//        return allPrice
+//      }
+  },
+  create(){
+    console.log(this.orderLength)
   }
 }
 </script>

@@ -199,7 +199,6 @@
       </div>
     </div>
 
-
   </div>
 </template>
 <script>
@@ -210,29 +209,14 @@
     props: ['showType', 'recomendData'],
     data(){
       return {
-        // show_type: 0,
-        // recomendData: []
+
       }
     },
     mounted(){
-      // this.getRecomend()
+
     },
     methods:{
-       /* getRecomend(){
-        let obj = {
-          appkey: appkey,
-          token: token
-        }
-        this.$http.post(GetZZDTodayRecommed,obj)
-          .then( res =>{
-              if( res.data.ResultCode == 1000 ){
-                console.log(res.data.Data[0])
-                this.show_type = res.data.Data[0].show_type
-                console.log(this.show_type)
-                this.recomendData = res.data.Data[0].list_floor_product
-              }
-          })
-      },*/
+
     },
     computed: {
 
