@@ -14,19 +14,11 @@
         <span class="shop-name">{{totalInfo.Name}}</span>
         <div class="shopBarRight">
           <div class="shopBarRightItem">
-<<<<<<< HEAD
             <img src="static/img/common_like_press@2x.png" @click="collect($event.target)">
-            <span>点赞</span>
-          </div>
-          <div class="shopBarRightItem">
-            <img src="static/img/common_collection_press@2x.png" @click="zan($event.target)">
-=======
-            <img src="static/img/common_like_press@2x.png" @click="zan($event.target)">
             <span>点赞</span>
           </div>
           <div class="shopBarRightItem" >
             <img src="static/img/common_collection_press@2x.png" @click="collect($event.target)">
->>>>>>> 5c910a85194df5e148c8b9b864bb80360dab3cb7
             <span>收藏</span>
           </div>
         </div>
@@ -121,7 +113,7 @@
           appkey: appkey,
           token: token
         }
-        this.$http.post(AddStoreSuperb, obj)
+        this.$http.post(AddStoreSuperb, this.$qs.stringify(obj))
           .then( res =>{
             if(res.data.ResultCode != 1000){
               alert(res.data.Message)
@@ -135,7 +127,7 @@
           appkey: appkey,
           token: token
         }
-        this.$http.post(AddStoreCollect, obj)
+        this.$http.post(AddStoreCollect,this.$qs.stringify(obj))
           .then( res =>{
             if(res.data.ResultCode != 1000){
               alert(res.data.Message)
@@ -151,7 +143,7 @@
             token: token
           }
           console.log(obj)
-          this.$http.post(GetContractStoreInfo, obj)
+          this.$http.post(GetContractStoreInfo, this.$qs.stringify(obj))
             .then( res =>{
               console.log(res.data.Data)
               this.totalInfo = res.data.Data

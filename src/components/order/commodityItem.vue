@@ -99,7 +99,7 @@
 
       },
     mounted(){
-        this.getOrder()
+
     },
     methods:{
       getOrder(){
@@ -109,6 +109,10 @@
           pageindex: 1,
           pagesize: 10,
           orderStatus: 0
+        }
+        console.log(this.$store.state.list.isfromMyorder)
+        if( this.$store.state.list.isfromMyorder ){
+            return
         }
         this.$http.post(GainZZDOrderList, this.$qs.stringify(obj))
           .then( res =>{
@@ -159,7 +163,7 @@
       }
     },
     created(){
-
+      this.getOrder()
     }
 
 

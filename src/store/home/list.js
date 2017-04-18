@@ -1,5 +1,5 @@
 import axios from 'axios'
-import qs from 'qs'
+import Qs from 'qs'
 import { appkey, token, GainZZDOrderList } from '../../config/env'
 import { Loading } from 'element-ui';
 import router from '../../router'
@@ -45,36 +45,39 @@ export const list = {
       console.log(params)
       state.isfromMyorder = true
       // 0待付款 1待发货 2 待收货 3已完成 4退款
-      if( params == 0 ){
+      if( params == 0 ){ //待付款
         sendRequest(1).then( (data) =>{
           state.listData = data
         })
         state.selectIdx = 1
         router.replace({path:'/myOrder'})
-      }else if( params == 1 ){
+      }else if( params == 1 ){ //待发货
         sendRequest(2).then( (data) =>{
           state.listData = data
         })
         state.selectIdx = 2
         router.replace({path:'/myOrder'})
-      }else if( params == 2 ){
+      }else if( params == 2 ){ //待收货
         sendRequest(3).then( (data) =>{
           state.listData = data
         })
         state.selectIdx = 3
         router.replace({path:'/myOrder'})
-      }else if( params == 3 ){
+      }else if( params == 3 ){ //已完成
         sendRequest(4).then( (data) =>{
           state.listData = data
         })
         state.selectIdx = 4
         router.replace({path:'/myOrder'})
-      }else if( params == 4 ){
+      }else if( params == 4 ){ //退款
+        console.log('退款')
         sendRequest(4).then( (data) =>{
           state.listData = data
+          console.log(state.listData)
+          state.selectIdx = 5
+          router.replace({path:'/myOrder'})
         })
-        state.selectIdx = 5
-        router.replace({path:'/myOrder'})
+
       }
     }
   },
@@ -98,7 +101,7 @@ function sendRequest( orderStatus ){
       orderStatus: orderStatus
     }
     axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    axios.post(GainZZDOrderList,qs.stringify(obj))
+    axios.post(GainZZDOrderList,Qs.stringify(obj))
       .then( res =>{
         console.log(res.data)
         resolve(res.data.Data)
