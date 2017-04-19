@@ -21,7 +21,7 @@ export {
 export const appkey = 100000029;
 
 
-export const token = '250c0367f4a842bb9f224a1127b31967'
+export const token = '93a5a97878d244dab96e05a9117a5465'
 
 export const testUrl = 'http://218.17.39.178:7092';
 
