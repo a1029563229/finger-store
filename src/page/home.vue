@@ -113,12 +113,11 @@ export default {
 	name: 'home',
 	data() {
 		return {
-			token: '2eba04f0df7348769233ece29b670d10',
 			slides: [],
 			isMask: false,				// 遮罩
 			isScroll: false,			// 是否滚动
 			scroller: null,				// window对象
-			loading: true,				// 是否显示loading
+			loading: false,				// 是否显示loading
 			showType: 0,					// 今日推荐模式
 			recommendData: [],		// 今日推荐
 			nearbyListData: [],		// 店铺列表
@@ -168,9 +167,10 @@ export default {
 		infiniteScroll,
 	},
 	computed: {
-		...mapState([
-			'token', 'userLocal'
-			]),
+		...mapState({
+			token: state => state.home.token,
+			userLocal: state => state.home.userLocal
+			}),
 		colorList() {
 			return this.dataAttr[0]
 		},
@@ -183,15 +183,15 @@ export default {
 	},
 	created() {
 		 // get Token
+		this.getlocalation();
 		this.init();
-		console.warn('this.userLocal',this.userLocal);
-		if (!this.userLocal) {
-			this.getlocalation();
+		/*if (JSON.stingify(this.userLocal).length <= 2) {
+			
 		} else {
 			this.searchStoreKey.lat = this.userLocal.lat;
 			this.searchStoreKey.lng = this.userLocal.lng;
 			this.reloadNearbyStore();
-		}
+		}*/
 	},
 	mounted() {
 		let swiper = this.$refs.swiper;
@@ -209,13 +209,12 @@ export default {
 			/*let tokenData = await getToken();
 			console.warn(tokenData.Data);*/
 		init() {
+			console.warn('query:',this.$route.query.token);
 		 if (this.$route.query.token) {
 	 		this.token = this.$route.query.token;
-	 		this.$store.dispatch('recordToken',this.$route.qurey.token);
-	 		console.warn('cookie-USERTOKEN',this.$route.qurey.token,this.readCookie('USERTOKEN'));
+	 		this.$store.dispatch('recordToken',this.$route.query.token);
 		 } else {
 			this.$store.dispatch('recordToken',this.readCookie('USERTOKEN'));
-			console.warn('cookie-USERTOKEN',this.readCookie('USERTOKEN'));
 		 }
 		},
 		readCookie(name) {
@@ -287,24 +286,33 @@ export default {
 		},
 		// 获取用户地理位置
 		async getlocalation() {
+			
 			var options={enableHighAccuracy:true, maximumAge:1000 }
       if(navigator.geolocation){
-      await navigator.geolocation.getCurrentPosition(this.onSuccess,this.onError,options);  //浏览器支持geolocation\
+
+       await navigator.geolocation.getCurrentPosition(this.onSuccess,this.onError,options);  //浏览器支持geolocation\
+
+      
       }else{
         alert('您的浏览器不支持地理位置定位');  //浏览器不支持geolocation
       }
 		},
     onSuccess(position){
-    	this.searchStoreKey.lng = position.coords.longitude;  //返回用户位置  //经度
-      this.searchStoreKey.lat = position.coords.latitude;   //纬度
+    	console.warn('position',position);
+    	let latData =  position.coords.latitude ? position.coords.latitude : '';
+    	let lngData =  position.coords.longitude ? position.coords.longitude : '';
+    	this.searchStoreKey.lng = lngData;  //返回用户位置  //经度
+      this.searchStoreKey.lat = latData;   //纬度
+      let userLocal = {lat: latData, lng: lngData};
+      this.loading = true;
       this.reloadNearbyStore();
-      let userLocal = {lat: position.coords.latitude, lng: position.coords.longitude};
-      this.$store.dispatch('recordUserLocal', userLocal);
+     	this.$store.dispatch('recordUserLocal', userLocal);
       return 
        // 根据经纬度获取地理位置，不太准确，获取城市区域还是可以的
        // alert('经度'+this.searchStoreKey.lng +'，纬度'+this.searchStoreKey.lat); 
     },
  		onError(error){
+ 			this.loading = true;
  			this.reloadNearbyStore();
  			return
       // switch(error.code){
