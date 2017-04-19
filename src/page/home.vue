@@ -210,7 +210,7 @@ export default {
 			console.warn(tokenData.Data);*/
 		init() {
 		 if (this.$route.query.token) {
-	 		this.token = this.$route.qurey.token;
+	 		this.token = this.$route.query.token;
 	 		this.$store.dispatch('recordToken',this.$route.qurey.token);
 	 		console.warn('cookie-USERTOKEN',this.$route.qurey.token,this.readCookie('USERTOKEN'));
 		 } else {
