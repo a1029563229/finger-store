@@ -86,7 +86,7 @@
 		<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关商品 </div>
 		<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
 		</section>
-		<navigation></navigation>
+		<navigation :about="true"></navigation>
 	</div>
 </template>
 <script>
