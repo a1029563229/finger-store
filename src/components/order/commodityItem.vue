@@ -1,6 +1,6 @@
 <template>
 	<ul class="ct">
-		<li class="list-wrap" v-for="(item,index) in listData">
+		<li class="list-wrap" v-for="(item,index) in listData" @click.stop="test">
       <div class="list-title">
         <i class="title-icon"></i>
         <span class="title-text">订单状态</span>
@@ -164,7 +164,11 @@
               alert(res.data.Message)
             }
           })
+      },
+      test(){
+          console.log(111)
       }
+
     },
     created(){
       this.getOrder()

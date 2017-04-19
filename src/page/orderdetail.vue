@@ -75,7 +75,7 @@ import headerTop from '@/components/common/headerTop'
 import commodityItem from '@/components/order/commodityItem'
 import { appkey, token, GainZZDOrderDetail } from '../config/env'
 export default {
-	name: 'order-detail',
+	name: 'orderdetail',
 	data() {
 		return {
       orderDetail: ''
