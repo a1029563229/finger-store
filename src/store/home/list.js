@@ -13,7 +13,8 @@ export const list = {
     isfromMyorder:false,
     selectIdx: 0,
     listDetail:[],
-    expressno: ''
+    expressno: '',
+    orderno:''
   },
   mutations: {
     switchTab(state,params){

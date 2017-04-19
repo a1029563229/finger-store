@@ -1,6 +1,7 @@
 <template>
 	<ul class="ct">
-		<li class="list-wrap" v-for="(item,index) in listData" @click.stop="test">
+		<li class="list-wrap" v-for="(item,index) in listData">
+      <div class="toDetai" :data-orderNo="item.orderNo" @click="toDetail($event.target)"></div>
       <div class="list-title">
         <i class="title-icon"></i>
         <span class="title-text">订单状态</span>
@@ -165,8 +166,11 @@
             }
           })
       },
-      test(){
-          console.log(111)
+      toDetail(el){
+        let orderNo = el.getAttribute('data-orderNo')
+        this.$store.state.list.orderno = orderNo
+        this.$router.push('/orderdetail')
+        console.log(orderNo)
       }
 
     },
@@ -178,7 +182,13 @@
 	}
 </script>
 <style scoped>
-
+  .toDetai{
+    border: 1px solid;
+    position: absolute;
+    width: 100%;
+    height: 2.7rem;
+    top: 1rem;
+  }
   .ct{
     position: relative;
   }

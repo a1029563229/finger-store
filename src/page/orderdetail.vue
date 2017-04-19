@@ -89,12 +89,17 @@ export default {
   mounted(){
     this.getOrderDetail()
   },
+  computed:{
+    orderno(){
+        return this.$store.state.list.orderno
+    }
+  },
   methods:{
     getOrderDetail(){
       let obj ={
         appkey: appkey,
         token: token,
-        orderNo: 'B201704178443161'
+        orderNo: this.orderno
       }
       console.log(obj)
       this.$http.post(GainZZDOrderDetail, this.$qs.stringify(obj))
