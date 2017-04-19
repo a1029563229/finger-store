@@ -3,13 +3,13 @@
     <header-top title="我的收藏"></header-top>
     <li class="item">
       <div class="img">
-        <img src="item.StoreLogo" >
+        <img :src="collectData.StoreLogo" >
       </div>
       <div class="desc">
-        <h1 class="ellipsis"> item.StoreName </h1>
+        <h1 class="ellipsis"> {{collectData.StoreName}} </h1>
         <p class="desc-item">
-          <span>月销量&nbsp; item.SellCount </span>
-          <span class="item-distance">&lt;&nbsp; item.1 km</span>
+          <span>月销量&nbsp; {{collectData.SellCount}} </span>
+          <span class="item-distance">&lt;&nbsp;{{collectData.Distanct}} km</span>
         </p>
         <button class="btn">到这里</button>
       </div>
@@ -19,6 +19,7 @@
 
 <script>
   import headerTop from '@/components/common/headerTop'
+  import {appkey,token,GetCollectSotres} from '../config/env'
   export default{
     name: 'collect',
     data(){
@@ -26,7 +27,8 @@
         searchStoreKey:{
           lng: '',
           lat: ''
-        }
+        },
+        collectData: ''
       }
     },
     components:{
@@ -58,9 +60,16 @@
           pageIndex: 1,
           pageSize: 10
         }
-        this.searchStoreKey.lng = position.coords.longitude;  //返回用户位置  //经度
-        this.searchStoreKey.lat = position.coords.latitude;   //纬度
-         alert('经度'+this.searchStoreKey.lng +'，纬度'+this.searchStoreKey.lat);   //根据经纬度获取地理位置，不太准确，获取城市区域还是可以的
+        console.log(obj)
+        this.$http.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        this.$http.post(GetCollectSotres, this.$qs.stringify(obj))
+          .then( res =>{
+              if( res.data.ResultCode === 1000 ){
+                  this.collectData = res.data.Data
+              }else {
+                  alert(res.data.Message)
+              }
+          })
       },
       onError(error){
         switch (error.code) {
