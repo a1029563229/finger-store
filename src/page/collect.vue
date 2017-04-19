@@ -32,6 +32,9 @@
     components:{
       headerTop
     },
+    mounted(){
+      this.getlocalation()
+    },
     methods: {
       // 获取用户地理位置
       getlocalation() {
@@ -46,6 +49,15 @@
         }
       },
       onSuccess(position){
+        console.log(position)
+        let obj = {
+          token: token,
+          appkey: appkey,
+          lat: position.coords.longitude,
+          lng: position.coords.latitude,
+          pageIndex: 1,
+          pageSize: 10
+        }
         this.searchStoreKey.lng = position.coords.longitude;  //返回用户位置  //经度
         this.searchStoreKey.lat = position.coords.latitude;   //纬度
          alert('经度'+this.searchStoreKey.lng +'，纬度'+this.searchStoreKey.lat);   //根据经纬度获取地理位置，不太准确，获取城市区域还是可以的
@@ -60,7 +72,7 @@
       }
     },
     created(){
-        this.getlocalation()
+        console.log(777777)
     }
   }
 
