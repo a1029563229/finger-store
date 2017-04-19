@@ -6,81 +6,158 @@
 			我的订单
 			<div class="myall-right" @click="toMyorder">
 				<span>全部订单</span>
-				<i class="arrow-right"></i>
+				<i class="myall-arrow-right"></i>
 			</div>
 		</div>
-		<order-choice></order-choice>
-		<order-list></order-list>
+		<ul class="order-choice">
+			<li class="choice-item" v-for="(item,index) in tablist" @click="selected(index)">
+	      <img :src="item.url" alt="">
+				<span>{{item.name}}</span>
+			</li>
+		</ul>
+		<ul class="order-list">
+			<li class="order-item" @click="toCollect">
+				<i class="item-icon"></i>
+				我的收藏
+				<div class="item-btn">
+					查看收藏
+					<i class="arrow-right"></i>
+				</div>
+			</li>
+		</ul>
 	</div>
 </template>
 <script>
 import headerTop from '@/components/common/headerTop'
-import orderChoice from '@/components/order/orderChoice'
-import orderList from '@/components/order/orderList'
 export default {
 	name: 'order',
 	components: {
 		headerTop,
-		orderChoice,
-		orderList,
+	},
+	data() {
+		return {
+			tablist: [
+          { name: '待付款', url: 'static/img/my_buy_toptabs_waitpay@2x.png' },
+          { name: '待发货', url: 'static/img/my_buy_waitsend@2x.png' },
+          { name: '待收货', url: 'static/img/my_buy_toptabs_waittake@2x.png' },
+          { name: '已完成', url: 'static/img/my_buy_toptabs_completed@2x.png' },
+          { name: '退款',  url: 'static/img/my_buy_toptabs_return@2x.png'}
+        ]
+		}
 	},
 	methods: {
 		toMyorder() {
 			this.$router.push('myorder');
-		}
+		},
+		selected(index) {
+      this.$store.dispatch('setTabIndex',index)
+		},
+		toCollect(){
+      this.$router.push('collect');
+    }
 	}
 }
 </script>
 <style scoped>
 	
-	.order {
-		padding-top: 1.28rem;
-		background-color: #F5F5F5;
-	}
+.order {
+	padding-top: 1.28rem;
+	background-color: #F5F5F5;
+}
 
-	/* .order-title {
-		width: 100%;
-		height: 1.28rem;
-		line-height: 1.28rem;
-		font-size: 0.45rem;
-		color: #FFF;
-		background: #E52A52;
-		border-bottom: 1px solid #EEE;
-		text-align: center;
-	}
-	 */
-	.order-myall {
-		position: relative;
-		width: 100%;
-		height: 1.0rem;
-		line-height: 1.0rem;
-		padding: 0 3%;
-		border-bottom: 1px solid #EEE;
-		overflow: hidden;
-		background-color: #FFF;
+/* 栏目 - 我的订单 */
+.order-myall {
+	position: relative;
+	width: 100%;
+	height: 1.0rem;
+	line-height: 1.0rem;
+	padding: 0 3%;
+	border-bottom: 1px solid #EEE;
+	overflow: hidden;
+	background-color: #FFF;
+}
+.myall-icon {
+	float: left;
+	display: block;
+	width: 1rem;
+	height: 1rem;
+	background: url('../assets/icon/common_collection_press@2x.png') no-repeat center;
+	background-size: 0.48rem;
+}
+.myall-right {
+	float: right;
+	color: #999;
+}
+.myall-arrow-right {
+	float: right;
+	display: block;
+	width: 1rem;
+	height: 1rem;
+	background: url('../assets/icon/arrow-right.png') no-repeat center;
+	background-size: 0.4rem;
+	opacity: 0.6;
+}
 
-	}
+/* 栏 - tablist */
+.order-choice {
+	width: 100%;
+	height: 1.8rem;
+	border-bottom: 1px solid #EEE;
+	background-color: #FFF;
+}
+.choice-item {
+  float: left;
+  width: 20%;
+  height: 100%;
+  font-size: 0.35rem;
+  line-height: 0.65rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.choice-item>img{
+  width: 1rem
+}
 
-	.myall-icon {
-		float: left;
-		display: block;
-		width: 1rem;
-		height: 1rem;
-		background: url('../assets/icon/common_collection_press@2x.png') no-repeat center;
-		background-size: 0.48rem;
-	}
+/* order-list */
+.order-list {
+	margin-top: 0.28rem;
+	border-top: 1px solid #EEE;
+}
+.order-item {
+	width: 100%;
+	height: 1.36rem;
+	line-height: 1.36rem;
+	border-bottom: 1px solid #EEE;
+	background-color: #FFF;
+	padding: 0 2%;
+	font-size: 0.4rem;
+}
+.item-icon {
+	float: left;
+	margin-right: 0.1rem;
+	width: 0.9rem;
+	height: 100%;
+	background: url('../assets/icon/common_collection_press@2x.png') no-repeat center;
+	background-size: 0.56rem;
+}
+.item-btn {
+	float: right;
+	color: #999;
+	font-size: 0.35rem;
+}
+.arrow-right {
+	float: right;
+	margin-left: 0.3rem;
+	display: block;
+	width: 0.6rem;
+	height: 1.36rem;
+	background: url('../assets/icon/arrow-right.png') no-repeat center;
+	background-size: 0.4rem;
+	opacity: 0.6;
+}
 
-	.myall-right {
-		float: right;
-		color: #999;
-	}
-	.arrow-right {
-		float: right;
-		display: block;
-		width: 1rem;
-		height: 1rem;
-		background: url('../assets/icon/arrow-right.png') no-repeat center;
-		background-size: 0.4rem;
-		opacity: 0.6;
-	}
+
 </style>

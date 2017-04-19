@@ -298,7 +298,6 @@ export default {
       }
 		},
     onSuccess(position){
-    	console.warn('position',position);
     	let latData =  position.coords.latitude ? position.coords.latitude : '';
     	let lngData =  position.coords.longitude ? position.coords.longitude : '';
     	this.searchStoreKey.lng = lngData;  //返回用户位置  //经度
