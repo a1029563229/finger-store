@@ -1,15 +1,15 @@
 <template>
   <div id="shopDes">
-    <transition   name="slide-fade">
+    <!-- <transition   name="slide-fade">
       <baidu-map :center="{lng: 116.404, lat: 39.915}" :zoom="16" class="mapView" v-show="mapFlag">
         <bm-label content="" :position="position"  title="Hover me"/>
       </baidu-map>
-    </transition >
+    </transition > -->
     <header-top title="店铺描述"></header-top>
-    <div class="mapHideIcon" v-show="mapFlag">
-      <i @click="mapHide"><</i>
-    </div>
-      <div class="shopbar">
+       <!--  <div class="mapHideIcon" v-show="mapFlag">
+         <i @click="mapHide"><</i>
+       </div> -->
+      <!-- <div class="shopbar">
         <img src="">
         <span class="shop-name">{{totalInfo.Name}}</span>
         <div class="shopBarRight">
@@ -22,7 +22,25 @@
             <span>收藏</span>
           </div>
         </div>
-      </div>
+      </div> -->
+      <section class="store-info">
+        <div class="info-img">
+          <img :src="storeInfo.logo">
+        </div>
+        <h1 class="info-name ellipsis">{{ storeInfo.name }}</h1>
+        <ul class="info-btn">
+          <li @click="toPraise">
+            <i class="btn-praise" :class="{active: isLike}"></i>
+            点赞
+          </li>
+          <li @click="toCollect">
+            <i class="btn-collect" :class="{active: isCollect}"></i>
+            收藏
+          </li>
+        </ul>
+      </section>
+
+
     <div class="sellerPanel">
       <div class="sellerPanelHead">
         <img src="static/img/shop_description_introduce.png">
@@ -45,182 +63,189 @@
         <span class="sellerinfoText">9:00-21:00</span>
       </li>
       <li class="sellerinfoItem">
-        <span>店铺名称:</span>
+        <span>客服电话:</span>
         <span class="sellerinfoText">{{totalInfo.Name}}</span>
       </li>
     </div>
     <div class="qrCode">
-      <img :src="qrCode"><br/>
+      <img :src="qrcodeImg"><br/>
       <span>店铺二维码手机扫一扫</span>
     </div>
   </div>
 </template>
 
 <script>
-  import headerTop from '@/components/common/headerTop'
-  import { GetStoreTotalInfo, GetStoreQrCode ,appkey,token,GetContractStoreInfo,AddStoreSuperb,AddStoreCollect} from '../config/env'
+import headerTop from '@/components/common/headerTop'
+import { mapState } from 'vuex'
+import { getStoreQrcode } from '@/service/getData'
+import { GetStoreTotalInfo, GetStoreQrCode ,appkey,token,GetContractStoreInfo,AddStoreSuperb,AddStoreCollect} from '../config/env'
 
-  export default{
-    name: 'shopdes',
-    data(){
-      return {
-        qrCode: '',
-        totalInfo:'',
-        qrCode: '',
-        zanImg: 'static/img/common_like_press@2x.png',
-        collectImg: 'static/img/common_collection_press@2x.png',
-        position: {
-                    lng: 116.404,
-                    lat: 39.915
-        },
-        mapFlag: false
+export default{
+  name: 'shopdes',
+  data(){
+    return {
+      qrCode: '',
+      totalInfo:'',
+      qrCode: '',
+      zanImg: 'static/img/common_like_press@2x.png',
+      collectImg: 'static/img/common_collection_press@2x.png',
+      mapFlag: false,
+      qrcodeImg: '',
+    }
+  },
+  components: {
+    headerTop,
+  },
+  computed: {
+    ...mapState({
+      storeInfo: state => state.home.storeInfo,
+      userLocal: state => state.home.userLocal,
+      token: state => state.home.token
+    })
+
+  },
+  created() {
+    this.getQrcodeData();
+  },
+  mounted(){
+    this.init()
+  },
+  methods: {
+    init: async function(){
+
+      await this.getshopInfo()
+
+      await this.getSoreInfo()
+
+      // await this.getQrcode()
+    },
+    showMap(){
+      let local = {
+        storename: this.storeInfo.name,
+        userlat: this.userLocal.lat,
+        userlng: this.userLocal.lng,
+        storelat: this.storeInfo.lat, 
+        storelng: this.storeInfo.lng
+      };
+      this.$store.dispatch('recordStoreLocal', local);
+      this.$router.push({path: "map"});
+    },
+    async getQrcodeData() {
+      // let qrcodeData = await getStoreQrcode(this.token);
+      this.qrcodeImg = await getStoreQrcode(this.token);
+        // this.qrcodeImg = this.qrcodeData;
+    },
+
+
+    zan(ev){
+      let obj = {
+        appkey: appkey,
+        token: this.token,
+        storeId: this.storeInfo.id
       }
-    },
-    components: {
-      headerTop,
-    },
-    computed: {
-      position(){
-        return this.position = {
-          lng: 116.404,
-          lat: 39.915
-        }
-      }
-
-    },
-    mounted(){
-      this.init()
-    },
-    methods: {
-      init: async function(){
-
-        await this.getshopInfo()
-
-        await this.getSoreInfo()
-
-        await this.getQrcode()
-      },
-      showMap(){
-        this.mapFlag = true
-      },
-      mapHide(){
-        this.mapFlag = false
-      },
-
-
-      zan(ev){
-        let obj = {
-          appkey: appkey,
-          token: token
-        }
-        this.$http.post(AddStoreSuperb, this.$qs.stringify(obj))
-          .then( res =>{
-            if(res.data.ResultCode != 1000){
-              alert(res.data.Message)
-            } else {
-              console.log(ev.src = '22')
-            }
-          })
-      },
-      collect(ev){
-        let obj = {
-          appkey: appkey,
-          token: token
-        }
-        this.$http.post(AddStoreCollect,this.$qs.stringify(obj))
-          .then( res =>{
-            if(res.data.ResultCode != 1000){
-              alert(res.data.Message)
-            } else {
-              console.log(ev.src = '22')
-            }
-          })
-      },
-      getSoreInfo(){
-        return new Promise( (resolve, reject) =>{
-          let obj = {
-            appkey: appkey,
-            token: token
+      this.$http.post(AddStoreSuperb, this.$qs.stringify(obj))
+        .then( res =>{
+          if(res.data.ResultCode != 1000){
+            alert(res.data.Message)
+          } else {
+            console.log(ev.src = '22')
           }
-          console.log(obj)
-          this.$http.post(GetContractStoreInfo, this.$qs.stringify(obj))
-            .then( res =>{
-              console.log(res.data.Data)
-              this.totalInfo = res.data.Data
-              resolve()
-            })
         })
-      },
-
-      getQrcode(){
-        return new Promise( (resolve, reject) =>{
-          let obj = {
-            appkey: appkey,
-            token: token
+    },
+    collect(ev){
+      let obj = {
+        appkey: appkey,
+        token: this.token
+      }
+      this.$http.post(AddStoreCollect,this.$qs.stringify(obj))
+        .then( res =>{
+          if(res.data.ResultCode != 1000){
+            alert(res.data.Message)
+          } else {
+            console.log(ev.src = '22')
           }
-          this.$http.post(GetStoreQrCode, this.$qs.stringify(obj))
-            .then( res =>{
+        })
+    },
+    getSoreInfo(){
+      return new Promise( (resolve, reject) =>{
+        let obj = {
+          appkey: appkey,
+          token: token
+        }
+        console.log(obj)
+        this.$http.post(GetContractStoreInfo, this.$qs.stringify(obj))
+          .then( res =>{
+            console.log(res.data.Data)
+            this.totalInfo = res.data.Data
+            resolve()
+          })
+      })
+    },
 
-              console.log(res)
+   /* getQrcode(){
+      return new Promise( (resolve, reject) =>{
+        let obj = {
+          appkey: appkey,
+          token: token
+        }
+
+        this.$http.post(GetStoreQrCode, this.$qs.stringify(obj))
+          .then( res =>{
+
+            console.log(res)
 
 //              console.log(res.data)
-              this.qrCode = res.data
-              resolve()
-            })
-        })
-      },
-      getshopInfo(){
-          return new Promise( (resolve,reject) =>{
-            let obj = {
-              appkey: appkey,
-              token: token
-            }
-            this.$http.post(GetContractStoreInfo,this.$qs.stringify(obj))
-              .then( res =>{
-                this.totalInfo = res.data.Data
-                resolve()
-              })
+            this.qrCode = res.data
+            resolve()
           })
+      })
+    },*/
+    getshopInfo(){
+      return new Promise( (resolve,reject) =>{
+        let obj = {
+          appkey: appkey,
+          token: token
+        }
+        this.$http.post(GetContractStoreInfo,this.$qs.stringify(obj))
+          .then( res =>{
+            this.totalInfo = res.data.Data
+            resolve()
+          })
+      })
 
-      },
-      collect(el){
-        let obj={
-          appkey: appkey,
-          token: token
-        }
-        this.$http.post(AddStoreSuperb,this.$qs.stringify(obj))
-          .then( res =>{
-            if( res.data.ResultCode == 1000 ){
-                alert(res.data.Message)
-            }else {
-               alert(res.data.Message)
-            }
-          })
-      },
-      zan(el){
-        let obj={
-          appkey: appkey,
-          token: token
-        }
-        this.$http.post(AddStoreCollect,this.$qs.stringify(obj))
-          .then( res =>{
-            if( res.data.ResultCode == 1000 ){
-                console.log(res)
-              alert(res.data.Message)
-            }else {
-              alert(res.data.Message)
-            }
-          })
+    },
+    collect(el){
+      let obj={
+        appkey: appkey,
+        token: token
       }
+      this.$http.post(AddStoreSuperb,this.$qs.stringify(obj))
+        .then( res =>{
+          if( res.data.ResultCode == 1000 ){
+              alert(res.data.Message)
+          }else {
+             alert(res.data.Message)
+          }
+        })
     },
-    created(){
-
-    },
-    watch:{
-
+    zan(el) {
+      let obj={
+        appkey: appkey,
+        token: token
+      }
+      this.$http.post(AddStoreCollect,this.$qs.stringify(obj))
+        .then( res =>{
+          if( res.data.ResultCode == 1000 ){
+              console.log(res)
+            alert(res.data.Message)
+          }else {
+            alert(res.data.Message)
+          }
+        })
     }
-
   }
+
+}
 
 
 </script>
@@ -253,6 +278,7 @@
     width: 100%;
     height: 100%;
     position: relative;
+    padding-top: 1.28rem;
   }
   .shopbar{
     width: 100%;
@@ -358,5 +384,87 @@
     transform: translateX(10px);
     opacity: 0;
   }
+
+  /* store info */
+
+.store-info {
+  width: 100%;
+  height: 1.6rem;
+  border-bottom: 1px solid #EEE;
+  overflow: hidden;
+  background-color: #FFF;
+}
+
+.info-img {
+  float: left;
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.05rem;
+  margin: 0.3rem 0.3rem 0.3rem 0.4rem;
+}
+.info-img img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0.05rem;
+  max-width: 100%;
+}
+
+.info-name {
+  float: left;
+  line-height: 1.6rem;
+  font-size: 0.45rem;
+  font-weight: 600;
+  color: #222;
+  max-width: 50%;
+}
+
+.info-btn {
+  height: 100%;
+  float: right;
+  margin-right: 2%;
+}
+
+.info-btn li {
+  float: left;
+  width: 1.4rem;
+  height: 100%;
+  text-align: center;
+  font-size: 0.35rem;
+  padding: 0.15rem 0.3rem 0;
+}
+.info-btn li i {
+  display: block;
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-bottom: 0.05rem;
+  transition: background 0.3s;
+}
+
+.btn-praise  {
+  background: url('../assets/icon/common_like_nor@2x.png') center no-repeat;
+  background-size: 0.7rem;
+}
+.btn-praise.active {
+  background-image: url('../assets/icon/common_like_press@2x.png');
+  animation: tipMove 0.3s;
+}
+.btn-collect  {
+  background: url('../assets/icon/common_collection_nor@2x.png') center no-repeat;
+  background-size: 0.7rem;
+}
+.btn-collect.active  {
+  background-image: url('../assets/icon/common_collection_press@2x.png');
+  animation: tipMove 0.3s;
+}
+
+@keyframes tipMove{
+   0%   { background-size: 0.7rem }
+   35%  { background-size: 1rem }
+   70%  { background-size: 0.8rem  }
+   100% { background-size: 0.7rem }
+}
+/* store info end */
 
 </style>

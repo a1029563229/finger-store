@@ -67,7 +67,7 @@
 				<div class="mask" v-show="isMask" @click="isSortList = isClassify = isMask = false;"></div>
 
 				<ul class="nearby-list">
-					<li v-for="item in nearbyListData" class="nearby-item" :key="item.StoreID" @click="toStore(item.StoreName,item.StoreID,item.StoreLogo)">
+					<li v-for="item in nearbyListData" class="nearby-item" :key="item.StoreID" @click.stop="toStore(item.StoreName,item.StoreID,item.StoreLogo, item.CoordsX, item.CoordsY)">
 						<div class="img">
 							<img :src="item.StoreLogo">
 						</div>
@@ -171,15 +171,6 @@ export default {
 		...mapState([
 			'token', 'userLocal'
 			]),
-		location(name,storelng,storelat) {
-			return {
-				storename: name,
-				userlat: this.searchStoreKey.lat,
-				userlng: this.searchStoreKey.lng,
-				storelat: storelat, 
-				storelng: storelng, 
-			}
-		},
 		colorList() {
 			return this.dataAttr[0]
 		},
@@ -324,11 +315,13 @@ export default {
     	// },
   	},
   	// 跳转到 店铺列表页
-  	toStore(name, id, img) {
+  	toStore(name, id, img, lat, lng) {
 			let params = {
 				name: name,
 				id: id,
-				logo: img
+				logo: img,
+				lat: lat,
+				lng: lng,
 			};
 			this.$store.dispatch('recordStoreInfo',params);
 			this.$router.push({ path:'/shop' });
@@ -343,7 +336,7 @@ export default {
 				storelng: storelng, 
   		};
   		this.$store.dispatch('recordStoreLocal', local);
-  		this.$router.push({path:'map', query:{name:name,lat:location.lat,lng:location.lng}});
+  		this.$router.push({path:'map'});
   	},
   	// 切换筛选
 		choose(index) {
