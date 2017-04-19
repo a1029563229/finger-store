@@ -1,19 +1,20 @@
 <template>
   <div class="myCollect">
     <header-top title="我的收藏"></header-top>
-    <li class="item">
+    <li class="item" v-for="(item,index) in collectData" v-show="collectData.length >0">
       <div class="img">
-        <img :src="collectData.StoreLogo" >
+        <img :src="item.StoreLogo" >
       </div>
       <div class="desc">
-        <h1 class="ellipsis"> {{collectData.StoreName}} </h1>
+        <h1 class="ellipsis"> {{item.StoreName}} </h1>
         <p class="desc-item">
-          <span>月销量&nbsp; {{collectData.SellCount}} </span>
-          <span class="item-distance">&lt;&nbsp;{{collectData.Distanct}} km</span>
+          <span>月销量&nbsp; {{item.SellCount}} </span>
+          <span class="item-distance">&lt;&nbsp;{{item.Distanct}} km</span>
         </p>
-        <button class="btn" @click="toMap()">到这里</button>
+        <button class="btn"  :data-lng="item.lng" :data-lat="item.lat" :data-storename="item.StoreName " @click="toMap($event.target)">到这里</button>
       </div>
     </li>
+    <span class="noTip" v-show="collectData.length == 0">没有收藏</span>
   </div>
 </template>
 
@@ -47,8 +48,8 @@
         }
       },
       onSuccess(position){
-        this.$store.state.home.storeLocal.lat = position.coords.longitude
-        this.$store.state.home.storeLocal.lng = position.coords.latitude
+        this.$store.state.home.storeLocal.userlat = position.coords.longitude
+        this.$store.state.home.storeLocal.userlng = position.coords.latitude
 
         console.log(position)
         let obj = {
@@ -65,7 +66,7 @@
           .then( res =>{
               if( res.data.ResultCode === 1000 ){
                   this.collectData = res.data.Data
-                  this.$store.state.home.storeLocal.storename = res.data.Data.StoreName
+
               }else {
                   alert(res.data.Message)
               }
@@ -92,12 +93,18 @@
                break;
         }
       },
-      toMap(){
-          this.$router.push('/map')
+      toMap(el){
+        let lng = el.getAttribute('data-lng')
+        let lat = el.getAttribute('data-lat')
+        let storename = el.getAttribute('data-storename')
+        this.$store.state.home.storeLocal.storelng = lng
+        this.$store.state.home.storeLocal.storelat = lat
+        this.$store.state.home.storeLocal.storename = storename
+        this.$router.push('/map')
       }
     },
     created(){
-        console.log(777777)
+
     }
   }
 
@@ -105,6 +112,15 @@
 
 
 <style scoped>
+  .noTip{
+    margin-top: 23%;
+    position: absolute;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    font-size: 0.45rem;
+    color: #c1c1c1;
+  }
   .btn{
     line-height: 0.8rem;
     width: 43%;

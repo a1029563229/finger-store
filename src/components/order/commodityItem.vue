@@ -115,6 +115,7 @@
         if( this.$store.state.list.isfromMyorder ){
             return
         }
+        this.$http.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
         this.$http.post(GainZZDOrderList, this.$qs.stringify(obj))
           .then( res =>{
           console.log(res.data.Data)
@@ -150,7 +151,7 @@
       refund(el){
         let orderNo = el.getAttribute('data-orderNo')
         let mobile = el.getAttribute('data-phone')-0
-        let data = {orderNo:orderNo, mobile:mobile}
+        let data = {orderNo:orderNo, mobile:mobile,goodsPic:'|',city:0}
         let obj = {
           appkey:appkey,
           token:token,

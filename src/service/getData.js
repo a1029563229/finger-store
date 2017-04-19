@@ -17,15 +17,15 @@
 // axios 全局配置
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.baseURL = baseUrl;
-axios.defaults.transformRequest = [function(data) {
-    // Do whatever you want to transform the data
-    let ret = ''
-    for (let it in data) {
-    	ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-    }
-    // console.log('param:', ret);
-    return ret
-  }];
+// axios.defaults.transformRequest = [function(data) {
+//     // Do whatever you want to transform the data
+//     let ret = ''
+//     for (let it in data) {
+//     	ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+//     }
+//     // console.log('param:', ret);
+//     return ret
+//   }];
 
 // 公共接口
 const service = '/api/1.0/YupinhuiServer/ZZDHandle';
@@ -90,7 +90,7 @@ var searchStoreList = (store) => axios({
     data: {
         ...store
     }
-  });  
+  });
  // var searchStoreList = (store) => setPromise(nearbyList);
 
 // 获取热门搜索关键字
@@ -179,25 +179,25 @@ var getStoreQrcode = (token) => axios({
 
 
 // 响应拦截
-axios.interceptors.response.use(function(response) {
-    // 处理响应数据
-    if (response.status === 200) {
-    	if (response.data.ResultCode === 1000) {
-    		// console.info(response.data);
-    		return response.data;
-    	} else if (response.data.ResultCode === 1009) {
-    		console.warn('token失效，重新登录');
-    	} else {
-    		console.warn(response.data.ResultCode);
-    	}
-    } else {
-    	console.warn('网络连接错误，请重试');
-    }
-
-  }, function(error) {
-    // 处理响应失败
-    return Promise.reject(error);
-  });
+// axios.interceptors.response.use(function(response) {
+//     // 处理响应数据
+//     if (response.status === 200) {
+//     	if (response.data.ResultCode === 1000) {
+//     		// console.info(response.data);
+//     		return response.data;
+//     	} else if (response.data.ResultCode === 1009) {
+//     		console.warn('token失效，重新登录');
+//     	} else {
+//     		console.warn(response.data.ResultCode);
+//     	}
+//     } else {
+//     	console.warn('网络连接错误，请重试');
+//     }
+//
+//   }, function(error) {
+//     // 处理响应失败
+//     return Promise.reject(error);
+//   });
 
 
 

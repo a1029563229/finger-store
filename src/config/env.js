@@ -16,21 +16,22 @@
 // }
 
 import *as Home from '../store/home/home'
-let token;
-if( !!Home.home.state.token){
-     token = Home.home.state.token
-}else {
-  if(document.cookie.split(';')[3].substring(11) === 'null'){
-    console.log('无效token')
-  }else {
-    token = document.cookie.split(';')[3].substring(11)
-  }
+// let token;
+// if( !!Home.home.state.token){
+//      token = Home.home.state.token
+// }else {
+//   if(document.cookie.split(';')[3].substring(11) === 'null'){
+//     console.log('无效token')
+//   }else {
+//     token = document.cookie.split(';')[3].substring(11)
+//   }
+//
+// }
+// export {
+//   token
+// }
 
-}
-export {
-  token
-}
-
+export const token = '8b52046e55a448298ead1022caf7a256'
 export const appkey = 100000029;
 
 
