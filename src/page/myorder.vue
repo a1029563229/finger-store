@@ -4,10 +4,12 @@
 		<order-tab></order-tab>
 		<order-item class="myorder-list"></order-item>
 		<navigation></navigation>
+    <pay-model v-show="showPay"></pay-model>
 	</div>
 </template>
 <script>
 import headerTop from '@/components/common/headerTop'
+import payModel from '@/components/common/payModel'
 import orderTab from '@/components/order/orderTab'
 import orderItem from '@/components/order/orderItem'
 import navigation from '@/components/common/navigation'
@@ -15,14 +17,15 @@ import navigation from '@/components/common/navigation'
 export default {
 	data() {
 		return {
-
+      showPay: false
 		}
 	},
 	components: {
 		headerTop,
 		orderTab,
 		orderItem,
-		navigation
+		navigation,
+    payModel
 	}
 }
 </script>

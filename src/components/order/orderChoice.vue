@@ -40,7 +40,6 @@
 		methods: {
 			selected(index) {
         this.$store.dispatch('setTabIndex',index)
-        router.replace({path:'/myOrder'})
 			}
 		}
 	}

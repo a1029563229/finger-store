@@ -34,7 +34,7 @@ export default {
 			};
 			this.$store.dispatch('recordStoreInfo',params);
 			this.$router.push({ path:'/store' });
-		} 
+		}
 	}
 }
 
@@ -90,6 +90,4 @@ export default {
 	border: 1px solid #E52951;
 	border-radius: 0.06rem;
 }
-
-
 </style>

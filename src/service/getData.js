@@ -2,7 +2,7 @@
  * Created by YangYusheng on 2017-04-10
  */
  import axios from 'axios'
- import { baseUrl, appkey, testUrl, GainOrderList } from '../config/env'
+ import { baseUrl, appkey, testUrl ,token} from '../config/env'
 
  import slides from './mock/home-swipe'
  import { nearbyList } from './mock/nearbyList'
@@ -162,6 +162,23 @@ var getStoreQrcode = (token) => axios({
 		token: token
 	}
 });
+
+// //用于店主获取订单列表
+// var GainZZDOrderList = (token) => axios({
+//   url: service + '/GainZZDOrderList',
+//   method: 'post',
+//   data:{
+//     appkey: appkey,
+//     token: token,
+//     pageindex: 1,
+//     pagesize: 10,
+//     orderStatus: 0
+//   }
+// })
+
+
+
+
 
 // 响应拦截
 axios.interceptors.response.use(function(response) {

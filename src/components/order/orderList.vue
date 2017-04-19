@@ -1,6 +1,6 @@
 <template>
 	<ul class="order-list">
-		<li class="order-item">
+		<li class="order-item" @click="toCollect">
 			<i class="item-icon"></i>
 			我的收藏
 			<div class="item-btn">
@@ -17,7 +17,12 @@
 			return {
 
 			}
-		}
+		},
+    methods:{
+      toCollect(){
+        this.$router.push('collect');
+      }
+    }
 	}
 </script>
 <style scoped>

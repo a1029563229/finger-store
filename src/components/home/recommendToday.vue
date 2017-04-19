@@ -37,7 +37,7 @@
     <!--1+1-->
     <div v-if="showType==1">
       <div class="recommend-one-one"  v-for="item in recomendData" @click="toDetail(item.link_url)">
-        )<img :src="item.img_url" >
+        <img :src="item.img_url" >
         <div class="recommend-one-right">
           <h1>{{item.sell_title}}</h1>
           <p>{{item.product_name}}</p>
@@ -199,7 +199,6 @@
       </div>
     </div>
 
-
   </div>
 </template>
 <script>
@@ -209,8 +208,7 @@
     name: 'recommend-today',
     props: ['showType', 'recomendData'],
     data(){
-      return {
-      }
+      return {}
     },
     mounted(){
     },
@@ -218,6 +216,12 @@
       toDetail(url) {
         window.location.href = url;
       }
+    },
+    mounted(){
+
+    },
+    methods:{
+
     },
     computed: {
 

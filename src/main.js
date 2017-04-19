@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import axios from 'axios'
+import qs from 'qs'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -16,7 +17,7 @@ Vue.use(BaiduMap, {
 	ak: 'x7weekL5BrZISrSgMl0swHR2jDxUiZYO'
 })
 Vue.prototype.$http = axios;
-
+Vue.prototype.$qs = qs;
 
 
 

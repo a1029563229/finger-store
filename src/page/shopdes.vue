@@ -11,14 +11,14 @@
     </div>
       <div class="shopbar">
         <img src="">
-        <span class="shop-name">totalInfo.Name</span>
+        <span class="shop-name">{{totalInfo.Name}}</span>
         <div class="shopBarRight">
           <div class="shopBarRightItem">
-            <img src="static/img/common_like_press@2x.png">
+            <img src="static/img/common_like_press@2x.png" @click="collect($event.target)">
             <span>点赞</span>
           </div>
-          <div class="shopBarRightItem">
-            <img src="static/img/common_collection_press@2x.png">
+          <div class="shopBarRightItem" >
+            <img src="static/img/common_collection_press@2x.png" @click="collect($event.target)">
             <span>收藏</span>
           </div>
         </div>
@@ -28,7 +28,7 @@
         <img src="static/img/shop_description_introduce.png">
         <span>卖家介绍</span>
       </div>
-      <div class="sellerCt">totalInfo.Desc</div>
+      <div class="sellerCt">{{totalInfo.Desc}}</div>
     </div>
     <div class="sellerPanel sellerInfo">
       <div class="sellerPanelHead">
@@ -37,7 +37,7 @@
       </div>
       <li class="sellerinfoItem">
         <span>商家地址:</span>
-        <span class="sellerinfoText">totalInfo.Address</span>
+        <span class="sellerinfoText">{{totalInfo.Address}}</span>
         <button class="goBtn" @click="showMap">到这里去</button>
       </li>
       <li class="sellerinfoItem">
@@ -46,11 +46,11 @@
       </li>
       <li class="sellerinfoItem">
         <span>店铺名称:</span>
-        <span class="sellerinfoText">郑州苹果手机买点</span>
+        <span class="sellerinfoText">{{totalInfo.Name}}</span>
       </li>
     </div>
     <div class="qrCode">
-      <img src="qrCode"><br/>
+      <img :src="qrCode"><br/>
       <span>店铺二维码手机扫一扫</span>
     </div>
   </div>
@@ -58,13 +58,15 @@
 
 <script>
   import headerTop from '@/components/common/headerTop'
-  import { GetStoreTotalInfo, GetStoreQrCode ,appkey,token} from '../config/env'
+  import { GetStoreTotalInfo, GetStoreQrCode ,appkey,token,GetContractStoreInfo,AddStoreSuperb,AddStoreCollect} from '../config/env'
 
   export default{
     name: 'shopdes',
     data(){
       return {
+        qrCode: '',
         totalInfo:'',
+        qrCode: '',
         zanImg: 'static/img/common_like_press@2x.png',
         collectImg: 'static/img/common_collection_press@2x.png',
         position: {
@@ -86,11 +88,17 @@
       }
 
     },
+    mounted(){
+      this.init()
+    },
     methods: {
       init: async function(){
-//        await this.getToken()
-//        await this.getTotalInfo()
-//        await this.getQrcode()
+
+        await this.getshopInfo()
+
+        await this.getSoreInfo()
+
+        await this.getQrcode()
       },
       showMap(){
         this.mapFlag = true
@@ -98,42 +106,115 @@
       mapHide(){
         this.mapFlag = false
       },
-//      getToken(){
-//        return new Promise( (resolve, reject) =>{
-//          let url = 'http://218.17.39.178:7092/api/1.0/YupinhuiServer/ZZDHandle/ZZDLogin'
-//          let obj = {
-//            mobilePhone: 13750025993,
-//            area: '郑州'
-//          }
-//          this.$http.post(url, obj)
-//            .then( res =>{
-//              if( res.data.ResultCode === 1000){
-//                this.token = res.data.Data
-//                console.log(this.token)
-//                resolve()
-//              }
-//            })
-//        })
-//      },
+
+
+      zan(ev){
+        let obj = {
+          appkey: appkey,
+          token: token
+        }
+        this.$http.post(AddStoreSuperb, this.$qs.stringify(obj))
+          .then( res =>{
+            if(res.data.ResultCode != 1000){
+              alert(res.data.Message)
+            } else {
+              console.log(ev.src = '22')
+            }
+          })
+      },
+      collect(ev){
+        let obj = {
+          appkey: appkey,
+          token: token
+        }
+        this.$http.post(AddStoreCollect,this.$qs.stringify(obj))
+          .then( res =>{
+            if(res.data.ResultCode != 1000){
+              alert(res.data.Message)
+            } else {
+              console.log(ev.src = '22')
+            }
+          })
+      },
+      getSoreInfo(){
+        return new Promise( (resolve, reject) =>{
+          let obj = {
+            appkey: appkey,
+            token: token
+          }
+          console.log(obj)
+          this.$http.post(GetContractStoreInfo, this.$qs.stringify(obj))
+            .then( res =>{
+              console.log(res.data.Data)
+              this.totalInfo = res.data.Data
+              resolve()
+            })
+        })
+      },
+
       getQrcode(){
         return new Promise( (resolve, reject) =>{
           let obj = {
-            appkey: 100000029,
+            appkey: appkey,
             token: token
           }
-          this.$http.post(GetStoreQrCode, obj)
+          this.$http.post(GetStoreQrCode, this.$qs.stringify(obj))
             .then( res =>{
-                if( res.data.ResultCode == 1000 ){
-                  this.qrCode = res.data
-                  resolve()
-                }
+
+              console.log(res)
+
+//              console.log(res.data)
+              this.qrCode = res.data
+              resolve()
             })
         })
-      }
+      },
+      getshopInfo(){
+          return new Promise( (resolve,reject) =>{
+            let obj = {
+              appkey: appkey,
+              token: token
+            }
+            this.$http.post(GetContractStoreInfo,this.$qs.stringify(obj))
+              .then( res =>{
+                this.totalInfo = res.data.Data
+                resolve()
+              })
+          })
 
+      },
+      collect(el){
+        let obj={
+          appkey: appkey,
+          token: token
+        }
+        this.$http.post(AddStoreSuperb,this.$qs.stringify(obj))
+          .then( res =>{
+            if( res.data.ResultCode == 1000 ){
+                alert(res.data.Message)
+            }else {
+               alert(res.data.Message)
+            }
+          })
+      },
+      zan(el){
+        let obj={
+          appkey: appkey,
+          token: token
+        }
+        this.$http.post(AddStoreCollect,this.$qs.stringify(obj))
+          .then( res =>{
+            if( res.data.ResultCode == 1000 ){
+                console.log(res)
+              alert(res.data.Message)
+            }else {
+              alert(res.data.Message)
+            }
+          })
+      }
     },
     created(){
-      this.init()
+
     },
     watch:{
 

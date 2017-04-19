@@ -3,58 +3,68 @@
 		<header-top title="订单详情"></header-top>
 		<section class="detail-head">
 			<i class="head-icon"></i>
-			卖家待发货
+			{{orderDetail.orderStatusName}}
 		</section>
 		<section class="detail-user">
 			<p class="clear user-phone">
 				<i class="user-icon"></i>
-				收货人：郝迎夏
+				收货人：{{orderDetail.customer.PayContactName}}
 				<span class="">
-					13877662222
+					{{orderDetail.customer.PayContactTel}}
 				</span>
 			</p>
 			<p class="clear user-detail">
 				<i class="local-icon"></i>
-				<!-- <span class="local-detail"> -->
-					地址：广东省深圳市南山区科技园北6号金融基地1栋8楼地址：广东省北6号金融广东省北6号金融基地1栋8楼地址：广东省
-				<!-- </span> -->
+					地址：{{orderDetail.customer.deliveryAddress}}
 			</p>
 		</section>
-		<commodity-item class="commodity-item"></commodity-item>
+    <section class="detail-order">
+      <div class="order-img">
+        <img :src="orderDetail.productList.productImage">
+      </div>
+      <div class="order-info">
+        <span>{{orderDetail.productList.productName}}</span>
+        <div class="order-bot">
+          <span class="order-price">¥{{orderDetail.productList.productPrice}}</span>
+          <span class="order-mount">x{{orderDetail.productList.quantity}}</span>
+        </div>
+      </div>
+    </section>
 		<section class="detail-price">
 			<p>
-				<i>运&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;费</i> 
-				<span>¥0.00</span>
+				<i>运&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;费</i>
+				<span>¥{{orderDetail.shippingRates}}</span>
 			</p>
 			<p>
-				<i>积分抵用</i> 
-				<span>¥0.00</span>
+				<i>积分抵用</i>
+				<span>¥{{orderDetail.ordersOffers}}</span>
 			</p>
 			<p>
-				<i>实  付  &nbsp;款</i> 
-				<span class="detail-price-num">¥789.00</span>
+				<i>实  付  &nbsp;款</i>
+				<span class="detail-price-num">¥{{orderDetail.totalPrice}}</span>
 			</p>
 		</section>
 		<section class="detail-info">
 			<p>
 				<i>订单编号</i>
-				<span>B2000923233434</span>
+				<span>{{orderDetail.orderNo}}</span>
 			</p>
-			<p>
-				<i>订单返利</i>
-				<span>B2000923233434</span>
-			</p>
+			<!--<p>-->
+				<!--<i>订单返利</i>-->
+				<!--<span>B2000923233434</span>-->
+			<!--</p>-->
 			<p>
 				<i>下单时间</i>
-				<span>2016/01/07  09:13:42</span>
+				<span>{{orderDetail.orderedTime}}</span>
 			</p>
 			<p>
 				<i>付款时间</i>
-				<span>B2000923233434</span>
+				<span>{{orderDetail.paymentTime}}</span>
 			</p>
 			<p>
 				<i>订单备注</i>
-				<span>2016/01/07  09:13:42</span>
+				<span v-show="orderDetail.producttype == 1">主商品</span>
+				<span v-show="orderDetail.producttype == 3">赠品</span>
 			</p>
 		</section>
 	</div>
@@ -63,18 +73,41 @@
 
 import headerTop from '@/components/common/headerTop'
 import commodityItem from '@/components/order/commodityItem'
-
+import { appkey, token, GainZZDOrderDetail } from '../config/env'
 export default {
 	name: 'order-detail',
 	data() {
 		return {
+      orderDetail: ''
 
 		}
 	},
 	components: {
 		headerTop,
 		commodityItem,
-	}
+	},
+  mounted(){
+    this.getOrderDetail()
+  },
+  methods:{
+    getOrderDetail(){
+      let obj ={
+        appkey: appkey,
+        token: token,
+        orderNo: 'B201704178443161'
+      }
+      console.log(obj)
+      this.$http.post(GainZZDOrderDetail, this.$qs.stringify(obj))
+        .then( res =>{
+        if( res.data.ResultCode === 1000 ){
+        console.log(res.data.Data)
+        this.$store.state.list.listDetail = res.data.Data
+        this.orderDetail = res.data.Data
+      }
+
+    })
+    }
+  }
 }
 </script>
 <style scoped>
@@ -194,6 +227,44 @@ export default {
 	color: #999;
 	margin-left: 2%;
 }
-
-
+.detail-order{
+  width: 100%;
+  height: 3rem;
+  background: #fff;
+  margin-top: 3%;
+  border-bottom: 1px solid #EEEEEE;
+  padding: 3%;
+}
+.order-img{
+  width: 30%;
+  height: 100%;
+  float: left;
+}
+.order-img>img{
+  width:100%;
+  height: 100%;
+}
+  .order-info{
+    width: 70%;
+    float: right;
+    height: 100%;
+    padding: 0 3%;
+    position: relative;
+  }
+  .order-bot{
+    position: absolute;
+    bottom: 0;
+    line-height: 1rem;
+    width: 90%;
+  }
+  .order-price{
+    color: #E84567;
+    font-size: 0.4rem;
+    font-weight:700;
+  }
+  .order-mount{
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
 </style>
