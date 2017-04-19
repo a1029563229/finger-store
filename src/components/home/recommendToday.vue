@@ -204,26 +204,24 @@
 <script>
   import {GetZZDTodayRecommed,appkey,token} from '../../config/env'
   import { getTodayRecommend } from '../../service/getData'
+  import { mapState } from 'vuex'
   export default {
     name: 'recommend-today',
     props: ['showType', 'recomendData'],
     data(){
       return {}
     },
-    mounted(){
+    computed: {
+      ...mapState({
+        token: state => state.home.token,
+      })
     },
     methods:{
       toDetail(url) {
-        window.location.href = url;
+        window.location.href = url + "&token=" + this.token;
       }
     },
     mounted(){
-
-    },
-    methods:{
-
-    },
-    computed: {
 
     },
   }

@@ -2,7 +2,7 @@
 	<div class="store">
 		<div class="search-bar">
 			<span class="searchBtnDefault btn-back" @click="toBack()"></span>
-			<input class="search-input" type="text" placeholder="请输入关键字" @click="toSearch"/>
+			<input class="search-input" type="text" v-model="searchKey" placeholder="请输入关键字" @click="toSearch"/>
 			<span class="searchBtnDefault btn-search" @click="toSearch"></span>
 		</div>
 		<section class="sort-filter">
@@ -123,11 +123,11 @@
 					color: '', 			// string	颜色
 					memory: ''     // string	内存
 				},
+				searchKey: '',
 			}
 		},
 		computed: {
 			...mapState({
-				storeInfo: state => state.home.storeInfo,
 				token: state => state.home.token,
 			}),
 			colorList() {
@@ -146,7 +146,8 @@
 			infiniteScroll,
 		},
 		created() {
-			console.log('router', this.$route.query.name);
+			this.init();		// 获取token
+			this.searchKey = this.$route.query.name;
 			this.searchProductKey.brandName = this.$route.query.name;
 			this.searchProductKey.storeid = this.$route.query.storeid || 0;
 			this.reloadCommodity();
@@ -161,9 +162,24 @@
 			}
 		},
 		methods: {
+			init() {
+				if (!this.token) {
+					let tokenCookie = this.readCookie('USERTOKEN');
+					this.$store.dispatch('recordToken', tokenCookie);
+				}
+			},
+			readCookie(name) {
+		    var nameEQ = name + "=";
+		    var ca = document.cookie.split(';');
+		    for(var i=0;i < ca.length;i++) {
+	        var c = ca[i];
+	        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+	        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		    }
+			  return null;
+			},
 			// 点赞
 			async toPraise() {
-				console.log('praiseResult');
 				let praiseResult = await addStoreSuperb(this.token);
 				console.log('praiseResult',praiseResult);
 			},

@@ -191,6 +191,7 @@ export default {
 		},
 	},
 	created() {
+		 // get Token
 		this.init();
 		console.warn('this.userLocal',this.userLocal);
 		if (!this.userLocal) {
@@ -213,10 +214,28 @@ export default {
 		this.getAttrList();
 	},
 	methods: {
-		async init() {
-			let tokenData = await getToken();
-			this.token = tokenData.Data;
-			this.$store.dispatch('recordToken',this.token);
+		// 获取token
+			/*let tokenData = await getToken();
+			console.warn(tokenData.Data);*/
+		init() {
+		 if (this.$route.query.token) {
+	 		this.token = this.$route.qurey.token;
+	 		this.$store.dispatch('recordToken',this.$route.qurey.token);
+	 		console.warn('cookie-USERTOKEN',this.$route.qurey.token,this.readCookie('USERTOKEN'));
+		 } else {
+			this.$store.dispatch('recordToken',this.readCookie('USERTOKEN'));
+			console.warn('cookie-USERTOKEN',this.readCookie('USERTOKEN'));
+		 }
+		},
+		readCookie(name) {
+	    var nameEQ = name + "=";
+	    var ca = document.cookie.split(';');
+	    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	    }
+		  return null;
 		},
 		// 获取今日推荐
 		async recommendTodayInit() {
@@ -235,7 +254,7 @@ export default {
 		},
 		// 跳转到商品详情
 		bannerToDetail(url) {
-			window.location.href = url;
+			window.location.href = url + "&token=" + this.token;
 		},
 		// 获取 附近商店列表
 		async getNearbyStore() {

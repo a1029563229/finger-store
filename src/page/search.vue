@@ -47,6 +47,7 @@ export default {
 			}),
 	},
 	created() {
+		this.init(); // get Token
 		this.getHotWords();
 		this.toHistoryWords();
 	},
@@ -54,36 +55,53 @@ export default {
 		this.storeid = this.$route.query.storeid;
 	},
 	methods: {
-	// 获取历史搜索关键词
-	async toHistoryWords() {
-		const historyData =  await getHistoryWords(this.token);
-		this.historyWords = historyData.Data ? historyData.Data : [];
-		console.log('historydata:', this.historyWords);
-	},
-	// 热门搜搜关键词
-	async getHotWords() {
-		const hotData = await getHotSearchWords(this.token);
-		this.hotSearchWords = hotData.Data;
-		console.log('hotData',hotData);
-	},
-	async deleteSearchRecord() {
-		let deleteInfo = await deleteSearchWords();
-		this.historyWords = [];
-		console.log('deleteInfo',deleteInfo);
-	},
-	toSearch(word) {
-		if (!word) return
-		if (this.$route.query.storeid) {
-			this.$router.push({path:'productlist', query:{name: word, storeid:this.$route.query.storeid}});
-		} else {
-			this.$router.push({path:'productlist', query:{name: word}});
-		}
-		console.log(this.$route.query.storeid, word);
-	},
-	toBack() {
-		this.$router.go(-1);
-	},
-}
+		// 获取token
+		init() {
+			if (!this.token) {
+				let tokenCookie = this.readCookie('USERTOKEN');
+				this.$store.dispatch('recordToken', tokenCookie);
+			}
+		},
+		readCookie(name) {
+	    var nameEQ = name + "=";
+	    var ca = document.cookie.split(';');
+	    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	    }
+		  return null;
+		},
+		// 获取历史搜索关键词
+		async toHistoryWords() {
+			const historyData =  await getHistoryWords(this.token);
+			this.historyWords = historyData.Data ? historyData.Data : [];
+			console.log('historydata:', this.historyWords);
+		},
+		// 热门搜搜关键词
+		async getHotWords() {
+			const hotData = await getHotSearchWords(this.token);
+			this.hotSearchWords = hotData.Data;
+			console.log('hotData',hotData);
+		},
+		async deleteSearchRecord() {
+			let deleteInfo = await deleteSearchWords();
+			this.historyWords = [];
+			console.log('deleteInfo',deleteInfo);
+		},
+		toSearch(word) {
+			if (!word) return
+			if (this.$route.query.storeid) {
+				this.$router.push({path:'productlist', query:{name: word, storeid:this.$route.query.storeid}});
+			} else {
+				this.$router.push({path:'productlist', query:{name: word}});
+			}
+			console.log(this.$route.query.storeid, word);
+		},
+		toBack() {
+			this.$router.go(-1);
+		},
+	}
 }
 </script>
 <style scoped>

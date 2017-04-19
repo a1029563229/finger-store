@@ -16,10 +16,18 @@ export const home = {
 	  RECORD_TOKEN(state, params) {
 	  	console.warn('TOKEN',params);
 	  	state.token = params;
+	  	let validity = 2;
+			let now = new Date();
+			now.setTime(now.getTime() + validity * 24 * 60 * 60 * 1000);
+			document.cookie = "USERTOKEN=" + params + ";expires=" + now.toGMTString();
 	  },
 		RECORD_STOREINFO(state,params) {
 			console.log('RECORD_STOREINFO',params);
 			state.storeInfo = params;
+			let validity = 2;
+			let now = new Date();
+			now.setTime(now.getTime() + validity * 24 * 60 * 60 * 1000);
+			document.cookie = "storeInfo=" + JSON.stringify(params) + ";expires=" + now.toGMTString();
 		},
 		RECORD_STORELOCAL(state,params) {
 			state.storeLocal = params;

@@ -124,22 +124,20 @@ var deleteSearchWords = (token) => axios({
 });
 
 // 店铺点赞
-var addStoreCollect = (token) => axios({
+var addStoreCollect = (params) => axios({
 	url: service + '/AddStoreCollect',
 	method: 'post',
 	data: {
-		appkey: appkey,
-		token: token
+		...params
 	}
 });
 
 // 店铺点赞
-var addStoreSuperb = (token) => axios({
+var addStoreSuperb = (params) => axios({
 	url: service + '/AddStoreSuperb',
 	method: 'post',
 	data: {
-		appkey: appkey,
-		token: token
+		...params
 	}
 });
 
@@ -185,7 +183,7 @@ axios.interceptors.response.use(function(response) {
     // 处理响应数据
     if (response.status === 200) {
     	if (response.data.ResultCode === 1000) {
-    		console.info(response.data);
+    		// console.info(response.data);
     		return response.data;
     	} else if (response.data.ResultCode === 1009) {
     		console.warn('token失效，重新登录');
@@ -208,7 +206,7 @@ axios.interceptors.response.use(function(response) {
 // 添加请求拦截器
 axios.interceptors.request.use(function(config) {
     // 在发送请求之前做些什么
-    console.log('config', config);
+    // console.log('config', config);
     return config;
   }, function(error) {
     // 对请求错误做些什么

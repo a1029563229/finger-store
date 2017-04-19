@@ -164,8 +164,9 @@
 			infiniteScroll,
 		},
 		created() {
+			this.init();
 			this.searchProductKey.storeid = this.storeInfo.id;
-			console.warn('this.searchProductKey.storeid:'+ this.searchProductKey.storeid,this.storeInfo.id);
+			// console.warn('this.searchProductKey.storeid:'+ this.searchProductKey.storeid,this.storeInfo.id);
 			this.reloadCommodity();
 			this.getAttrList();
 		},
@@ -178,16 +179,48 @@
 			}
 		},
 		methods: {
+			init() {
+				console.warn('token', this.token);
+				if (!this.token) {
+					console.warn('token-if', this.token);
+					this.$store.dispatch('recordToken',this.readCookie('USERTOKEN'));
+				}
+				if (JSON.stringify(this.storeInfo).length < 3) {
+					let storeInfoTemp = JSON.parse(this.readCookie('storeInfo'));
+					this.$store.dispatch('recordStoreInfo',storeInfoTemp);
+		 			this.storeInfo = storeInfoTemp;
+				} 
+			},
+			readCookie(name) {
+		    var nameEQ = name + "=";
+		    var ca = document.cookie.split(';');
+		    for(var i=0;i < ca.length;i++) {
+	        var c = ca[i];
+	        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+	        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		    }
+			  return null;
+			},
 			// 点赞
 			async toPraise() {
 				this.isLike = true;
-				let praiseResult = await addStoreSuperb(this.token);
+				let params =  {
+					appkey: appkey,
+					token: this.token,
+					storeId: this.storeInfo.id
+				};
+				let praiseResult = await addStoreSuperb(params);
 				console.log('praiseResult',praiseResult);
 			},
 			// 收藏
 			async toCollect() {
 				this.isCollect = true;
-				let collectResult = await addStoreCollect(this.token);
+				let params =  {
+					appkey: appkey,
+					token: this.token,
+					storeId: this.storeInfo.id
+				};
+				let collectResult = await addStoreCollect(params);
 				console.log('collectResult',collectResult);
 			},
 			// 搜索
