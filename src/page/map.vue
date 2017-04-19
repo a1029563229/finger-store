@@ -11,7 +11,6 @@
 	    	<bm-polyline :path="polylinePath" stroke-color="blue" :stroke-opacity="0.5" :stroke-weight="2" :editing="true" @lineupdate="updatePolylinePath"></bm-polyline>
 	  	</baidu-map>
   	</template>
-	 
   </div>
 </template>
 <script>
@@ -65,6 +64,6 @@ export default {
 .map {
 	width: 100%;
 	height: 100%;
-}	
+}
 
 </style>

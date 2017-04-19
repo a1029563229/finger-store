@@ -13,7 +13,10 @@ export const list = {
     isfromMyorder:false,
     selectIdx: 0,
     listDetail:[],
-    expressno: ''
+    expressno: '',
+    orderno:'',
+    lat: 112, //经度
+    lng: 130 //维度
   },
   mutations: {
     switchTab(state,params){
@@ -75,7 +78,7 @@ export const list = {
         router.replace({path:'/myOrder'})
       }else if( params == 4 ){ //退款
         console.log('退款')
-        sendRequest(4).then( (data) =>{
+        sendRequest(5).then( (data) =>{
           state.listData = data
           console.log(state.listData)
           state.selectIdx = 5
@@ -107,8 +110,12 @@ function sendRequest( orderStatus ){
     axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     axios.post(GainZZDOrderList,Qs.stringify(obj))
       .then( res =>{
-        console.log(res.data)
-        resolve(res.data.Data)
+        if( res.data.ResultCode !== 1000 ){
+          alert( res.data.Message )
+        }else {
+          console.log(res.data)
+          resolve(res.data.Data)
+        }
       })
   })
 }
