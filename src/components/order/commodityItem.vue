@@ -33,11 +33,11 @@
           <button class="btn btn2" :data-payUrl="item.payurl" @click="forPay($event.target)">确认付款</button>
         </div>
         <div class="listFootBtn" v-show="(item.OrderStatus == 2) || (item.OrderStatus == 3) || (item.OrderStatus == 4)">
-          <button class="btn btn1" :data-orderNo="item.orderNo"  :data-phone="item.phoneNumber" @click="refund($event.target)">申请退款</button>
+          <button class="btn btn1" :data-orderNo="item.orderNo_sub"  :data-phone="item.phoneNumber" @click="refund($event.target)">申请退款</button>
           <button class="btn btn2" :data-orderStatusUrl="item.orderStatusUrl" @click="viewStatus($event.target)">查看物流</button>
         </div>
         <div class="listFootBtn" v-show="item.OrderStatus == 5">
-          <button class="btn btn1" :data-orderNo="item.orderNo" :data-phone="item.phoneNumber" @click="refund($event.target)">申请退款</button>
+          <button class="btn btn1" :data-orderNo="item.orderNo_sub" :data-phone="item.phoneNumber" @click="refund($event.target)">申请退款</button>
           <button class="btn btn2" :data-orderStatusUrl="item.orderStatusUrl" @click="viewStatus($event.target)">查看物流</button>
         </div>
       </div>
@@ -150,15 +150,16 @@
       refund(el){
         let orderNo = el.getAttribute('data-orderNo')
         let mobile = el.getAttribute('data-phone')-0
+        let data = {orderNo:orderNo, mobile:mobile}
         let obj = {
           appkey:appkey,
           token:token,
-          orderNo: orderNo,
-          mobile: mobile
+          data:JSON.stringify(data)
         }
         console.log(obj)
         this.$http.post(ZZDApplyDrawback, this.$qs.stringify(obj))
           .then( res =>{
+              console.log(res)
             if( res.data.ResultCode === 1000){
               alert(res.data.Message)
             }else {
@@ -183,7 +184,6 @@
 </script>
 <style scoped>
   .toDetai{
-    border: 1px solid;
     position: absolute;
     width: 100%;
     height: 2.7rem;

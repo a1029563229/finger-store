@@ -11,7 +11,7 @@
           <span>月销量&nbsp; {{collectData.SellCount}} </span>
           <span class="item-distance">&lt;&nbsp;{{collectData.Distanct}} km</span>
         </p>
-        <button class="btn">到这里</button>
+        <button class="btn" @click="toMap()">到这里</button>
       </div>
     </li>
   </div>
@@ -24,10 +24,6 @@
     name: 'collect',
     data(){
       return {
-        searchStoreKey:{
-          lng: '',
-          lat: ''
-        },
         collectData: ''
       }
     },
@@ -51,6 +47,8 @@
         }
       },
       onSuccess(position){
+        this.$store.state.list.lat = position.coords.longitude
+        this.$store.state.list.lng = position.coords.latitude
         console.log(position)
         let obj = {
           token: token,
@@ -72,12 +70,28 @@
           })
       },
       onError(error){
+          console.log(error)
         switch (error.code) {
-           case 1: alert("位置服务被拒绝"); break;
-           case 2: alert("暂时获取不到位置信息"); break;
-           case 3: alert("获取信息超时"); break;
-           case 4: alert("未知错误"); break;
+           case 1:
+               alert("位置服务被拒绝");
+//               this.$router.push('/home')
+               break;
+           case 2:
+               alert("暂时获取不到位置信息");
+//               this.$router.push('/home')
+               break;
+           case 3:
+               alert("获取信息超时");
+//               this.$router.push('/home')
+               break;
+           case 4:
+               alert("未知错误");
+//                this.$router.push('/home')
+               break;
         }
+      },
+      toMap(){
+          this.$router.push('/map')
       }
     },
     created(){

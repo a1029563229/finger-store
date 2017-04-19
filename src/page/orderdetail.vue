@@ -8,14 +8,14 @@
 		<section class="detail-user">
 			<p class="clear user-phone">
 				<i class="user-icon"></i>
-				收货人：{{orderDetail.customer.PayContactName}}
+				收货人：{{orderDetail.customer['PayContactName']}}
 				<span class="">
-					{{orderDetail.customer.PayContactTel}}
+					{{orderDetail.customer['PayContactTel']}}
 				</span>
 			</p>
 			<p class="clear user-detail">
 				<i class="local-icon"></i>
-					地址：{{orderDetail.customer.deliveryAddress}}
+					地址：{{orderDetail.customer['deliveryAddress']}}
 			</p>
 		</section>
     <section class="detail-order">
@@ -105,11 +105,9 @@ export default {
       this.$http.post(GainZZDOrderDetail, this.$qs.stringify(obj))
         .then( res =>{
         if( res.data.ResultCode === 1000 ){
-        console.log(res.data.Data)
         this.$store.state.list.listDetail = res.data.Data
         this.orderDetail = res.data.Data
       }
-
     })
     }
   }
@@ -155,6 +153,7 @@ export default {
 	padding: 0 4%;
 	height: 1.12rem;
 	overflow: hidden;
+  line-height: 1.12rem;
 }
 
 .detail-user i {
