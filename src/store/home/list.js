@@ -110,7 +110,7 @@ function sendRequest( orderStatus ){
     axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     axios.post(GainZZDOrderList,Qs.stringify(obj))
       .then( res =>{
-        if( res.data.ResultCode !== 1000 ){
+        if( res.data && res.data.ResultCode !== 1000 ){
           alert( res.data.Message )
         }else {
           console.log(res.data)

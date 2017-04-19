@@ -53,7 +53,10 @@ export default {
 		}
 	},
 	methods: {
-	}
+	},
+  beforeDestroy(){
+	    this.$store.state.home.storeLocal = {}
+  }
 }
 </script>
 <style>

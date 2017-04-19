@@ -1,27 +1,39 @@
 
-let baseUrl;
-// let imgBaseUrl;
-// const appkey = 100000029;
+// export const token = Home.home.state.token
 
+// if (process.env.NODE_ENV == 'development') {
+// 	baseUrl = 'https://dev-ydyd-app.vpclub.cn';
+// } else {
+// 	baseUrl = '';
+// }
 
-if (process.env.NODE_ENV == 'development') {
-	baseUrl = 'https://dev-ydyd-app.vpclub.cn';
-} else {
-	baseUrl = '';
+// export {
+// baseUrl,
+// imgBaseUrl,
+// appkey,
+// token,
+// testUrl
+// }
+
+import *as Home from '../store/home/home'
+let token;
+if( !!Home.home.state.token){
+     token = Home.home.state.token
+}else {
+  if(document.cookie.split(';')[3].substring(11) === 'null'){
+    console.log('无效token')
+  }else {
+    token = document.cookie.split(';')[3].substring(11)
+  }
+
 }
-
 export {
-	baseUrl,
-	// imgBaseUrl,
-	// appkey,
-  // token,
-	// testUrl
+  token
 }
 
 export const appkey = 100000029;
 
 
-export const token = ''
 
 export const testUrl = 'http://218.17.39.178:7092';
 

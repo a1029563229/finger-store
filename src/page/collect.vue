@@ -47,8 +47,9 @@
         }
       },
       onSuccess(position){
-        this.$store.state.list.lat = position.coords.longitude
-        this.$store.state.list.lng = position.coords.latitude
+        this.$store.state.home.storeLocal.lat = position.coords.longitude
+        this.$store.state.home.storeLocal.lng = position.coords.latitude
+
         console.log(position)
         let obj = {
           token: token,
@@ -64,6 +65,7 @@
           .then( res =>{
               if( res.data.ResultCode === 1000 ){
                   this.collectData = res.data.Data
+                  this.$store.state.home.storeLocal.storename = res.data.Data.StoreName
               }else {
                   alert(res.data.Message)
               }
@@ -74,19 +76,19 @@
         switch (error.code) {
            case 1:
                alert("位置服务被拒绝");
-//               this.$router.push('/home')
+               this.$router.push('/home')
                break;
            case 2:
                alert("暂时获取不到位置信息");
-//               this.$router.push('/home')
+               this.$router.push('/home')
                break;
            case 3:
                alert("获取信息超时");
-//               this.$router.push('/home')
+               this.$router.push('/home')
                break;
            case 4:
                alert("未知错误");
-//                this.$router.push('/home')
+                this.$router.push('/home')
                break;
         }
       },
