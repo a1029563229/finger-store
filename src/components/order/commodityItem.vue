@@ -29,16 +29,16 @@
 			</div>
       <div class="list-footer">
         <div class="listFootBtn" v-show="item.OrderStatus == 1">
-          <button class="btn btn1" :data-orderNo="item.orderNo" @click="deletOrder($event.target)">取消订单</button>
-          <button class="btn btn2" :data-payUrl="item.payurl" @click="forPay($event.target)">确认付款</button>
+          <button class="btn btn1" @click="deletOrder(item.orderNo)">取消订单</button>
+          <button class="btn btn2" @click="forPay(item.payurl)">确认付款</button>
         </div>
         <div class="listFootBtn" v-show="(item.OrderStatus == 2) || (item.OrderStatus == 3) || (item.OrderStatus == 4)">
-          <button class="btn btn1" :data-orderNo="item.orderNo_sub"  :data-phone="item.phoneNumber" @click="refund($event.target)">申请退款</button>
-          <button class="btn btn2" :data-orderStatusUrl="item.orderStatusUrl" @click="viewStatus($event.target)">查看物流</button>
+          <button class="btn btn1" :data-orderNo="item.orderNo_sub"  :data-phone="item.phoneNumber" @click="applyRefund($event.target)">申请退款</button>
+          <button class="btn btn2"  @click="viewStatus(item.orderStatusUrl)">查看物流</button>
         </div>
         <div class="listFootBtn" v-show="item.OrderStatus == 5">
-          <button class="btn btn1" :data-orderNo="item.orderNo_sub" :data-phone="item.phoneNumber" @click="refund($event.target)">申请退款</button>
-          <button class="btn btn2" :data-orderStatusUrl="item.orderStatusUrl" @click="viewStatus($event.target)">查看物流</button>
+          <button class="btn btn1" @click="applyRefund(item.orderNo_sub, item.phoneNumber)">申请退款</button>
+          <button class="btn btn2" @click="viewStatus(item.orderStatusUrl)">查看物流</button>
         </div>
       </div>
 		</li>
@@ -74,114 +74,151 @@
       }
   }
 
-
-  import { appkey, token, GainZZDOrderList,GainBindBankById,ZZDDeleteOrderByNo,GainZZDOrderDetail ,ZZDApplyDrawback} from '../../config/env'
-	export default {
-	    data(){
-	        return{
-
-          }
-      },
-      computed:{
-        listData(){
-            return this.$store.state.list.listData
-        },
-        listLength(){
-            return this.listData.length
-        },
-        totalPrice(){
-            let price = 0;
-            this.listData.forEach( (item,idx) =>{
-              price += (item.productPrice-0)
-            })
-          return price
-        }
-
-
-      },
-    mounted(){
-
+import { mapState } from 'vuex'
+import { appkey } from '../../config/env'
+import { GainZZDOrderList, GainBindBankById, ZZDDeleteOrderByNo, GainZZDOrderDetail, ZZDApplyDrawback } from '../../service/getData'
+export default {
+  data(){
+      return{
+        pageindex: 1,
+        pagesize: 10,
+        orderStatus: 0,
+      }
+  },
+  computed: {
+    ...mapState({
+      token: state => state.home.token,
+      listData: state => state.list.listData,
+    }),
+    listLength(){
+        return this.listData.length
     },
-    methods:{
-      getOrder(){
-        let obj = {
-          appkey: appkey,
-          token: token,
-          pageindex: 1,
-          pagesize: 10,
-          orderStatus: 0
-        }
-        console.log(this.$store.state.list.isfromMyorder)
-        if( this.$store.state.list.isfromMyorder ){
-            return
-        }
-        this.$http.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        this.$http.post(GainZZDOrderList, this.$qs.stringify(obj))
-          .then( res =>{
-          console.log(res.data.Data)
+    totalPrice(){
+      let price = 0;
+       /* this.listData.forEach( (item,idx) =>{
+          price += (item.productPrice-0)
+        })*/
+      for (let item of this.listData) {
+        price += (item.productPrice-0)
+      }
+      return price
+    }
+
+
+  },
+  created() {
+    this.tokenInit();
+    this.getOrder();
+  },
+  mounted() {
+
+  },
+  methods: {
+    tokenInit() {                      // 获取token
+     if (!this.token) {
+      console.log('recordToken-USERTOKEN', this.token);
+      this.$store.dispatch('recordToken',this.readCookie('USERTOKEN'));
+     }
+    },
+    readCookie(name) {                // 获取cookie
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+      }
+      return null;
+    },
+    /*getOrder(){
+      let obj = {
+        appkey: appkey,
+        token: this.token,
+        pageindex: 1,
+        pagesize: 10,
+        orderStatus: 0
+      }
+      console.log('obj:',obj);
+      console.log(this.$store.state.list.isfromMyorder)
+      if( this.$store.state.list.isfromMyorder ){
+          return
+      }
+      this.$http.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      this.$http.post(GainZZDOrderList, obj)
+        .then( res =>{
+        console.log(res.data.Data)
         if( res.data.ResultCode === 1000 ){
           this.$store.state.list.listData = res.data.Data
         }
       })
-      },
-      forPay(el){
-          var payUrl = el.getAttribute('data-payurl')
-           location.href = payUrl
-      },
-      viewStatus(el){
-          let statusUrl = el.getAttribute('data-orderStatusUrl')
-          location.href = statusUrl
-      },
-      deletOrder(el){
-        let orderNo = el.getAttribute('data-orderNo')
-        let obj = {
-          appkey: appkey,
-          token: token,
-          orderno: orderNo
-        }
-        this.$http.post(ZZDDeleteOrderByNo, this.$qs.stringify(obj))
-          .then( res =>{
-              if( res.data.ResultCode === 1000 ){
-                location.reload()
-              }else {
-                  alert(res.data.Message)
-              }
-          })
-      },
-      refund(el){
-        let orderNo = el.getAttribute('data-orderNo')
-        let mobile = el.getAttribute('data-phone')-0
-        let data = {orderNo:orderNo, mobile:mobile,goodsPic:'|',city:0}
-        let obj = {
-          appkey:appkey,
-          token:token,
-          data:JSON.stringify(data)
-        }
-        console.log(obj)
-        this.$http.post(ZZDApplyDrawback, this.$qs.stringify(obj))
-          .then( res =>{
-              console.log(res)
-            if( res.data.ResultCode === 1000){
-              alert(res.data.Message)
-            }else {
-              alert(res.data.Message)
-            }
-          })
-      },
-      toDetail(el){
-        let orderNo = el.getAttribute('data-orderNo')
-        this.$store.state.list.orderno = orderNo
-        this.$router.push('/orderdetail')
-        console.log(orderNo)
-      }
-
+    },*/
+    async getOrder() {                                             // 用于店主获取订单列表
+      let orderInfo = {
+        appkey: appkey,
+        token: this.token,
+        pageindex: this.pageindex,
+        pagesize: this.pagesize,
+        orderStatus: this.orderStatus
+      };
+      let orderData = await GainZZDOrderList(orderInfo);
+      this.$store.dispatch('setListData', orderData.Data);
+      console.log('GainZZDOrderList:',orderData);
     },
-    created(){
-      this.getOrder()
+    forPay(payurl){                                                // 确认付款
+      window.location.href = payUrl + "&token=" + this.token;
+    },
+    viewStatus(el){                                                // 查看物流
+        let statusUrl = el.getAttribute('data-orderStatusUrl')
+        window.location.href = statusUrl + "&token=" + this.token;
+    },
+
+    async deletOrder(orderNo){
+      let obj = {
+        appkey: appkey,
+        token: this.token,
+        orderno: orderNo
+      }
+      let res = await ZZDDeleteOrderByNo(obj);
+        if (res.ResultCode === 1000) {
+          window.location.reload()
+        } else {
+          alert(res.Message)
+        }
+     
+    },
+    async applyRefund(orderNo, mobile){
+      mobile -= 0;
+      let data = {orderNo:orderNo, mobile: mobile, goodsPic:'|',city:0}
+      let obj = {
+        appkey:appkey,
+        token:token,
+        data:JSON.stringify(data)
+      }
+      console.log(obj)
+      let res = await ZZDApplyDrawback(obj);
+      if (res.ResultCode === 1000) {
+        alert(res.Message)
+      } else {
+        alert(res.Message)
+      }
+      /*this.$http.post(ZZDApplyDrawback, obj)
+        .then( res =>{
+            console.log(res)
+          if( res.data.ResultCode === 1000){
+            alert(res.data.Message)
+          }else {
+            alert(res.data.Message)
+          }
+        })*/
+    },
+    toDetail(el){
+      let orderNo = el.getAttribute('data-orderNo')
+      this.$store.dispatch('setOrderno', orderNo);
+      this.$router.push('/orderdetail')
+      console.log(orderNo)
     }
-
-
-	}
+  }
+}
 </script>
 <style scoped>
   .toDetai{

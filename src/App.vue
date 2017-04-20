@@ -29,6 +29,11 @@ export default {
   opacity: 0;
 }
 
+#app {
+  width: 100%;
+  height: 100%;
+}
+
 .app-view {
   position: absolute;
   width: 100vw;

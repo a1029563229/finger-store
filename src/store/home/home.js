@@ -43,6 +43,7 @@ export const home = {
 		recordStoreInfo: ({commit,state}, params) =>{
       commit('RECORD_STOREINFO',params)
     },
+    // 地图 - 店铺/用户经纬度
     recordStoreLocal: ({commit,state}, params) => {
     	commit('RECORD_STORELOCAL', params)
     },

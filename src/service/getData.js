@@ -2,7 +2,7 @@
  * Created by YangYusheng on 2017-04-10
  */
  import axios from 'axios'
- import { baseUrl, appkey, testUrl ,token} from '../config/env'
+ import { BASE_URL, appkey, testUrl ,token} from '../config/env'
 
  import slides from './mock/home-swipe'
  import { nearbyList } from './mock/nearbyList'
@@ -16,23 +16,22 @@
 
 // axios 全局配置
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.baseURL = baseUrl;
-// axios.defaults.transformRequest = [function(data) {
-//     // Do whatever you want to transform the data
-//     let ret = ''
-//     for (let it in data) {
-//     	ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-//     }
-//     // console.log('param:', ret);
-//     return ret
-//   }];
+axios.defaults.baseURL = BASE_URL;
+axios.defaults.transformRequest = [function(data) {
+    // Do whatever you want to transform the data
+    let ret = ''
+    for (let it in data) {
+    	ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    }
+    return ret
+  }];
 
 // 公共接口
 const service = '/api/1.0/YupinhuiServer/ZZDHandle';
 
 
 // 获取登录token值
-var getToken = () => axios({
+let getToken = () => axios({
 	url: testUrl + service + '/ZZDLogin',
 	method: 'post',
 	data: {
@@ -44,7 +43,7 @@ var getToken = () => axios({
 /**
  * 获取商品搜索属性列表
  */
- var getSearchAttrList = () => axios({
+ let getSearchAttrList = () => axios({
  	url: service + '/GetProductAttribute',
  	method: 'post',
  	data: {
@@ -53,7 +52,7 @@ var getToken = () => axios({
  });
 
 // 获取今日推荐
-var getTodayRecommend = (token) => axios({
+let getTodayRecommend = (token) => axios({
 	url: service + '/GetZZDTodayRecommed',
 	method: 'post',
 	data: {
@@ -63,7 +62,7 @@ var getTodayRecommend = (token) => axios({
 });
 
 // 获取Banner广告
-var getBanner = (token) => axios({
+let getBanner = (token) => axios({
 	url: service + '/GetZZDBannerList',
 	method: 'post',
 	data: {
@@ -74,7 +73,7 @@ var getBanner = (token) => axios({
 
 
 // 获取商品列表
-var searchProductList = (searchData) => axios({
+let searchProductList = (searchData) => axios({
 	url: service + '/SearchProductList',
 	method: 'post',
 	data: {
@@ -84,17 +83,17 @@ var searchProductList = (searchData) => axios({
 
 
 // 获取附近店铺列表
-var searchStoreList = (store) => axios({
+let searchStoreList = (store) => axios({
     url: service + '/SearchStoreByGoodsParam',
     method: 'post',
     data: {
         ...store
     }
   });
- // var searchStoreList = (store) => setPromise(nearbyList);
+ // let searchStoreList = (store) => setPromise(nearbyList);
 
 // 获取热门搜索关键字
-var getHotSearchWords = (token) => axios({
+let getHotSearchWords = (token) => axios({
 	url: service + '/GetHotSearchWords',
 	method: 'post',
 	data: {
@@ -104,7 +103,7 @@ var getHotSearchWords = (token) => axios({
 });
 
 // 获取历史搜索关键字
-var getHistoryWords = (token) => axios({
+let getHistoryWords = (token) => axios({
 	url: service + '/GetHistorySearchWords',
 	method: 'post',
 	data: {
@@ -114,7 +113,7 @@ var getHistoryWords = (token) => axios({
 });
 
 // 清除历史搜索关键字
-var deleteSearchWords = (token) => axios({
+let deleteSearchWords = (token) => axios({
 	url: service + '/DeleteSearchWords',
 	method: 'post',
 	data: {
@@ -124,7 +123,7 @@ var deleteSearchWords = (token) => axios({
 });
 
 // 店铺点赞
-var addStoreCollect = (params) => axios({
+let addStoreCollect = (params) => axios({
 	url: service + '/AddStoreCollect',
 	method: 'post',
 	data: {
@@ -133,7 +132,7 @@ var addStoreCollect = (params) => axios({
 });
 
 // 店铺点赞
-var addStoreSuperb = (params) => axios({
+let addStoreSuperb = (params) => axios({
 	url: service + '/AddStoreSuperb',
 	method: 'post',
 	data: {
@@ -142,7 +141,7 @@ var addStoreSuperb = (params) => axios({
 });
 
 // 联系我们-获取店铺具体信息
-var getContractStoreInfo = (token) => axios({
+let getContractStoreInfo = (token) => axios({
 	url: service + '/GetContractStoreInfo',
 	method: 'post',
 	data: {
@@ -152,7 +151,7 @@ var getContractStoreInfo = (token) => axios({
 });
 
 // 获取店铺的二维码
-var getStoreQrcode = (token) => axios({
+let getStoreQrcode = (token) => axios({
 	url: service + '/GetStoreQrCode',
 	method: 'post',
 	data: {
@@ -161,47 +160,100 @@ var getStoreQrcode = (token) => axios({
 	}
 });
 
-// //用于店主获取订单列表
-// var GainZZDOrderList = (token) => axios({
-//   url: service + '/GainZZDOrderList',
-//   method: 'post',
-//   data:{
-//     appkey: appkey,
-//     token: token,
-//     pageindex: 1,
-//     pagesize: 10,
-//     orderStatus: 0
-//   }
-// })
+// 获取订单列表
+let GainOrderList = (params) => axios({
+	url: '/api/1.0/OrderServer/Order/GainOrderList',
+	method: 'post',
+	data: {
+		...params
+	}
+});
+
+// 获取店铺具体信息
+let GetContractStoreInfo = (params) => axios({
+	url: service + '/GetContractStoreInfo',
+	method: 'post',
+	data: {
+		...params
+	}
+});
 
 
+// 用于店主获取订单列表
+let GainZZDOrderList = (params) => axios({
+	url: service + '/GainZZDOrderList',
+	method: 'post',
+	data: {
+		...params
+	}
+});
 
+// 获取订单详细
+let GainZZDOrderDetail = (params) => axios({
+	url: service + '/GainZZDOrderDetail',
+	method: 'post',
+	data: {
+		...params
+	}
+});
+
+// 用于用户申请退款
+let ZZDApplyDrawback = (params) => axios({
+	url: service + '/ZZDApplyDrawback',
+	method: 'post',
+	data: {
+		...params
+	}
+});
+
+// 通过ID获取绑定银行卡信息
+let GainBindBankById = (params) => axios({
+	url: '/api/1.0/FinanceServer/Verify/GainBindBankById',
+	method: 'post',
+	data: {
+		...params
+	}
+});
+
+// 查询我的收藏店铺列表
+let GetCollectSotres = (params) => axios({
+	url: service + '/GetCollectSotres',
+	method: 'post',
+	data: {
+		...params
+	}
+});
+
+// 根据订单号删除订单
+let ZZDDeleteOrderByNo = (params) => axios({
+	url: service + '/ZZDDeleteOrderByNo',
+	method: 'post',
+	data: {
+		...params
+	}
+});
 
 
 // 响应拦截
-// axios.interceptors.response.use(function(response) {
-//     // 处理响应数据
-//     if (response.status === 200) {
-//     	if (response.data.ResultCode === 1000) {
-//     		// console.info(response.data);
-//     		return response.data;
-//     	} else if (response.data.ResultCode === 1009) {
-//     		console.warn('token失效，重新登录');
-//     	} else {
-//     		console.warn(response.data.ResultCode);
-//     	}
-//     } else {
-//     	console.warn('网络连接错误，请重试');
-//     }
-//
-//   }, function(error) {
-//     // 处理响应失败
-//     return Promise.reject(error);
-//   });
+axios.interceptors.response.use(function(response) {
+    // 处理响应数据
+    if (response.status === 200) {
+    	if (response.data.ResultCode === 1000) {
+    		// console.info(response.data);
+    		return response.data;
+    	} else if (response.data.ResultCode === 1009) {
+    		console.warn('token失效，重新登录');
+    	} else {
+    		console.warn(response.data.ResultCode);
+    	}
+    } else {
+    	console.warn('网络连接错误，请重试');
+    }
 
-
-
-
+  }, function(error) {
+    // 处理响应失败
+    return Promise.reject(error);
+  });
 
 // 添加请求拦截器
 axios.interceptors.request.use(function(config) {
@@ -217,17 +269,25 @@ axios.interceptors.request.use(function(config) {
 
 // 导出相关方法
 export {
-    getToken, // 获取登录token值
-    getSearchAttrList, // 获取商品搜索属性列表
-    getTodayRecommend, // 获取今日推荐
-    getBanner, // 获取Banner广告
-    searchStoreList, // 获取附近店铺列表
-    getHotSearchWords, // 获取热门搜索关键字
-    getHistoryWords, // 获取历史搜索关键字
-    searchProductList, // 获取商品列表
-    deleteSearchWords, // 清除历史搜索关键字
-    addStoreSuperb, //店铺点赞
-    addStoreCollect, // 店铺收藏
-    getContractStoreInfo, // 获取店铺具体信息
-    getStoreQrcode, // 获取店铺的二维码
+    getToken, 							// 获取登录token值
+    getSearchAttrList, 			// 获取商品搜索属性列表
+    getTodayRecommend, 			// 获取今日推荐
+    getBanner, 							// 获取Banner广告
+    searchStoreList, 				// 获取附近店铺列表
+    getHotSearchWords, 			// 获取热门搜索关键字
+    getHistoryWords, 				// 获取历史搜索关键字
+    searchProductList, 			// 获取商品列表
+    deleteSearchWords, 			// 清除历史搜索关键字
+    addStoreSuperb, 				// 店铺点赞
+    addStoreCollect, 				// 店铺收藏
+    getContractStoreInfo, 	// 获取店铺具体信息
+    getStoreQrcode, 				// 获取店铺的二维码
+    GainOrderList, 					// 获取订单列表
+    GetContractStoreInfo, 	// 获取店铺具体信息
+    GainZZDOrderList,				// 用于店主获取订单列表
+    GainZZDOrderDetail,  		// 获取订单详细
+    ZZDApplyDrawback, 			// 用于用户申请退款
+    GainBindBankById,  			// 通过ID获取绑定银行卡信息
+    GetCollectSotres,  			// 查询我的收藏店铺列表
+    ZZDDeleteOrderByNo 			// 根据订单号删除订单
   }

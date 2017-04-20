@@ -10,12 +10,12 @@
         </li>
         <li class="paytypeItem">
           <input type="radio">
-          <img src="static/img/icon_yinlian copy.png">
+          <img src="static/img/icon_yinliancopy.png">
           <span>银联支付</span>
         </li>
         <li class="paytypeItem">
           <input type="radio">
-          <img src="static/img/icon_zhifubao copy.png">
+          <img src="static/img/icon_zhifubaocopy.png">
           <span>支付宝支付</span>
         </li>
       </div>

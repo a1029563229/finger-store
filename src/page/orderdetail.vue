@@ -3,45 +3,47 @@
 		<header-top title="订单详情"></header-top>
 		<section class="detail-head">
 			<i class="head-icon"></i>
-			{{orderDetail.orderStatusName}}
+			{{orderDetail.Status | orderStateName }}
 		</section>
 		<section class="detail-user">
 			<p class="clear user-phone">
 				<i class="user-icon"></i>
-				收货人：{{orderDetail.customer['PayContactName']}}
-				<span class="">
-					{{orderDetail.customer['PayContactTel']}}
+				收货人：{{orderDetail.customer.consignee}}
+				<span class="user-phone-num">
+					{{orderDetail.customer.phoneNumber}}
 				</span>
 			</p>
 			<p class="clear user-detail">
 				<i class="local-icon"></i>
-					地址：{{orderDetail.customer['deliveryAddress']}}
+					地址：{{orderDetail.customer.deliveryAddress}}
 			</p>
 		</section>
-    <section class="detail-order">
-      <div class="order-img">
-        <img :src="orderDetail.productList.productImage">
-      </div>
-      <div class="order-info">
-        <span>{{orderDetail.productList.productName}}</span>
-        <div class="order-bot">
-          <span class="order-price">¥{{orderDetail.productList.productPrice}}</span>
-          <span class="order-mount">x{{orderDetail.productList.quantity}}</span>
-        </div>
-      </div>
-    </section>
+  	<ul class="detail-order clear">
+    	<li class="detail-order-list" v-for="item in orderDetail.productList">
+    		<div class="order-img">
+	        <img :src="item.productImage">
+	      </div>
+	      <div class="order-info">
+	        <span class="order-info-title">{{item.productName}}</span>
+	        <div class="order-bot">
+	          <span class="order-price">{{item.productPrice | money }}</span>
+	          <span class="order-mount">x{{item.quantity}}</span>
+	        </div>
+	      </div>
+    	</li>
+  	</ul>
 		<section class="detail-price">
 			<p>
 				<i>运&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;费</i>
-				<span>¥{{orderDetail.shippingRates}}</span>
+				<span>{{orderDetail.shippingRates | money }}</span>
 			</p>
 			<p>
 				<i>积分抵用</i>
-				<span>¥{{orderDetail.ordersOffers}}</span>
+				<span>{{orderDetail.ordersOffers | money }}</span>
 			</p>
 			<p>
 				<i>实  付  &nbsp;款</i>
-				<span class="detail-price-num">¥{{orderDetail.totalPrice}}</span>
+				<span class="detail-price-num">{{orderDetail.totalPrice | money}}</span>
 			</p>
 		</section>
 		<section class="detail-info">
@@ -49,10 +51,6 @@
 				<i>订单编号</i>
 				<span>{{orderDetail.orderNo}}</span>
 			</p>
-			<!--<p>-->
-				<!--<i>订单返利</i>-->
-				<!--<span>B2000923233434</span>-->
-			<!--</p>-->
 			<p>
 				<i>下单时间</i>
 				<span>{{orderDetail.orderedTime}}</span>
@@ -70,45 +68,78 @@
 	</div>
 </template>
 <script>
-
+import { mapState } from 'vuex'
 import headerTop from '@/components/common/headerTop'
-import commodityItem from '@/components/order/commodityItem'
-import { appkey, token, GainZZDOrderDetail } from '../config/env'
+import { appkey } from '../config/env'
+import { GainZZDOrderDetail } from '../service/getData'
 export default {
 	name: 'orderdetail',
 	data() {
 		return {
-      orderDetail: ''
-
+      orderDetail: [],
 		}
 	},
 	components: {
 		headerTop,
-		commodityItem,
+	},
+	created() {
+		this.tokenInit();
 	},
   mounted(){
     this.getOrderDetail()
   },
   computed:{
-    orderno(){
-        return this.$store.state.list.orderno
-    }
+    ...mapState({
+    	token: state => state.home.token,
+    	orderno: state => state.list.orderno
+    })
+  },
+  filters: {
+  	money(value) {
+  		let val = parseFloat(value).toFixed(2)
+  		return  `￥ ${val}`
+  	},
+  	orderStateName(state) {
+  		switch(state) {
+  			case 1: 
+  				return '买家待付款'
+  			case 2: 
+  				return '卖家待发货'
+  			case 3: 
+  				return '买家待收货'
+  			case 4: 
+  				return '订单已完成'
+  			case 5: 
+  				return '商品已退款'
+  		}
+  	}
   },
   methods:{
-    getOrderDetail(){
-      let obj ={
-        appkey: appkey,
-        token: token,
-        orderNo: this.orderno
-      }
-      console.log(obj)
-      this.$http.post(GainZZDOrderDetail, this.$qs.stringify(obj))
-        .then( res =>{
-        if( res.data.ResultCode === 1000 ){
-        this.$store.state.list.listDetail = res.data.Data
-        this.orderDetail = res.data.Data
-      }
-    })
+		tokenInit() {  // 获取token
+		 if (!this.token) {
+			this.$store.dispatch('recordToken',this.readCookie('USERTOKEN'));
+			console.warn('this.token:',this.token);
+		 }
+		},
+		readCookie(name) { 	// 获取cookie
+	    var nameEQ = name + "=";
+	    var ca = document.cookie.split(';');
+	    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	    }
+		  return '';
+		},
+    async getOrderDetail() {
+    	let param = {
+    		appkey: appkey,
+    		token: this.token,
+    		orderNo: this.orderno
+    	};
+    	let res = await GainZZDOrderDetail(param);
+    	this.orderDetail = res.Data;
+    	// this.$store.dispatch('setListDetail', res.Data);
     }
   }
 }
@@ -127,14 +158,14 @@ export default {
 	width: 100%;
 	height: 2.52rem;
 	color: #FFF;
-	font-size: 0.4rem;
+	font-size: 0.45rem;
 	background-image: linear-gradient(-153deg, #F53F36 4%, #E8146C 100%);
 }
 .head-icon {
 	display: block;
 	width: 1.28rem;
 	height: 1.28rem;
-	background: url('../assets/icon/common_like_press@3x.png') no-repeat center;
+	background: url('../assets/icon/order_detail@3x.png') no-repeat center;
 	background-size: 1.28rem;
 	margin-right: 0.1rem;
 }
@@ -151,28 +182,38 @@ export default {
 
 .detail-user p {
 	padding: 0 4%;
-	height: 1.12rem;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
 	overflow: hidden;
-  line-height: 1.12rem;
 }
 
 .detail-user i {
 	display: block;
 	float: left;
-	width: 0.6rem;
-	height: 1.12rem;
+	width: 1rem;
+	height: 1rem;
 }
 
 .user-phone {
-	line-height: 1.12rem;
+	position: relative;
+	line-height: 1rem;
+	font-size: 0.38rem;
+	height: 1rem;
+}
+.user-phone-num {
+	position: absolute;
+	top: 0;
+	right: 4%;
+	font-size: 0.38rem;
 }
 
 .user-icon {
-	background: url('../assets/icon/common_like_press@2x.png') no-repeat center;
+	background: url('../assets/icon/confirmorder_name@2x.png') no-repeat center;
 	background-size: 0.6rem;
 }
 .local-icon {
-	background: url('../assets/icon/common_like_press@2x.png') no-repeat center;
+	background: url('../assets/icon/confirmorder_address-green@2x.png') no-repeat center;
 	background-size: 0.6rem;
 }
 
@@ -180,14 +221,6 @@ export default {
 	font-size: 0.35rem;
 }
 
-/* .local-detail {
-	display: inline-block;
-	line-height: 1.2;
-	width: auto;
-	font-size: 0.35rem;
-	max-height: 1.12rem;
-	overflow: hidden;
-} */
 /* commodity */
 .commodity-item {
 	margin-top: 0.25rem;
@@ -231,44 +264,62 @@ export default {
 	color: #999;
 	margin-left: 2%;
 }
-.detail-order{
+
+.detail-order {
+	margin-top: 3%;
+}
+
+.detail-order-list{
   width: 100%;
   height: 3rem;
-  background: #fff;
-  margin-top: 3%;
-  border-bottom: 1px solid #EEEEEE;
+  background: #FFF;
+  border-bottom: 1px solid #EEE;
   padding: 3%;
 }
 .order-img{
+	position: relative;
   width: 30%;
-  height: 100%;
+  height: 0;
+  padding-bottom: 25%;
   float: left;
+  overflow: hidden;
 }
-.order-img>img{
+.order-img > img{
+	position: absolute;
+	left: 50%;
+	top: 50%;
   width:100%;
-  height: 100%;
+  transform: translate(-50%, -50%);
 }
-  .order-info{
-    width: 70%;
-    float: right;
-    height: 100%;
-    padding: 0 3%;
-    position: relative;
-  }
-  .order-bot{
-    position: absolute;
-    bottom: 0;
-    line-height: 1rem;
-    width: 90%;
-  }
-  .order-price{
-    color: #E84567;
-    font-size: 0.4rem;
-    font-weight:700;
-  }
-  .order-mount{
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
+
+.order-info {
+  width: 70%;
+  float: right;
+  height: 100%;
+  padding-left: 3%;
+  position: relative;
+}
+.order-info-title {
+	display: block;
+	max-height: 1.55rem;
+	overflow: hidden;
+}
+
+.order-bot{
+  position: absolute;
+  left: 3%;
+  bottom: 0;
+  line-height: 0.7rem;
+  width: 90%;
+}
+.order-price{
+  color: #E84567;
+  font-size: 0.4rem;
+}
+.order-mount{
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 0.35rem;
+}
 </style>

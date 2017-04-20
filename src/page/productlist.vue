@@ -230,7 +230,7 @@
 				window.location.href = url;
 			},
 			toBack() {
-				this.$router.go(-1);
+				this.$router.push('/home');
 			},
 			// 切换筛选
 			choose(index) {
@@ -281,13 +281,14 @@
 						this.dataSortInit[2].active = true;
 						return
 					case 3: 
+						this.dataSortInit[3].active = true;
 						this.$router.push('storelist');
 						return
 					case 4: 
 						this.isMask = true;
 						this.isClassify = true;
 						this.isSortList = false;
-						this.dataSortInit[3].active = true;
+						this.dataSortInit[4].active = true;
 						return
 				}
 			},

@@ -75,7 +75,7 @@
 							<h1 class="ellipsis">{{ item.StoreName }}</h1>
 							<p class="desc-item">
 								<span>月销量&nbsp;{{ item.SellCount }}</span>
-								<span class="item-distance" v-show="searchStoreKey.lat && searchStoreKey.lng">&lt;&nbsp;{{ item.Distanct }}&nbsp;km</span>
+								<span class="item-distance" v-show="searchStoreKey.lat && searchStoreKey.lng">{{ item.Distanct | distance }}</span>
 								<span class="item-distance" v-show="!(searchStoreKey.lat && searchStoreKey.lng)">&nbsp;0&nbsp;km</span>
 							</p>
 							<button class="btn-map" @click.stop="toMap(item.StoreName, item.CoordsX, item.CoordsY)">到这里去</button>
@@ -184,14 +184,8 @@ export default {
 	created() {
 		 // get Token
 		this.getlocalation();
-		this.init();
-		/*if (JSON.stingify(this.userLocal).length <= 2) {
-			
-		} else {
-			this.searchStoreKey.lat = this.userLocal.lat;
-			this.searchStoreKey.lng = this.userLocal.lng;
-			this.reloadNearbyStore();
-		}*/
+		this.tokenInit();
+		this.getCurToken();
 	},
 	mounted() {
 		let swiper = this.$refs.swiper;
@@ -204,11 +198,25 @@ export default {
 		this.recommendTodayInit();
 		this.getAttrList();
 	},
+	filters: {
+		distance(value) {
+			let val = parseFloat(value).toFixed(2)
+			if (val <= 0.1) {
+				return '< 100 m'
+			}
+			else {
+				return `< ${val} km`
+			}
+		}
+	},
 	methods: {
+		
+		async getCurToken() {
+			let tokenData = await getToken();
+			console.warn(tokenData.Data);
+		},
 		// 获取token
-			/*let tokenData = await getToken();
-			console.warn(tokenData.Data);*/
-		init() {
+		tokenInit() {
 			console.warn('query:',this.$route.query.token);
 		 if (this.$route.query.token) {
 	 		this.token = this.$route.query.token;
@@ -217,6 +225,7 @@ export default {
 			this.$store.dispatch('recordToken',this.readCookie('USERTOKEN'));
 		 }
 		},
+		// 获取cookie
 		readCookie(name) {
 	    var nameEQ = name + "=";
 	    var ca = document.cookie.split(';');
@@ -225,7 +234,7 @@ export default {
         while (c.charAt(0)==' ') c = c.substring(1,c.length);
         if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
 	    }
-		  return null;
+		  return '';
 		},
 		// 获取今日推荐
 		async recommendTodayInit() {
@@ -248,15 +257,12 @@ export default {
 		},
 		// 获取 附近商店列表
 		async getNearbyStore() {
-			// console.info(this.searchStoreKey);
 			const data = await searchStoreList(this.searchStoreKey);
-			console.warn('loadEnd',this.isLoadEnd);
 			data.Data.forEach(item => {
 				this.nearbyListData.push(item);
 			});
 			if (data.PageIndex > data.TotalPage) this.isLoadEnd = true;
 			this.loading = false;
-			// console.info('getNearbyStore:', this.nearbyListData);
 		},
 		// 重新加载 附近商店列表 
 		async reloadNearbyStore() {
@@ -289,10 +295,7 @@ export default {
 			
 			var options={enableHighAccuracy:true, maximumAge:1000 }
       if(navigator.geolocation){
-
-       await navigator.geolocation.getCurrentPosition(this.onSuccess,this.onError,options);  //浏览器支持geolocation\
-
-      
+      	await navigator.geolocation.getCurrentPosition(this.onSuccess,this.onError,options);  //浏览器支持geolocation\
       }else{
         alert('您的浏览器不支持地理位置定位');  //浏览器不支持geolocation
       }

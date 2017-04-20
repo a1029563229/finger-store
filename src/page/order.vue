@@ -51,9 +51,10 @@ export default {
 		},
 		selected(index) {
       this.$store.dispatch('setTabIndex',index)
+      this.$router.push('myorder');
 		},
 		toCollect(){
-      this.$router.push('collect');
+      this.$router.push('/collect');
     }
 	}
 }
