@@ -94,7 +94,7 @@ export default {
 
 .infinite-scroll-text {
 	margin-left: 0.3rem;
-	font-size: 0.4rem;
+	font-size: 0.35rem;
 }
 
 @keyframes rotate {

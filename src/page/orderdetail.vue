@@ -39,7 +39,7 @@
 			</p>
 			<p>
 				<i>积分抵用</i>
-				<span>{{orderDetail.ordersOffers | money }}</span>
+				<span>- {{orderDetail.ordersOffers | money }}</span>
 			</p>
 			<p>
 				<i>实  付  &nbsp;款</i>
@@ -159,7 +159,8 @@ export default {
 	height: 2.52rem;
 	color: #FFF;
 	font-size: 0.45rem;
-	background-image: linear-gradient(-153deg, #F53F36 4%, #E8146C 100%);
+	font-weight: 600;
+	background-image: linear-gradient(153deg, #F53F36 4%, #E8146C 100%);
 }
 .head-icon {
 	display: block;
@@ -310,7 +311,7 @@ export default {
   left: 3%;
   bottom: 0;
   line-height: 0.7rem;
-  width: 90%;
+  width: 96%;
 }
 .order-price{
   color: #E84567;

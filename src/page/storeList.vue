@@ -60,8 +60,8 @@
 					<div class="desc">
 						<h1 class="ellipsis">{{ item.StoreName }}</h1>
 						<p class="desc-item">
-							<span>月销量&nbsp;{{ item.SellCount }}</span>
-							<span class="item-distance" v-show="searchStoreKey.lat && searchStoreKey.lng">&lt;&nbsp;{{ item.Distanct }}&nbsp;km</span>
+							<span>销量&nbsp;{{ item.SellCount }}</span>
+							<span class="item-distance" v-show="searchStoreKey.lat && searchStoreKey.lng">{{ item.Distanct | distance }}</span>
 							<span class="item-distance" v-show="!(searchStoreKey.lat && searchStoreKey.lng)">&nbsp;0&nbsp;km</span>
 						</p>
 						<button class="btn-map" @click.stop="toMap(item.StoreName, item.CoordsX, item.CoordsY)">到这里去</button>
@@ -137,11 +137,11 @@ export default {
 			},
 			dataSortInit: [		// 筛选数据初始化
 				{name: '综合', class: 'total', up: false, active:true },
-				{name: '距离', class: 'arrow-up', up: false, active:false },
-				{name: '销量', class: 'arrow-up',  up: false, active:false },
+				{name: '距离', class: 'arrow-up', up: true, active:false },
+				{name: '销量', class: 'arrow-up',  up: true, active:false },
 				{name: '筛选', class: 'screen ',  up: false, active:false },
 			],
-			dataSelectInit: ['综合排序', '距离', '销量'],	//下拉框
+			dataSelectInit: ['综合排序', '销量', '距离'],	//下拉框
 			isLoadEnd: false,
 		}
 	},
@@ -166,6 +166,17 @@ export default {
 	},
 	mounted() {
 		this.scroller = this.$el;
+	},
+	filters: {
+		distance(value) {
+			let val = parseFloat(value).toFixed(2)
+			if (val <= 0.1) {
+				return '< 100 m'
+			}
+			else {
+				return `< ${val} km`
+			}
+		}
 	},
 	methods: {
 		toBack() {
@@ -195,10 +206,10 @@ export default {
 			this.loading = true;
 			this.isLoadEnd = false;
 			this.searchStoreKey.pageIndex = 1;
-			let nearbyListData = await searchStoreList(this.searchStoreKey);
+			let nearbyList = await searchStoreList(this.searchStoreKey);
 			this.loading = false;
-			this.nearbyListData = nearbyListData.Data;
-			if (nearbyListData.PageIndex >= nearbyListData.totalPage ) this.isLoadEnd = true;
+			this.nearbyListData = nearbyList.Data;
+			if (nearbyList.PageIndex >= nearbyList.totalPage ) this.isLoadEnd = true;
 			this.dataNone = this.nearbyListData.length ? false : true;
 		},
 		// 获取 附近商店列表
@@ -281,7 +292,7 @@ export default {
 					this.isSortList = false;
 					this.isClassify = false;
 					if (!active) {
-						this.searchStoreKey.sort = 2;
+						this.searchStoreKey.sort = 3;
 						this.dataSortInit[1].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;
 						this.reloadNearbyStore();
 					} else {
@@ -297,7 +308,7 @@ export default {
 					this.isSortList = false;
 					this.isClassify = false;
 					if (!active) {
-						this.searchStoreKey.sort = 3;
+						this.searchStoreKey.sort = 2;
 						this.dataSortInit[2].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;							
 						this.reloadNearbyStore();
 					} else {
@@ -744,7 +755,6 @@ export default {
 .btn-map {
 	position: relative;
 	z-index: 10;
-	float: right;
 	margin-top: 0.2rem;
 	display: block;
 	width: 2.2rem;

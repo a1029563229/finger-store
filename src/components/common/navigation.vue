@@ -35,15 +35,15 @@
 	left: 0;
 	right: 0;
 	width: 100%;
-	height: 1.4rem;
+	height: 1.2rem;
 	background: #FFF;
 	z-index: 100;
-	border-top: 1px solid #EEE;
+	box-shadow: 0 0 4px 1px rgba(51,51,51,0.35);
 }
 .nav-home {
 	float: left;
 	display: block;
-	margin: 0.3rem 4%;
+	margin: 0.2rem 4%;
 	height: 0.8rem;
 	width: 42%;
 	border-radius: 0.06rem;
@@ -53,7 +53,7 @@
 .nav-order {
 	float: left;
 	display: block;
-	margin: 0.3rem 4%;
+	margin: 0.2rem 4%;
 	height: 0.8rem;
 	width: 42%;
 	border-radius: 0.06rem;

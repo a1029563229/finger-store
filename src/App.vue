@@ -11,7 +11,7 @@ export default {
   name: 'app',
   data() {
     return {
-      transitionName: 'router-fade',
+      transitionName: 'trans-opacity',
     }
   },
 }
@@ -20,12 +20,10 @@ export default {
 <style>
 @import './assets/css/common.css';
 
-.router-fade-enter-active, .router-fade-leave-active  {
-  opacity: 0;
-  transition: opacity .3s;
-}
-
-.router-fade-enter, .router-fade-leave-active {
+.trans-opacity-enter-active, .trans-opacity-leave-active{
+    transition: opacity 0.3s;
+  }
+.trans-opacity-enter, .trans-opacity-leave-active{
   opacity: 0;
 }
 
@@ -35,12 +33,8 @@ export default {
 }
 
 .app-view {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-  z-index: 1;
-  transition: tranform 0.3s ease;
+  width: 100%;
+  height: 100%;
 }
 
 </style>

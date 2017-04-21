@@ -14,12 +14,12 @@
 			<router-link :to="{path: 'search',query:{storeid: 0,token: token}}" class="search-icon"></router-link>
 		</div>
 		<!-- 今日精品推荐 -->
-		<section-item :title="require('../assets/icon/home_activity_recommended@3x.png')">
+		<section-item title="static/img/home_activity_recommended@3x.png" v-show="recommendData.length">
 			<recommend-today :token="token" :show-type="showType" :recomend-data="recommendData" v-if="recommendData.length"></recommend-today>
 		</section-item>
 		<!-- 附近店铺 -->
-		<section-item class="section-item-mask" :title="require('../assets/icon/home_activity_nearby@3x.png')">
-
+		<section-item class="section-item-mask" title="static/img/home_activity_nearby@3x.png" v-show="dataSortInit.length">
+			
 			<section class="sort-filter">
 				<ul class="selection">
 					<li class="selection-item" v-for="(item, index) in dataSortInit" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
@@ -65,16 +65,15 @@
 					</div>
 				</aside>
 				<div class="mask" v-show="isMask" @click="isSortList = isClassify = isMask = false;"></div>
-
 				<ul class="nearby-list">
 					<li v-for="item in nearbyListData" class="nearby-item" :key="item.StoreID" @click.stop="toStore(item.StoreName,item.StoreID,item.StoreLogo, item.CoordsX, item.CoordsY)">
-						<div class="img">
+						<div class="nearby-img">
 							<img :src="item.StoreLogo">
 						</div>
-						<div class="desc">
+						<div class="nearby-desc">
 							<h1 class="ellipsis">{{ item.StoreName }}</h1>
-							<p class="desc-item">
-								<span>月销量&nbsp;{{ item.SellCount }}</span>
+							<p class="nearby-desc-item">
+								<span>销量&nbsp;{{ item.SellCount }}</span>
 								<span class="item-distance" v-show="searchStoreKey.lat && searchStoreKey.lng">{{ item.Distanct | distance }}</span>
 								<span class="item-distance" v-show="!(searchStoreKey.lat && searchStoreKey.lng)">&nbsp;0&nbsp;km</span>
 							</p>
@@ -82,7 +81,7 @@
 						</div>
 					</li>
 				</ul>
-				<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关店铺 </div>
+				<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关店铺</div>
 			<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
 			</section>
 		</section-item>
@@ -150,11 +149,11 @@ export default {
 			},
 			dataSortInit: [		// 筛选数据初始化
 				{name: '综合', class: 'total', up: false, active:true },
-				{name: '距离', class: 'arrow-up', up: false, active:false },
-				{name: '销量', class: 'arrow-up',  up: false, active:false },
+				{name: '距离', class: 'arrow-up', up: true, active:false },
+				{name: '销量', class: 'arrow-up',  up: true, active:false },
 				{name: '筛选', class: 'screen ',  up: false, active:false },
 			],
-			dataSelectInit: ['综合排序', '距离', '销量'],	//下拉框
+			dataSelectInit: ['综合排序', '销量', '距离'],	//下拉框
 			isLoadEnd: false,
 		}
 	},
@@ -210,7 +209,6 @@ export default {
 		}
 	},
 	methods: {
-		
 		async getCurToken() {
 			let tokenData = await getToken();
 			console.warn(tokenData.Data);
@@ -267,13 +265,12 @@ export default {
 		// 重新加载 附近商店列表 
 		async reloadNearbyStore() {
 			this.searchStoreKey.pageIndex = 1;
-			let nearbyListData = await searchStoreList(this.searchStoreKey);
-			console.warn('nearbyListData',nearbyListData);
+			let nearbyList = await searchStoreList(this.searchStoreKey);
+			console.warn('nearbyListData',nearbyList);
 			this.loading = false;
-			this.nearbyListData = nearbyListData.Data;
-			if (nearbyListData.PageIndex >= nearbyListData.totalPage ) this.isLoadEnd = true;
+			this.nearbyListData = nearbyList.Data;
+			if (nearbyList.PageIndex >= nearbyList.totalPage ) this.isLoadEnd = true;
 			this.dataNone = this.nearbyListData.length ? false : true;
-			// console.info('reloadNearbyStore:', this.nearbyListData);
 		},
 		// 获取筛选栏-属性列表
 		async getAttrList() {
@@ -370,7 +367,7 @@ export default {
 					this.isSortList = false;
 					this.isClassify = false;
 					if (!active) {
-						this.searchStoreKey.sort = 2;
+						this.searchStoreKey.sort = 3;
 						this.dataSortInit[1].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;
 						this.reloadNearbyStore();
 					} else {
@@ -386,7 +383,7 @@ export default {
 					this.isSortList = false;
 					this.isClassify = false;
 					if (!active) {
-						this.searchStoreKey.sort = 3;
+						this.searchStoreKey.sort = 2;
 						this.dataSortInit[2].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;							
 						this.reloadNearbyStore();
 					} else {
@@ -474,6 +471,7 @@ export default {
 <style scoped>
 
 .home {
+	position: relative;
 	width: 100%;
 	height: 100%;
 	padding-bottom: 1.4rem;
@@ -537,7 +535,6 @@ export default {
 .sort-filter {
 	position: relative;
 	width: 100%;
-	height: 100%;
 }
 
 .mask {
@@ -801,7 +798,7 @@ export default {
 	border-bottom: 1px solid #eee;
 }
 
-.img {
+.nearby-img {
 	float: left;
 	position: relative;
 	width: 2.4rem;
@@ -809,20 +806,20 @@ export default {
 	margin-right: 0.5rem;
 }
 
-.desc {
+.nearby-desc {
 	float: left;
 	width: 68%;
 }
 
-.desc h1 {
+.nearby-desc h1 {
 	font-size: 0.4rem;
 	line-height: 0.8rem;
 }
 
-.desc-item {
+.nearby-desc-item {
 	color: #999;
 }
-.desc-item span {
+.nearby-nearby-desc-item span {
 	font-size: 0.35rem;
 }
 
@@ -833,7 +830,6 @@ export default {
 .btn-map {
 	position: relative;
 	z-index: 10;
-	float: right;
 	margin-top: 0.2rem;
 	display: block;
 	width: 2.2rem;

@@ -21,18 +21,21 @@
 				我的收藏
 				<div class="item-btn">
 					查看收藏
-					<i class="arrow-right"></i>
+					<i class="list-arrow-right"></i>
 				</div>
 			</li>
 		</ul>
+		<navigation></navigation>
 	</div>
 </template>
 <script>
 import headerTop from '@/components/common/headerTop'
+import navigation from '@/components/common/navigation'
 export default {
 	name: 'order',
 	components: {
 		headerTop,
+		navigation
 	},
 	data() {
 		return {
@@ -82,8 +85,8 @@ export default {
 	display: block;
 	width: 1rem;
 	height: 1rem;
-	background: url('../assets/icon/common_collection_press@2x.png') no-repeat center;
-	background-size: 0.48rem;
+	background: url('../assets/icon/my_order@2x.png') no-repeat center;
+	background-size: 0.55rem;
 }
 .myall-right {
 	float: right;
@@ -118,8 +121,8 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.choice-item>img{
-  width: 1rem
+.choice-item > img{
+  width: 0.8rem
 }
 
 /* order-list */
@@ -129,32 +132,30 @@ export default {
 }
 .order-item {
 	width: 100%;
-	height: 1.36rem;
-	line-height: 1.36rem;
+	height: 1.3rem;
+	line-height: 1.3rem;
 	border-bottom: 1px solid #EEE;
 	background-color: #FFF;
-	padding: 0 2%;
+	padding: 0 3%;
 	font-size: 0.4rem;
 }
 .item-icon {
 	float: left;
-	margin-right: 0.1rem;
 	width: 0.9rem;
 	height: 100%;
 	background: url('../assets/icon/common_collection_press@2x.png') no-repeat center;
-	background-size: 0.56rem;
+	background-size: 0.6rem;
 }
 .item-btn {
 	float: right;
 	color: #999;
 	font-size: 0.35rem;
 }
-.arrow-right {
+.list-arrow-right {
 	float: right;
-	margin-left: 0.3rem;
 	display: block;
-	width: 0.6rem;
-	height: 1.36rem;
+	width: 1rem;
+	height: 1.3rem;
 	background: url('../assets/icon/arrow-right.png') no-repeat center;
 	background-size: 0.4rem;
 	opacity: 0.6;

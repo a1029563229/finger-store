@@ -103,8 +103,8 @@
 				commodityList: [],
 				dataSortInit: [		// 筛选数据初始化
 					{name: '综合', class: 'total', up: false, active:true },
-					{name: '距离', class: 'arrow-up', up: false, active:false },
-					{name: '价格', class: 'arrow-up',  up: false, active:false },
+					{name: '距离', class: 'arrow-up', up: true, active:false },
+					{name: '价格', class: 'arrow-up',  up: true, active:false },
 					{name: '筛选', class: 'screen ',  up: false, active:false },
 				],
 				dataSelectInit: ['综合排序', '距离', '价格'],	//下拉框
@@ -350,7 +350,7 @@
 			},
 			// 确认筛选
 			confirm() {
-				if (this.priceMax < this.priceMin) this.priceMax = this.priceMin;
+				if (this.priceMax < this.priceMin) this.priceMax = '';
 				this.searchProductKey.priceMin = this.priceMin;
 				this.searchProductKey.priceMax = this.priceMax;
 				console.log('searchProductKey', this.searchProductKey);

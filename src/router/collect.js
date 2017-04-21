@@ -1,9 +1,9 @@
 
 
-const collect = r => require.ensure([], () => r(require('../page/collect')), 'collect');
+ const collect = r => require.ensure([], () => r(require('../page/collect')), 'collect');
 
 export default {
-  path: '/collect',
-  name: 'collect',
-  component: collect
+	path: '/collect',
+	name: 'collect',
+	component: collect
 }

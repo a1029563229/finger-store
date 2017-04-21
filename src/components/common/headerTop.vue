@@ -35,7 +35,8 @@
 		z-index: 9;
 		text-align: center;
 		background: #FFF;
-		border-bottom: 1px solid #EEE;
+		/* border-bottom: 1px solid #EEE; */
+		box-shadow: 0 0 3px -1px rgba(51,51,51,0.35);
 	}
 	.header-back {
 		position: absolute;

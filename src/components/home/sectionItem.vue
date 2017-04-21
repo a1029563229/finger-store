@@ -22,6 +22,6 @@ export default {
 <style>
 	.section-title {
 		width: 100%;
-		height: 1.04rem;
+		height: auto;
 	}
 </style>

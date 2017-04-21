@@ -6,9 +6,9 @@
         <div>
           <img :src="recomendData[0].img_url" >
         </div>
-        <h1>{{recomendData[0].sell_title}}</h1>
-        <p>{{recomendData[0].product_name}}</p>
-        <h2>{{recomendData[0].sell_price}}</h2>
+        <h1>{{recomendData[0].product_name}}</h1>
+        <p>{{recomendData[0].sell_title}}</p>
+        <h2>{{recomendData[0].sell_price | money }}</h2>
       </div>
       <div class="recommend-right" @click="toDetail(recomendData[1].link_url)">
         <div class="recommend-right-top">
@@ -16,9 +16,9 @@
             <img :src="recomendData[1].img_url">
           </div>
           <div class="right-desc">
-            <h1>{{recomendData[1].sell_title}}</h1>
-            <p>{{recomendData[1].product_name}}</p>
-            <h2>{{recomendData[1].sell_price}}</h2>
+            <h1>{{recomendData[1].product_name}}</h1>
+            <p>{{recomendData[1].sell_title}}</p>
+            <h2>{{recomendData[1].sell_price | money }}</h2>
           </div>
         </div>
         <div class="recommend-right-bottom" @click="toDetail(recomendData[2].link_url)">
@@ -26,9 +26,9 @@
             <img :src="recomendData[2].img_url">
           </div>
           <div class="right-desc">
-            <h1>{{recomendData[2].sell_title}}</h1>
-            <p>{{recomendData[2].product_name}}</p>
-            <h2>{{recomendData[2].sell_price}}</h2>
+            <h1>{{recomendData[2].product_name}}</h1>
+            <p>{{recomendData[2].sell_title}}</p>
+            <h2>{{recomendData[2].sell_price | money }}</h2>
           </div>
         </div>
       </div>
@@ -39,9 +39,9 @@
       <div class="recommend-one-one"  v-for="item in recomendData" @click="toDetail(item.link_url)">
         <img :src="item.img_url" >
         <div class="recommend-one-right">
-          <h1>{{item.sell_title}}</h1>
-          <p>{{item.product_name}}</p>
-          <h2>{{item.sell_price}}</h2>
+          <h1>{{item.product_name}}</h1>
+          <p>{{item.sell_title}}</p>
+          <h2>{{item.sell_price | money }}</h2>
         </div>
       </div>
     </div>
@@ -53,9 +53,9 @@
         <div>
           <img :src="recomendData[0].img_url" >
         </div>
-        <h1>{{recomendData[0].sell_title}}</h1>
-        <p>{{recomendData[0].product_name}}</p>
-        <h2>{{recomendData[0].sell_price}}</h2>
+        <h1>{{recomendData[0].product_name}}</h1>
+        <p>{{recomendData[0].sell_title}}</p>
+        <h2>{{recomendData[0].sell_price | money }}</h2>
       </div>
       <div class="recommend-right">
         <div class="recommend-right-top recommend-right-top-one-three" @click="toDetail(recomendData[1].link_url)">
@@ -63,9 +63,9 @@
             <img :src="recomendData[1].img_url">
           </div>
           <div class="right-desc right-desc-one-three">
-            <h1>{{recomendData[1].sell_title}}</h1>
-            <p>{{recomendData[1].product_name}}</p>
-            <h2>{{recomendData[1].sell_price}}</h2>
+            <h1>{{recomendData[1].product_name}}</h1>
+            <p>{{recomendData[1].sell_title}}</p>
+            <h2>{{recomendData[1].sell_price | money }}</h2>
           </div>
         </div>
         <div class="recommend-right-top recommend-right-top-one-three" @click="toDetail(recomendData[2].link_url)">
@@ -73,9 +73,9 @@
             <img :src="recomendData[2].img_url">
           </div>
           <div class="right-desc right-desc-one-three">
-            <h1>{{recomendData[2].sell_title}}</h1>
-            <p>{{recomendData[2].product_name}}</p>
-            <h2>{{recomendData[2].sell_price}}</h2>
+            <h1>{{recomendData[2].product_name}}</h1>
+            <p>{{recomendData[2].sell_title}}</p>
+            <h2>{{recomendData[2].sell_price | money }}</h2>
           </div>
         </div>
         <!--<div class="recommend-right-top recommend-right-top-one-three">-->
@@ -83,9 +83,9 @@
             <!--<img :src="recomendData[3].img_url">-->
           <!--</div>-->
           <!--<div class="right-desc right-desc-one-three">-->
-            <!--<h1>{{recomendData[3].sell_title}}</h1>-->
-            <!--<p>{{recomendData[3].product_name}}</p>-->
-            <!--<h2>{{recomendData[3].sell_price}}</h2>-->
+            <!--<h1>{{recomendData[3].product_name}}</h1>-->
+            <!--<p>{{recomendData[3].sell_title}}</p>-->
+            <!--<h2>{{recomendData[3].sell_price | money }}</h2>-->
           <!--</div>-->
         <!--</div>-->
       </div>
@@ -100,9 +100,9 @@
             <img :src="recomendData[0].img_url">
           </div>
           <div class="right-desc">
-            <h1>{{recomendData[0].sell_title}}</h1>
-            <p>{{recomendData[0].product_name}}</p>
-            <h2>{{recomendData[0].sell_price}}</h2>
+            <h1>{{recomendData[0].product_name}}</h1>
+            <p>{{recomendData[0].sell_title}}</p>
+            <h2>{{recomendData[0].sell_price | money }}</h2>
           </div>
         </div>
         <div class="recommend-right-bottom" @click="toDetail(recomendData[1].link_url)">
@@ -110,9 +110,9 @@
             <img :src="recomendData[1].img_url">
           </div>
           <div class="right-desc">
-            <h1>{{recomendData[1].sell_title}}</h1>
-            <p>{{recomendData[1].product_name}}</p>
-            <h2>{{recomendData[1].sell_price}}</h2>
+            <h1>{{recomendData[1].product_name}}</h1>
+            <p>{{recomendData[1].sell_title}}</p>
+            <h2>{{recomendData[1].sell_price | money }}</h2>
           </div>
         </div>
       </div>
@@ -120,9 +120,9 @@
         <div>
           <img :src="recomendData[2].img_url" >
         </div>
-        <h1>{{recomendData[2].sell_title}}</h1>
-        <p>{{recomendData[2].product_name}}</p>
-        <h2>{{recomendData[2].sell_price}}</h2>
+        <h1>{{recomendData[2].product_name}}</h1>
+        <p>{{recomendData[2].sell_title}}</p>
+        <h2>{{recomendData[2].sell_price | money }}</h2>
       </div>
     </div>
 
@@ -134,9 +134,9 @@
             <img :src="recomendData[0].img_url">
           </div>
           <div class="right-desc right-desc-one-three">
-            <h1>{{recomendData[0].sell_title}}</h1>
-            <p>{{recomendData[0].product_name}}</p>
-            <h2>{{recomendData[0].sell_price}}</h2>
+            <h1>{{recomendData[0].product_name}}</h1>
+            <p>{{recomendData[0].sell_title}}</p>
+            <h2>{{recomendData[0].sell_price | money }}</h2>
           </div>
         </div>
         <div class="recommend-right-top recommend-right-top-one-three" @click="toDetail(recomendData[1].link_url)">
@@ -144,9 +144,9 @@
             <img :src="recomendData[1].img_url">
           </div>
           <div class="right-desc right-desc-one-three">
-            <h1>{{recomendData[1].sell_title}}</h1>
-            <p>{{recomendData[1].product_name}}</p>
-            <h2>{{recomendData[1].sell_price}}</h2>
+            <h1>{{recomendData[1].product_name}}</h1>
+            <p>{{recomendData[1].sell_title}}</p>
+            <h2>{{recomendData[1].sell_price | money }}</h2>
           </div>
         </div>
         <div class="recommend-right-top recommend-right-top-one-three" @click="toDetail(recomendData[2].link_url)">
@@ -154,9 +154,9 @@
             <img :src="recomendData[2].img_url">
           </div>
           <div class="right-desc right-desc-one-three">
-            <h1>{{recomendData[2].sell_title}}</h1>
-            <p>{{recomendData[2].product_name}}</p>
-            <h2>{{recomendData[2].sell_price}}</h2>
+            <h1>{{recomendData[2].product_name}}</h1>
+            <p>{{recomendData[2].sell_title}}</p>
+            <h2>{{recomendData[2].sell_price | money }}</h2>
           </div>
         </div>
       </div>
@@ -164,9 +164,9 @@
         <!--<div>-->
           <!--<img :src="recomendData[3].img_url" >-->
         <!--</div>-->
-        <!--<h1>{{recomendData[3].sell_title}}</h1>-->
-        <!--<p>{{recomendData[3].product_name}}</p>-->
-        <!--<h2>{{recomendData[3].sell_price}}</h2>-->
+        <!--<h1>{{recomendData[3].product_name}}</h1>-->
+        <!--<p>{{recomendData[3].sell_title}}</p>-->
+        <!--<h2>{{recomendData[3].sell_price | money }}</h2>-->
       <!--</div>-->
     </div>
 
@@ -178,9 +178,9 @@
           <div class="twoItemImg">
             <img :src="item.img_url" >
           </div>
-          <h1>{{item.sell_title}}</h1>
-          <p>{{item.product_name}}</p>
-          <h2>{{item.sell_price}}</h2>
+          <h1>{{item.product_name}}</h1>
+          <p>{{item.sell_title}}</p>
+          <h2>{{item.sell_price | money }}</h2>
         </li>
       </div>
     </div>
@@ -192,9 +192,9 @@
           <div class="twoItemImg">
             <img :src="item.img_url">
           </div>
-          <h1>{{item.sell_title}}</h1>
-          <p>{{item.product_name}}</p>
-          <h2>{{item.sell_price}}</h2>
+          <h1>{{item.product_name}}</h1>
+          <p>{{item.sell_title}}</p>
+          <h2>{{item.sell_price | money }}</h2>
         </li>
       </div>
     </div>
@@ -224,6 +224,12 @@
     mounted(){
 
     },
+    filters: {
+      money(value) {
+        let val = parseFloat(value).toFixed(2)
+        return `￥ ${val}`
+      }
+    }
   }
 </script>
 <style scoped>
