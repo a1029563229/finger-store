@@ -65,8 +65,7 @@ export default {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding-bottom: 1.4rem;
-	line-height: 1.4rem;
+	line-height: 1.2rem;
 	width: 100%;
 }
 .infinite-loader {

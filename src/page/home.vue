@@ -466,9 +466,7 @@ export default {
 
 .home {
 	position: relative;
-	width: 100%;
-	height: auto;
-	padding-bottom: 1.4rem;
+	padding-bottom: 1.2rem;
 }
 
 	/* swiper */
