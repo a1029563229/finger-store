@@ -15,7 +15,7 @@
 		</div>
 		<!-- 今日精品推荐 -->
 		<section-item title="static/img/home_activity_recommended@3x.png" v-show="recommendData.length">
-			<recommend-today :token="token" :show-type="1" :recomend-data="recommendData" v-if="recommendData.length"></recommend-today>
+			<recommend-today :token="token" :show-type="3" :recomend-data="recommendData" v-if="recommendData.length"></recommend-today>
 		</section-item>
 		<!-- 附近店铺 -->
 		<section-item class="section-item-mask" title="static/img/home_activity_nearby@3x.png" v-show="dataSortInit.length">
@@ -81,9 +81,9 @@
 						</div>
 					</li>
 					<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关店铺</div>
+					<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
 				</ul>
 				
-			<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
 			</section>
 		</section-item>
 		<!-- 底部导航栏 -->
@@ -231,8 +231,8 @@ export default {
 		// 获取今日推荐
 		async recommendTodayInit() {
 			let todayData = await getTodayRecommend(this.token);
-			this.showType = todayData.Data[0].show_type;
-			this.recommendData = todayData.Data[0].list_floor_product;
+			this.showType = todayData.Data[5].show_type;
+			this.recommendData = todayData.Data[5].list_floor_product;
 		},
 		// 获取banner 
 		async BannerInit() {
@@ -466,7 +466,6 @@ export default {
 
 .home {
 	position: relative;
-	padding-bottom: 1.2rem;
 }
 
 	/* swiper */
@@ -785,7 +784,7 @@ export default {
 /* nearbylist */
 .nearby-list {
 	width: 100%;
-	min-height: 9rem;
+	min-height: 13rem;
 }
 
 .nearby-item {

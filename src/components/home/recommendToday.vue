@@ -1,7 +1,36 @@
 <template>
-  <div>
+  <div class="recommendToday clear">
+
+       <!--1+1-->
+    <!-- <div v-if="showType==1">
+      <div class="recommend-one-one"  v-for="item in recomendData" @click="toDetail(item.link_url)">
+        <img :src="item.img_url" >
+        <div class="recommend-one-right">
+          <h1>{{item.product_name}}</h1>
+          <p>{{item.sell_title}}</p>
+          <h2>{{item.sell_price | money }}</h2>
+        </div>
+      </div>
+    </div> -->
+
+    <template v-if="showType == 1">
+      <recommend-one :recommend-list="recomendData" :token="token"></recommend-one>
+    </template>
+
+    <template v-if="showType == 2">
+      <recommend-two :recommend-list="recomendData" :token="token"></recommend-two>
+    </template>
+
+     <template v-if="showType == 3">
+      <recommend-three :recommend-list="recomendData" :token="token"></recommend-three>
+    </template>
+
+
+
+
+
     <!--1+2-->
-    <div class="recommend-default recommend-three" v-if="showType==0">
+    <!-- <div class="recommend-default recommend-three" v-if="showType==3">
       <div class="recommend-left" @click="toDetail(recomendData[0].link_url)">
         <div>
           <img :src="recomendData[0].img_url" >
@@ -32,23 +61,27 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <!--1+1-->
-    <div v-if="showType==1">
-      <div class="recommend-one-one"  v-for="item in recomendData" @click="toDetail(item.link_url)">
-        <img :src="item.img_url" >
-        <div class="recommend-one-right">
+  <!--2+2-->
+    <!-- <div v-if="showType==2">
+      <div class="two-two clear" >
+        <li class="twoItem" v-for="item in recomendData" @click="toDetail(item.link_url)">
+          <div class="twoItemImg">
+            <img :src="item.img_url" >
+          </div>
           <h1>{{item.product_name}}</h1>
           <p>{{item.sell_title}}</p>
           <h2>{{item.sell_price | money }}</h2>
-        </div>
+        </li>
       </div>
-    </div>
+    </div> -->
 
+  
+ 
 
     <!--1+3-->
-    <div class="recommend-default recommend-three" v-if="showType==4">
+    <div class="recommend-default recommend-three" v-if="showType==6">
       <div class="recommend-left" @click="toDetail(recomendData[0].link_url)">
         <div>
           <img :src="recomendData[0].img_url" >
@@ -93,7 +126,7 @@
 
 
     <!--2+1-->
-    <div class="recommend-default recommend-three" v-if="showType==2">
+    <div class="recommend-default recommend-three" v-if="showType==4">
       <div class="recommend-right recommend-right-two-one">
         <div class="recommend-right-top" @click="toDetail(recomendData[0].link_url)">
           <div class="right-img">
@@ -127,7 +160,7 @@
     </div>
 
     <!--3+1-->
-    <div class="recommend-default recommend-three" v-if="showType==5">
+    <div class="recommend-default recommend-three" v-if="showType==7">
       <div class="recommend-right recommend-right-three-one">
         <div class="recommend-right-top recommend-right-top-one-three" @click="toDetail(recomendData[0].link_url)">
           <div class="right-img right-img-one-three">
@@ -171,22 +204,9 @@
     </div>
 
 
-    <!--2+2-->
-    <div v-if="showType==3">
-      <div class="two-two clear" >
-        <li class="twoItem" v-for="item in recomendData" @click="toDetail(item.link_url)">
-          <div class="twoItemImg">
-            <img :src="item.img_url" >
-          </div>
-          <h1>{{item.product_name}}</h1>
-          <p>{{item.sell_title}}</p>
-          <h2>{{item.sell_price | money }}</h2>
-        </li>
-      </div>
-    </div>
 
     <!--3+3-->
-    <div v-if="showType==6">
+    <div v-if="showType==5">
       <div class="three-three clear" >
         <li class="twoItem threeItem" v-for="item in recomendData" @click="toDetail(item.link_url)">
           <div class="twoItemImg">
@@ -205,11 +225,19 @@
   import {GetZZDTodayRecommed,appkey,token} from '../../config/env'
   import { getTodayRecommend } from '../../service/getData'
   import { mapState } from 'vuex'
+  import recommendOne from '@/components/recommend/recommendOne'
+  import recommendTwo from '@/components/recommend/recommendTwo'
+  import recommendThree from '@/components/recommend/recommendThree'
   export default {
     name: 'recommend-today',
     props: ['showType', 'recomendData'],
     data(){
       return {}
+    },
+    components: {
+      recommendOne,
+      recommendTwo,
+      recommendThree,
     },
     computed: {
       ...mapState({
@@ -227,12 +255,18 @@
     filters: {
       money(value) {
         let val = parseFloat(value).toFixed(2)
-        return `￥ ${val}`
+        return `￥${val}`
       }
     }
   }
 </script>
 <style scoped>
+
+.recommendToday {
+  background-color: #F4F4F4;
+}
+
+
   .recommend-default {
     width: 100%;
     height: 5.96rem;
@@ -295,8 +329,11 @@
   .recommend-right .right-desc {
     padding-top: 8%;
   }
+
+/* 1 + 1 模式 */
   .recommend-one-one{
-    height: 3.5rem;
+    width: 100%;
+    height: 2.9rem;
     display: flex;
     align-items: center;
     justify-content: space-between;

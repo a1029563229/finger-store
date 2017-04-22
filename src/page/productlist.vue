@@ -363,6 +363,7 @@
 
 .store {
 	background-color: #F4F4F4;
+	padding-bottom: 1.2rem;
 }
 
 /* search-bar */
@@ -425,8 +426,6 @@
 /* commodity-list */
 .store-list {
 	width: 100%;
-	height: auto;
-	min-height: 8rem;
 	padding-top: 0.1rem;
 }
 .store-item {

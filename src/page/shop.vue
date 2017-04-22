@@ -36,13 +36,13 @@
 				 	品牌
 				 	<i class="arrow-down" :class="{active: brandarrow}" @click="brandarrow = !brandarrow"></i>
 				</h1>
-				<ol class="classify-name clear" :class="{active: brandarrow}">
+				<ol class="classify-name" :class="{active: brandarrow}">
 					<dd v-for="(item,index) in brandsList" :class="{active: index === brandSelect}" @click="brandSelectResolve(index,item.Title)">{{ item.Title }}</dd>
 				</ol>
 				<h1 class="classify-title">
 					价格区间
 				</h1>
-				<ol class="classify-price clear">
+				<ol class="classify-price">
 					<dd><input type="number" placeholder="最低价" v-model="priceMin"></dd>
 					<dd class="classify-price-line">-</dd>
 					<dd><input type="number" placeholder="最高价" v-model="priceMax"></dd>
@@ -51,14 +51,14 @@
 					内存
 					<i class="arrow-down" :class="{active: memoryArrow}" @click="memoryArrow = !memoryArrow"></i>
 				</h1>
-				<ol class="classify-capacity clear" :class="{active: memoryArrow}">
+				<ol class="classify-capacity" :class="{active: memoryArrow}">
 					<dd v-for="(item,index) in memoryList" :class="{active: index === memorySelect}" @click="memorySelectResolve(index,item.Title)">{{item.Title}}</dd>
 				</ol>
 				<h1 class="classify-title">
 					机身颜色
 					<i class="arrow-down" :class="{active: colorArrow}" @click="colorArrow = !colorArrow"></i>
 				</h1>
-				<ol class="classify-color clear" :class="{active: colorArrow}">
+				<ol class="classify-color" :class="{active: colorArrow}">
 					<dd v-for="(item,index) in colorList" :class="{active: index === colorSelect}" @click="colorSelectResolve(index,item.Title)">{{ item.Title }}</dd>
 				</ol>
 				<div class="classify-btn">
@@ -67,7 +67,7 @@
 				</div>
 			</aside>
 			<div class="mask" v-show="isMask" @click="isSortList = isClassify = isMask = false;"></div>
-			<ul class="store-list clear">
+			<ul class="store-list">
 			<li class="store-item" v-for="item in commodityList" @click="toProduct(item.ProductUrl)">
 				<div class="item-image">
 					<img :src="item.ImgUrl">
@@ -398,8 +398,6 @@
 .store {
 	position: relative;
 	width: 100%;
-	height: 100%;
-	/*padding-bottom: 1.4rem;*/
 	background-color: #F4F4F4;
 }
 
@@ -542,8 +540,6 @@
 /* commodity-list */
 .store-list {
 	width: 100%;
-	height: auto;
-	min-height: 8rem;
 	padding-top: 0.15rem;
 }
 .store-item {
