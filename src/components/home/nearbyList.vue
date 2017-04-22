@@ -7,7 +7,7 @@
 			<div class="desc">
 				<h1 class="ellipsis">{{ item.StoreName }}</h1>
 				<p class="desc-item">
-					<span>月销量&nbsp;{{ item.SellCount }}</span>
+					<span>销量&nbsp;{{ item.SellCount }}</span>
 					<span class="item-distance">&lt;&nbsp;{{ item.Distanct }}&nbsp;km</span>
 				</p>
 				<router-link :to="{path:'map', query:{name:item.StoreName,lat:local.lat,lng:local.lng}}" class="btn-map" @click="toMap(item.StoreName)">到这里去</router-link>

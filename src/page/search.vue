@@ -126,7 +126,7 @@ export default {
 	border-radius: 0.08rem;
 	margin: 1.4rem auto 0;
 	background: #FFF;
-	border: 1px solid #333;
+	border: 1px solid #999;
 }
 .keyword-list {
 	width: 100%;
@@ -139,7 +139,7 @@ export default {
 	width: 20%;
 	height: 0.7rem;
 	line-height: 0.7rem;
-	border: 1px solid #333;
+	border: 1px solid #999;
 	border-radius: 0.08rem;
 	color: #333;
 	text-align: center;
@@ -200,7 +200,7 @@ export default {
 .search-input {
 	width: 72%;
 	height: 0.8rem;
-	border: 1px solid #222;
+	border: 1px solid #999;
 	border-radius: 1rem;
 	margin: 0.24rem auto;
 	font-size: 0.32rem;

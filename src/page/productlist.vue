@@ -61,7 +61,7 @@
 						{{ item.SellPrice | currency }}
 					</span>
 					<span class="item-num">
-						月销量&nbsp;{{ item.SellCount }}
+						销量&nbsp;{{ item.SellCount }}
 					</span>
 				</p>
 			</li>
@@ -155,6 +155,7 @@
 		},
 		mounted() {
 			this.scroller = this.$el;
+			document.body.scollTop = 0;
 		},
 		filters: {
 			currency(value) {
@@ -361,15 +362,15 @@
 <style scoped>
 
 .store {
-	width: 100%;
-	height: 100%;
-	padding-bottom: 1.4rem;
 	background-color: #F4F4F4;
 }
 
 /* search-bar */
 .search-bar {
-	position: relative;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
 	width: 100%;
 	height: 1.28rem;
 	background-color: #FFF;
@@ -413,7 +414,7 @@
 .search-input {
 	width: 72%;
 	height: 0.8rem;
-	border: 1px solid #222;
+	border: 1px solid #999;
 	border-radius: 1rem;
 	margin: 0.24rem auto;
 	font-size: 0.32rem;
@@ -425,16 +426,17 @@
 .store-list {
 	width: 100%;
 	height: auto;
-	margin-left: 1.5%;
-	padding-top: 0.15rem;
+	min-height: 8rem;
+	padding-top: 0.1rem;
 }
 .store-item {
 	position: relative;
 	float: left;
-	margin: 0.15rem 1.5%;
-	width: 45.5%;
+	margin: 0.1rem 2%;
+	width: 47%;
 	height: 6.64rem;
-	border: 1px solid #D8D8D8;
+	border: 1px solid #EEE;
+	border-radius: 0.04rem;
 	padding: 0.15rem 1.5%;
 	background: #FFF;
 }
@@ -487,6 +489,7 @@
 /* sort-filter */
 .sort-filter {
 	position: relative;
+	padding-top: 1.28rem;
 	width: 100%;
 	height: 100%;
 }

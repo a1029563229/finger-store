@@ -72,7 +72,7 @@ export default {
 .search-input {
 	width: 72%;
 	height: 0.8rem;
-	border: 1px solid #222;
+	border: 1px solid #999;
 	border-radius: 1rem;
 	margin: 0.24rem auto;
 	font-size: 0.32rem;

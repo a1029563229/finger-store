@@ -10,7 +10,7 @@
 					{{ item.price | currency }}
 				</span>
 				<span class="item-num">
-					月销量&nbsp;{{ item.num }}
+					销量&nbsp;{{ item.num }}
 				</span>
 			</p>
 		</li>

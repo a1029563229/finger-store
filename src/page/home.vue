@@ -15,7 +15,7 @@
 		</div>
 		<!-- 今日精品推荐 -->
 		<section-item title="static/img/home_activity_recommended@3x.png" v-show="recommendData.length">
-			<recommend-today :token="token" :show-type="showType" :recomend-data="recommendData" v-if="recommendData.length"></recommend-today>
+			<recommend-today :token="token" :show-type="1" :recomend-data="recommendData" v-if="recommendData.length"></recommend-today>
 		</section-item>
 		<!-- 附近店铺 -->
 		<section-item class="section-item-mask" title="static/img/home_activity_nearby@3x.png" v-show="dataSortInit.length">
@@ -77,11 +77,12 @@
 								<span class="item-distance" v-show="searchStoreKey.lat && searchStoreKey.lng">{{ item.Distanct | distance }}</span>
 								<span class="item-distance" v-show="!(searchStoreKey.lat && searchStoreKey.lng)">&nbsp;0&nbsp;km</span>
 							</p>
-							<button class="btn-map" @click.stop="toMap(item.StoreName, item.CoordsX, item.CoordsY)">到这里去</button>
+							<button class="btn-map" @click.stop="toMap(item.StoreName, item.CoordsY, item.CoordsX)">到这里去</button>
 						</div>
 					</li>
+					<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关店铺</div>
 				</ul>
-				<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关店铺</div>
+				
 			<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
 			</section>
 		</section-item>
@@ -106,7 +107,7 @@ import watchScroll from '@/components/common/watchScroll'
 import infiniteScroll from '@/components/common/infiniteScroll'
 
 import { appkey } from '@/config/env'
-import { getSlides, getToken, getTodayRecommend, getBanner, searchStoreList, getSearchAttrList } from '@/service/getData'
+import { getSlides, getTodayRecommend, getBanner, searchStoreList, getSearchAttrList } from '@/service/getData'
 
 export default {
 	name: 'home',
@@ -181,10 +182,11 @@ export default {
 		},
 	},
 	created() {
-		 // get Token
-		this.getlocalation();
 		this.tokenInit();
-		this.getCurToken();
+		this.getlocalation();
+		this.BannerInit();
+		this.recommendTodayInit();
+		this.getAttrList();
 	},
 	mounted() {
 		let swiper = this.$refs.swiper;
@@ -192,10 +194,6 @@ export default {
 		if (swiper.dom) {
 			this.swiper = swiper.dom;
 		}
-		// 初始化
-		this.BannerInit();
-		this.recommendTodayInit();
-		this.getAttrList();
 	},
 	filters: {
 		distance(value) {
@@ -209,10 +207,6 @@ export default {
 		}
 	},
 	methods: {
-		async getCurToken() {
-			let tokenData = await getToken();
-			console.warn(tokenData.Data);
-		},
 		// 获取token
 		tokenInit() {
 			console.warn('query:',this.$route.query.token);
@@ -473,7 +467,7 @@ export default {
 .home {
 	position: relative;
 	width: 100%;
-	height: 100%;
+	height: auto;
 	padding-bottom: 1.4rem;
 }
 
@@ -489,10 +483,10 @@ export default {
 }
 .home-swipe img {
 	position: absolute;
+	height: 100%;
 	top: 50%;
 	transform: translate(0, -50%);
 }
-
 
 /* search */
 .home-search {
@@ -791,6 +785,11 @@ export default {
 	height: 3rem;
 }
 /* nearbylist */
+.nearby-list {
+	width: 100%;
+	min-height: 9rem;
+}
+
 .nearby-item {
 	width: 100%;
 	height: 3rem;
@@ -804,6 +803,12 @@ export default {
 	width: 2.4rem;
 	height: 2.4rem;
 	margin-right: 0.5rem;
+}
+.nearby-img img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .nearby-desc {

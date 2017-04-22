@@ -348,18 +348,15 @@
   }
 
   .two-two{
-    background: #EEEEEE;
-    padding: 2%;
+    background-color: #F4F4F4;
+    padding: 0.1rem 0;
   }
   .twoItem{
-    width: 49%;
-    padding: 2%;
+    width: 47%;
     background: #fff;
     float: left;
-    margin-bottom: 2%;
-  }
-  .twoItem:nth-of-type(2n+1){
-    margin-right: 2%;
+    border-radius: 0.04rem;
+    margin: 0.1rem 0 0.1rem 2%;
   }
   .twoItemImg{
     height: 4rem;
@@ -389,7 +386,6 @@
   }
 
   .three-three{
-    padding: 2% 0;
     background: #eee;
   }
   .threeItem{

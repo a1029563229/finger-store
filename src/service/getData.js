@@ -31,7 +31,7 @@ const service = '/api/1.0/YupinhuiServer/ZZDHandle';
 
 
 // 获取登录token值
-let getToken = () => axios({
+/*let getToken = () => axios({
 	url: testUrl + service + '/ZZDLogin',
 	method: 'post',
 	data: {
@@ -39,7 +39,7 @@ let getToken = () => axios({
 		area: '郑州'
 	}
 });
-
+*/
 /**
  * 获取商品搜索属性列表
  */
@@ -269,7 +269,7 @@ axios.interceptors.request.use(function(config) {
 
 // 导出相关方法
 export {
-    getToken, 							// 获取登录token值
+    // getToken, 							// 获取登录token值
     getSearchAttrList, 			// 获取商品搜索属性列表
     getTodayRecommend, 			// 获取今日推荐
     getBanner, 							// 获取Banner广告

@@ -2,13 +2,13 @@
 	<div class="page-map">
 		<header-top title="店铺位置" @click.stop="toName"></header-top>
 		<template  v-if="isUserLocal">
-			<baidu-map class="map" :center="{lng: storeLocal.userlng, lat: storeLocal.userlat}" :zoom="80">
-				<bm-marker :position="{lng: storeLocal.userlng, lat: storeLocal.userlat}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" :label="{content: storeName, opts: {offset: {width: 20, height: -10}}}"></bm-marker>
+			<baidu-map class="map" :center="{lng: storeLocal.storelng, lat: storeLocal.storelat}" :zoom="30">
+				<bm-marker :position="{lng: storeLocal.storelng, lat: storeLocal.storelat}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" :label="{content: storeName, opts: {offset: {width: 0, height: 0}}}"></bm-marker>
 		  </baidu-map>
 	  </template>
 	  <template v-else>
 		  <baidu-map class="map" :center="{lng: storeLocal.userlng, lat: storeLocal.userlat}" :zoom="15">
-	    	<bm-polyline :path="polylinePath" stroke-color="blue" :stroke-opacity="0.5" :stroke-weight="2" :editing="true" @lineupdate="updatePolylinePath"></bm-polyline>
+	    	<bm-polyline :path="polylinePath" stroke-color="blue" :label="{content: storeName, opts: {offset: {width: 0, height: 0}}}" strokeStyle="dashed" :stroke-opacity="0.3" :stroke-weight="2" :editing="true" @lineupdate="updatePolylinePath"></bm-polyline>
 	  	</baidu-map>
   	</template>
   </div>
@@ -67,6 +67,11 @@ export default {
 .map {
 	width: 100%;
 	height: 100%;
+}
+/* 百度地图小图标修改 */
+.BMap_vectex_node {
+	background-image: url('../assets/icon/marker_red_sprite.png') !important;
+	background-size: 15px;
 }
 
 </style>
