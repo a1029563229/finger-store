@@ -15,7 +15,7 @@
 		</div>
 		<!-- 今日精品推荐 -->
 		<section-item title="static/img/home_activity_recommended@3x.png" v-show="recommendData.length">
-			<recommend-today :token="token" :show-type="3" :recomend-data="recommendData" v-if="recommendData.length"></recommend-today>
+			<recommend-today :token="token" :show-type="4" :recomend-data="recommendData" v-if="recommendData.length"></recommend-today>
 		</section-item>
 		<!-- 附近店铺 -->
 		<section-item class="section-item-mask" title="static/img/home_activity_nearby@3x.png" v-show="dataSortInit.length">

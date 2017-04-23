@@ -12,17 +12,21 @@
         </div>
       </div>
     </div> -->
-
+    <!-- 1 + 1 -->
     <template v-if="showType == 1">
       <recommend-one :recommend-list="recomendData" :token="token"></recommend-one>
     </template>
-
+    <!-- 2 + 2 -->
     <template v-if="showType == 2">
       <recommend-two :recommend-list="recomendData" :token="token"></recommend-two>
     </template>
-
-     <template v-if="showType == 3">
+    <!-- 1 + 2 -->
+    <template v-if="showType == 3">
       <recommend-three :recommend-list="recomendData" :token="token"></recommend-three>
+    </template>
+    <!-- 2 + 1 -->
+    <template v-if="showType == 4">
+      <recommend-four :recommend-list="recomendData" :token="token"></recommend-four>
     </template>
 
 
@@ -126,7 +130,7 @@
 
 
     <!--2+1-->
-    <div class="recommend-default recommend-three" v-if="showType==4">
+   <!--  <div class="recommend-default recommend-three" v-if="showType==4">
       <div class="recommend-right recommend-right-two-one">
         <div class="recommend-right-top" @click="toDetail(recomendData[0].link_url)">
           <div class="right-img">
@@ -157,7 +161,7 @@
         <p>{{recomendData[2].sell_title}}</p>
         <h2>{{recomendData[2].sell_price | money }}</h2>
       </div>
-    </div>
+    </div> -->
 
     <!--3+1-->
     <div class="recommend-default recommend-three" v-if="showType==7">
@@ -228,6 +232,7 @@
   import recommendOne from '@/components/recommend/recommendOne'
   import recommendTwo from '@/components/recommend/recommendTwo'
   import recommendThree from '@/components/recommend/recommendThree'
+  import recommendFour from '@/components/recommend/recommendFour'
   export default {
     name: 'recommend-today',
     props: ['showType', 'recomendData'],
@@ -238,6 +243,7 @@
       recommendOne,
       recommendTwo,
       recommendThree,
+      recommendFour,
     },
     computed: {
       ...mapState({
