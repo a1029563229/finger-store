@@ -1,38 +1,38 @@
 <template>
-	<ul class="recommendThree">
+	<ul class="recommendFour">
 
-		<li class="recommendThree-item">
-			<div class="recommendThree-img">
+		<li class="recommendFour-item" @click="toDetail(listOne.link_url)">
+			<div class="recommendFour-img">
         <img :src="listTwo.img_url">
       </div>
 
-      <div class="recommendThree-desc">
-      	<h1 class="recommendThree-desc-title ellipsis">{{listTwo.product_name}}</h1>
-      	<p class="recommendThree-desc-desc">{{listTwo.sell_title}}</p>
-      	<h2 class="recommendThree-desc-price">{{listTwo.sell_price | money }}</h2>
+      <div class="recommendFour-desc">
+      	<h1 class="recommendFour-desc-title ellipsis">{{listTwo.product_name}}</h1>
+      	<p class="recommendFour-desc-desc">{{listTwo.sell_title}}</p>
+      	<h2 class="recommendFour-desc-price">{{listTwo.sell_price | money }}</h2>
       </div>
 		</li>
-		<li class="recommendThree-item">
-			<div class="recommendThree-img">
+		<li class="recommendFour-item">
+			<div class="recommendFour-img">
         <img :src="listThree.img_url">
       </div>
 
-      <div class="recommendThree-desc">
-      	<h1 class="recommendThree-desc-title ellipsis">{{listThree.product_name}}</h1>
-      	<p class="recommendThree-desc-desc">{{listThree.sell_title}}</p>
-      	<h2 class="recommendThree-desc-price">{{listThree.sell_price | money }}</h2>
+      <div class="recommendFour-desc">
+      	<h1 class="recommendFour-desc-title ellipsis">{{listThree.product_name}}</h1>
+      	<p class="recommendFour-desc-desc">{{listThree.sell_title}}</p>
+      	<h2 class="recommendFour-desc-price">{{listThree.sell_price | money }}</h2>
       </div>
 		</li>
 
-		<li class="recommendThree-left">
-			<div class="recommendThree-left-img">
+		<li class="recommendFour-left">
+			<div class="recommendFour-left-img">
         <img :src="listOne.img_url">
       </div>
 
-      <div class="recommendThree-left-desc">
-      	<h1 class="recommendThree-left-desc-title ellipsis">{{listOne.product_name}}</h1>
-      	<p class="recommendThree-left-desc-desc">{{listOne.sell_title}}</p>
-      	<h2 class="recommendThree-left-desc-price">{{listOne.sell_price | money }}</h2>
+      <div class="recommendFour-left-desc">
+      	<h1 class="recommendFour-left-desc-title ellipsis">{{listOne.product_name}}</h1>
+      	<p class="recommendFour-left-desc-desc">{{listOne.sell_title}}</p>
+      	<h2 class="recommendFour-left-desc-price">{{listOne.sell_price | money }}</h2>
       </div>
 		</li>
 		
@@ -69,13 +69,13 @@ export default {
 </script>
 <style scoped>
 
-.recommendThree {
+.recommendFour {
 	position: relative;
 	width: 100%;
 	height: 6rem;
 }
 
-.recommendThree-left {
+.recommendFour-left {
 	display: flex;
 	flex-direction: column;
 	position: absolute;
@@ -90,7 +90,7 @@ export default {
 }
 
 /* img */
-.recommendThree-left-img {
+.recommendFour-left-img {
 	position: relative;
 	width: 80%;
 	margin: 5% auto;
@@ -98,7 +98,7 @@ export default {
 	/* background-color: #DDD; */
 }
 
-.recommendThree-left-img img {
+.recommendFour-left-img img {
 	/* display: none; */
 	position: absolute;
 	max-width: 100%;
@@ -108,7 +108,7 @@ export default {
 }
 
 /* desc */
-.recommendThree-left-desc {
+.recommendFour-left-desc {
 	flex: 1;
 	padding: 0 4%;
 	display: flex;
@@ -116,24 +116,24 @@ export default {
 	justify-content: space-between;
 }
 
-.recommendThree-left-desc-title {
+.recommendFour-left-desc-title {
 	flex: 1;
 	font-size: 0.4rem;
 	color: #222;
 }
-.recommendThree-left-desc-desc {
+.recommendFour-left-desc-desc {
 	flex: 2;
 	color: #999;
 	overflow: hidden;
 }
-.recommendThree-left-desc-price {
+.recommendFour-left-desc-price {
 	flex: 1;
 	font-size: 0.36rem;
 	color: #E52951;
 }
 
 /* right */
-.recommendThree-item {
+.recommendFour-item {
 	float: left;
 	height: 3rem;
 	display: flex;
@@ -145,7 +145,7 @@ export default {
 }
 
 /* image */
-.recommendThree-img {
+.recommendFour-img {
 	/* background-color: #DDD; */
 	position: relative;
 	width: 45%;
@@ -155,7 +155,7 @@ export default {
 	overflow: hidden;
 
 }
-.recommendThree-img img {
+.recommendFour-img img {
 	/* display: none; */
 	width: 100%;
 	position: absolute;
@@ -165,7 +165,7 @@ export default {
 }
 
 /* desc */
-.recommendThree-desc {
+.recommendFour-desc {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -175,17 +175,17 @@ export default {
 	overflow: hidden;
 }
 
-.recommendThree-desc-title {
+.recommendFour-desc-title {
 	font-size: 0.4rem;
 	color: #222;
 	flex: 1;
 }
-.recommendThree-desc-desc {
+.recommendFour-desc-desc {
 	flex: 2;
 	color: #999;
 	overflow: hidden;
 }
-.recommendThree-desc-price {
+.recommendFour-desc-price {
 	flex: 1;
 	font-size: 0.35rem;
 	color: #E52951;

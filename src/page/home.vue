@@ -81,7 +81,7 @@
 							<button class="btn-map" @click.stop="toMap(item.StoreName, item.CoordsY, item.CoordsX)">到这里去</button>
 						</div>
 					</li>
-					<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关店铺</div>
+					<div class="data-none" v-show="dataNone">目前没有店铺，去找别的吧</div>
 					<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
 				</ul>
 				
@@ -190,6 +190,7 @@ export default {
 		this.getAttrList();
 	},
 	mounted() {
+		document.body.scollTop = 0;
 		let swiper = this.$refs.swiper;
 		this.scroller = this.$el;
 		if (swiper.dom) {
@@ -516,7 +517,7 @@ export default {
 	left: 0;
 	width: 100%;
 	height: 1.28rem;
-	padding: 0.2rem 0 0.2rem 5%;
+	padding: 0.24rem 0 0.24rem 5%;
 	background-color: rgba(255, 255, 255, 0.1);
 	z-index: 99;
 	transition: background-color 0.3s linear;

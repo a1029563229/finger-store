@@ -1,6 +1,6 @@
 <template>
 	<ul class="recommendThree">
-		<li class="recommendThree-left">
+		<li class="recommendThree-left" @click="toDetail(listOne.link_url)">
 			<div class="recommendThree-left-img">
         <img :src="listOne.img_url">
       </div>
@@ -11,7 +11,7 @@
       	<h2 class="recommendThree-left-desc-price">{{listOne.sell_price | money }}</h2>
       </div>
 		</li>
-		<li class="recommendThree-item">
+		<li class="recommendThree-item" @click="toDetail(listTwo.link_url)">
 			<div class="recommendThree-img">
         <img :src="listTwo.img_url">
       </div>
@@ -22,7 +22,7 @@
       	<h2 class="recommendThree-desc-price">{{listTwo.sell_price | money }}</h2>
       </div>
 		</li>
-		<li class="recommendThree-item">
+		<li class="recommendThree-item" @click="toDetail(listThree.link_url)">
 			<div class="recommendThree-img">
         <img :src="listThree.img_url">
       </div>

@@ -4,7 +4,7 @@
  import axios from 'axios'
  import { BASE_URL, appkey, testUrl ,token} from '../config/env'
 
- import slides from './mock/home-swipe'
+ import { swiper } from './mock/home-swipe'
  import { nearbyList } from './mock/nearbyList'
 
 
@@ -70,6 +70,8 @@ let getBanner = (token) => axios({
 		token: token
 	}
 });
+
+// let getBanner = () => setPromise(swiper);
 
 
 // 获取商品列表

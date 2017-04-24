@@ -19,6 +19,7 @@
     </ul>
     <div class="data-none" v-show="dataNone || !collectData.length">您还没有收藏呢</div>
     <infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
+    <navigation></navigation>
   </div>
 </template>
 
@@ -28,6 +29,7 @@ import headerTop from '@/components/common/headerTop'
 import infiniteScroll from '@/components/common/infiniteScroll'
 import { appkey } from '../config/env'
 import { GetCollectSotres } from '../service/getData'
+import navigation from '@/components/common/navigation'
 export default {
   name: 'collect',
   data(){
@@ -49,7 +51,8 @@ export default {
   },
   components:{
     headerTop,
-    infiniteScroll
+    infiniteScroll,
+    navigation
   },
   computed: {
     ...mapState({

@@ -103,8 +103,8 @@
 				commodityList: [],
 				dataSortInit: [		// 筛选数据初始化
 					{name: '综合', class: 'total', up: false, active:true },
-					{name: '距离', class: 'arrow-up', up: true, active:false },
-					{name: '价格', class: 'arrow-up',  up: true, active:false },
+					{name: '价格', class: 'arrow-up', up: true, active:false },
+					{name: '距离', class: 'arrow-up',  up: true, active:false },
 					{name: '筛选', class: 'screen ',  up: false, active:false },
 				],
 				dataSelectInit: ['综合排序', '价格从低到高', '价格从高到低'],	//下拉框
@@ -167,7 +167,6 @@
 		created() {
 			this.init();
 			this.searchProductKey.storeid = this.storeInfo.id;
-			// console.warn('this.searchProductKey.storeid:'+ this.searchProductKey.storeid,this.storeInfo.id);
 			this.reloadCommodity();
 			this.getAttrList();
 		},
@@ -294,7 +293,7 @@
 						this.isSortList = false;
 						this.isClassify = false;
 						if (!active) {
-							this.searchProductKey.sort = 2;
+							this.searchProductKey.sort = 3;
 							this.dataSortInit[1].up ? this.searchProductKey.sequence = 0 : this.searchProductKey.sequence = 1;
 							this.reloadCommodity();
 						} else {
@@ -310,7 +309,7 @@
 						this.isSortList = false;
 						this.isClassify = false;
 						if (!active) {
-							this.searchProductKey.sort = 3;
+							this.searchProductKey.sort = 2;
 							this.dataSortInit[2].up ? this.searchProductKey.sequence = 0 : this.searchProductKey.sequence = 1;							
 							this.reloadCommodity();
 						} else {

@@ -10,7 +10,7 @@
 				热门搜索
 			</h1>
 			<ul class="keyword-list clear">
-				<li class="keyword-item" v-for="item in hotSearchWords" @click="toSearch(item.Word)">
+				<li class="keyword-item ellipsis" v-for="item in hotSearchWords" @click="toSearch(item.Word)">
 					{{ item.Word }}
 				</li>
 			</ul>

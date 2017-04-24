@@ -67,6 +67,10 @@ export default {
 	align-items: center;
 	line-height: 1.2rem;
 	width: 100%;
+	padding-bottom: 1.2rem;
+	background-color: transparent;
+	border-color: transparent;
+
 }
 .infinite-loader {
 	position: relative;
@@ -94,7 +98,6 @@ export default {
 .infinite-scroll-text {
 	margin-left: 0.3rem;
 	font-size: 0.35rem;
-	padding-bottom: 1.2rem;
 }
 
 @keyframes rotate {

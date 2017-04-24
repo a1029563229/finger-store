@@ -3,7 +3,7 @@
 		<header-top title="我的" :goBack="false"></header-top>
 		<div class="order-myall">
 			<i class="myall-icon"></i>
-			我的订单
+			<span class="order-myall-text">我的订单</span>
 			<div class="myall-right" @click="toMyorder">
 				<span>全部订单</span>
 				<i class="myall-arrow-right"></i>
@@ -80,6 +80,9 @@ export default {
 	overflow: hidden;
 	background-color: #FFF;
 }
+.order-myall-text {
+	font-size: 0.4rem;
+}
 .myall-icon {
 	float: left;
 	display: block;
@@ -91,7 +94,9 @@ export default {
 .myall-right {
 	float: right;
 	color: #999;
+	font-size: 0.35rem;
 }
+
 .myall-arrow-right {
 	float: right;
 	display: block;
