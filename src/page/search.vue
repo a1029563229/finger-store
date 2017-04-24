@@ -2,7 +2,7 @@
 	<div class="search">
 		<div class="search-bar">
 			<span class="searchBtnDefault btn-back" @click="toBack()"></span>
-			<input class="search-input" type="text" v-model.trim="searchResult" placeholder="请输入关键字" />
+			<input class="search-input" v-focus="true" type="text" v-model.trim="searchResult" placeholder="请输入关键字" />
 			<span class="searchBtnDefault btn-search" @click="toSearch(searchResult)"></span>
 		</div>
 
@@ -38,7 +38,6 @@ export default {
 			hotSearchWords: [],
 			historyWords: [],
 			storeid: null,
-			// token: '',
 		}
 	},
 	computed: {
@@ -50,10 +49,20 @@ export default {
 		this.init(); // get Token
 		this.getHotWords();
 		this.toHistoryWords();
+		this.searchResult = this.$route.query.name;
 	},
 	mouted() {
 		this.storeid = this.$route.query.storeid;
 	},
+	directives: {
+    focus: {
+        inserted: function (el, {value}) {
+            if (value) {
+                el.focus();
+            }
+        }
+    }
+},
 	methods: {
 		// 获取token
 		init() {
@@ -90,7 +99,7 @@ export default {
 			console.log('deleteInfo',deleteInfo);
 		},
 		toSearch(word) {
-			if (!word) return
+			
 			if (this.$route.query.storeid) {
 				this.$router.push({path:'productlist', query:{name: word, storeid:this.$route.query.storeid}});
 			} else {

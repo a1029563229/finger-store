@@ -5,7 +5,8 @@
 			<input class="search-input" type="text" placeholder="请输入关键字" @click="toSearch"/>
 			<span class="searchBtnDefault btn-search" @click="toSearch"></span>
 		</header>
-		<!-- <sort-list></sort-list> -->
+		<div class="mask" v-show="isMask" @click="isSortList = isClassify = isMask = false;"></div>
+
 		<section class="sort-filter">
 			<ul class="selection">
 				<li class="selection-item" v-for="(item, index) in dataSortInit" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
@@ -27,9 +28,9 @@
 					价格区间
 				</h1>
 				<ol class="classify-price clear">
-					<dd><input type="number" placeholder="最低价" v-model="priceMin"></dd>
+					<dd><input type="number" placeholder="最低价" v-model.number="searchStoreKey.minPrice"></dd>
 					<dd class="classify-price-line">-</dd>
-					<dd><input type="number" placeholder="最高价" v-model="priceMax"></dd>
+					<dd><input type="number" placeholder="最高价" v-model.number="searchStoreKey.maxPrice"></dd>
 				</ol>
 				<h1 class="classify-title">
 					内存
@@ -50,7 +51,7 @@
 					<button class="classify-btn-confirm " @click="confirm">确定</button>
 				</div>
 			</aside>
-			<div class="mask" v-show="isMask" @click="isSortList = isClassify = isMask = false;"></div>
+			
 
 			<ul class="nearby-list">
 				<li v-for="item in nearbyListData" class="nearby-item" :key="item.StoreID" @click="toStore(item.StoreName,item.StoreID,item.StoreLogo)">
@@ -104,16 +105,15 @@ export default {
 			isMask: false,				// 遮罩
 			isScroll: false,			// 是否滚动
 			scroller: null,				// window对象
-			loading: true,				// 是否显示loading
+			loading: false,				// 是否显示loading
 			showType: 0,					// 今日推荐模式
 			recommendData: [],		// 今日推荐
 			nearbyListData: [],		// 店铺列表
 			dataAttr: [],					// 筛选数据
 			dataNone: false, 			// 数据为空时显示
 			isSortList: false,		// 综合
+			simpleSort: 0, 				// 综合 - 默认综合排序
 			isClassify: false,		// 筛选
-			priceMin: '',					// 最低价
-			priceMax: '',					// 最高价			
 			brandarrow: false, 		// 品牌下拉列表
 			memoryArrow: false,		// 内存下拉列表
 			colorArrow: false,		// 颜色下拉列表
@@ -138,10 +138,10 @@ export default {
 			dataSortInit: [		// 筛选数据初始化
 				{name: '综合', class: 'total', up: false, active:true },
 				{name: '距离', class: 'arrow-up', up: true, active:false },
-				{name: '销量', class: 'arrow-up',  up: true, active:false },
+				{name: '销量', class: 'arrow-up',  up: false, active:false },
 				{name: '筛选', class: 'screen ',  up: false, active:false },
 			],
-			dataSelectInit: ['综合排序', '销量', '距离'],	//下拉框
+			dataSelectInit: ['综合排序', '距离从近到远', '距离从远到近'],	//下拉框
 			isLoadEnd: false,
 		}
 	},
@@ -183,7 +183,7 @@ export default {
 			this.$router.go(-1);
 		},
 		toSearch() {
-			this.$router.push({path:'search', query:{storeid:0}});
+			this.$router.push({path:'search', query:{storeid: 0}});
 		},
 		// 获取筛选栏-属性列表
 		async getAttrList() {
@@ -328,11 +328,35 @@ export default {
 		},
 		// 综合排序
 		toSortPrice(index) {
-			this.searchStoreKey.sort = index + 1;
-			this.isMask = false;
-			this.dataSortInit[0].active = true;
-			this.isSortList = false;
-			this.reloadNearbyStore();
+			switch (index) {
+				case 0: 
+					this.simpleSort = 0;
+					this.searchStoreKey.sort = 1;
+					this.searchStoreKey.sequence = 0;
+					this.isMask = false;
+					this.dataSortInit[0].active = false;
+					this.isSortList = false;
+					this.reloadNearbyStore();
+					return
+				case 1: 
+					this.simpleSort = 1;
+					this.searchStoreKey.sort = 3;
+					this.searchStoreKey.sequence = 0;
+					this.isMask = false;
+					this.dataSortInit[0].active = false;
+					this.isSortList = false;
+					this.reloadNearbyStore();
+					return
+				case 2: 
+					this.simpleSort = 2;
+					this.searchStoreKey.sort = 3;
+					this.searchStoreKey.sequence = 1;
+					this.isMask = false;
+					this.dataSortInit[0].active = false;
+					this.isSortList = false;
+					this.reloadNearbyStore();
+					return
+			}
 		},
 		// 重置
 		reset() {
@@ -342,17 +366,15 @@ export default {
 			this.searchStoreKey.brandName = '';
 			this.searchStoreKey.minPrice = '';
 			this.searchStoreKey.maxPrice = '';
-			this.priceMin = '';
-			this.priceMax = '';
 			this.searchStoreKey.memory = '';
 			this.searchStoreKey.color = '';
 			this.searchStoreKey.pageIndex = 1;
 		},
 		// 确认筛选
 		confirm() {
-			if (this.priceMax < this.priceMin) this.priceMax = this.priceMin;
-			this.searchStoreKey.priceMin = this.priceMin;
-			this.searchStoreKey.priceMax = this.priceMax;
+			if (this.searchStoreKey.maxPrice < this.searchStoreKey.minPrice) {
+				this.searchStoreKey.maxPrice = '';
+			}
 			console.log('searchStoreKey', this.searchStoreKey);
 
 			this.isClassify = false;
@@ -388,7 +410,19 @@ export default {
 				this.searchStoreKey.brandName = title;
 			}
 			console.log(this.brandSelect,this.searchStoreKey.brandName);
-		}
+		},
+		// 跳转到 店铺列表页
+  	toStore(name, id, img, lat, lng) {
+			let params = {
+				name: name,
+				id: id,
+				logo: img,
+				lat: lat,
+				lng: lng,
+			};
+			this.$store.dispatch('recordStoreInfo',params);
+			this.$router.push({ path:'/shop' });
+		}, 
 	}
 }
 </script>
@@ -447,7 +481,7 @@ export default {
 .search-input {
 	width: 72%;
 	height: 0.8rem;
-	border: 1px solid #222;
+	border: 1px solid #999;
 	border-radius: 1rem;
 	margin: 0.24rem auto;
 	font-size: 0.32rem;
@@ -465,9 +499,9 @@ export default {
 .mask {
 	position: absolute;
 	display: block;
-	top: 1.4rem;
+	top: 2.68rem;
 	right: 0;
-	bottom: 1.4rem;
+	bottom: 0;
 	left: 0;
 	height: 100%;
 	width: 100%;
@@ -506,7 +540,7 @@ export default {
 .selection-item::after {
 	content: '';
 	position: absolute;
-	right: 19%;
+	right: 10%;
 	display: block;
 	width: 0;
 	height: 0;

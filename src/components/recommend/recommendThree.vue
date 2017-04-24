@@ -39,20 +39,32 @@
 <script>
 export default {
 	name: "recommend-three",
-	props: ['recommendList', 'token'],
+	props: {
+		recommendList: {
+			type: Array,
+			default: []
+		},
+		token: {
+			type: String,
+			default: ''
+		}
+	},
 	computed: {
 		listOne() {
-			return this.recommendList[0]
+			return this.recommendList[0] 
 		},
 		listTwo() {
-			return this.recommendList[1]
+			if (!this.recommendList[1]) return []
+			return this.recommendList[1] 
 		},
 		listThree() {
-			return this.recommendList[2]
+			if (!this.recommendList[2]) return []
+			return this.recommendList[2] 
 		},
 	},
 	filters: {
     money(value) {
+    	if (!value) return '￥0.00'
       let val = parseFloat(value).toFixed(2)
       return `￥${val}`
     }

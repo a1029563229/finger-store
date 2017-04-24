@@ -2,8 +2,8 @@
 	<div class="store">
 		<div class="search-bar">
 			<span class="searchBtnDefault btn-back" @click="toBack()"></span>
-			<input class="search-input" type="text" v-model="searchKey" placeholder="请输入关键字" @click="toSearch"/>
-			<span class="searchBtnDefault btn-search" @click="toSearch"></span>
+			<input class="search-input" type="text" v-model.trim="searchKey" placeholder="请输入关键字" @click="toSearch"/>
+			<span class="searchBtnDefault btn-search" @click="searchNow"></span>
 		</div>
 		<section class="sort-filter">
 			<ul class="selection">
@@ -12,7 +12,7 @@
 				</li>
 			</ul>
 			<aside class="sort" :class="{active: isSortList}" >
-				<p v-for="(item,index) in dataSelectInit" @click="toSortPrice(index)" :class="{active: (index+1) == searchProductKey.sort}">{{item}}</p>
+				<p v-for="(item,index) in dataSelectInit" @click="toSortPrice(index)" :class="{active: index == simpleSort}">{{item}}</p>
 			</aside>
 			<aside class="classify" :class="{active: isClassify}">
 				<h1 class="classify-title">
@@ -26,9 +26,9 @@
 					价格区间
 				</h1>
 				<ol class="classify-price clear">
-					<dd><input type="number" placeholder="最低价" v-model="priceMin"></dd>
+					<dd><input type="number" placeholder="最低价" v-model.number="searchProductKey.minPrice"></dd>
 					<dd class="classify-price-line">-</dd>
-					<dd><input type="number" placeholder="最高价" v-model="priceMax"></dd>
+					<dd><input type="number" placeholder="最高价" v-model.number="searchProductKey.maxPrice"></dd>
 				</ol>
 				<h1 class="classify-title">
 					内存
@@ -55,18 +55,20 @@
 				<div class="item-image">
 					<img :src="item.ImgUrl">
 				</div>
-				<h1 class="item-title">{{ item.ProductTitle }}</h1>
-				<p class="item-desc">
-					<span class="item-price">
-						{{ item.SellPrice | currency }}
-					</span>
-					<span class="item-num">
-						销量&nbsp;{{ item.SellCount }}
-					</span>
-				</p>
+				<div class="item-desc">
+					<h1 class="item-title">{{ item.ProductTitle }}</h1>
+					<p class="item-desc-desc">
+						<span class="item-price">
+							{{ item.SellPrice | currency }}
+						</span>
+						<span class="item-num">
+							销量&nbsp;{{ item.SellCount }}
+						</span>
+					</p>
+				</div>
 			</li>
 		</ul>
-		<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关商品 </div>
+		<div class="data-none" v-show="dataNone">抱歉！未搜到您所需要的内容，可尝试换个关键字试试哦！</div>
 		<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
 		</section>
 		<navigation></navigation>
@@ -91,7 +93,7 @@
 					{name: '店铺', class: 'screen', up:false,  active:false },
 					{name: '筛选', class: 'screen ',  up: false, active:false },
 				],
-				dataSelectInit: ['综合排序', '距离', '价格'],	//下拉框
+				dataSelectInit: ['综合排序', '价格从低到高', '价格从高到低'],	//下拉框
 				dataAttr: [],
 				isMask: false,
 				closeMask: false,
@@ -100,9 +102,8 @@
 				scroller: null,       // 加载更多
 				dataNone: false,			// 数据为空时显示
 				isSortList: false,		//综合
+				simpleSort: 0,				// 综合-默认综合
 				isClassify: false,		// 筛选
-				priceMin: '',					// 最低价
-				priceMax: '',					// 最高价			
 				brandarrow: false, 		//品牌下拉列表
 				memoryArrow: false,		//内存下拉列表
 				colorArrow: false,		//颜色下拉列表
@@ -116,7 +117,7 @@
 					sequence: 0,		// 顺序排列：1 倒序：0正序
 					pageindex: 1, 	// 页码
 					pagesize: 10,  // int	每页多少条数据
-
+					keyword: '', 	// 搜索关键字
 					brandName: '',  // string	品牌名称
 					maxPrice: '',		// string	价格区间最大值
 					minPrice: '',   // string	价格区间最小值
@@ -148,7 +149,7 @@
 		created() {
 			this.init();		// 获取token
 			this.searchKey = this.$route.query.name;
-			this.searchProductKey.brandName = this.$route.query.name;
+			this.searchProductKey.keyword = this.$route.query.name || '';
 			this.searchProductKey.storeid = this.$route.query.storeid || 0;
 			this.reloadCommodity();
 			this.getAttrList();
@@ -191,13 +192,19 @@
 			},
 			// 搜索
 			toSearch() {
-				this.$router.push({path:'search', query:{storeid:0}});
+				this.$router.push({path:'search', query:{storeid:0,name: this.searchKey}});
+			},
+			searchNow() {
+				this.searchsearchProductKey.pageindex = 1;
+				this.searchProductKey.keyword = this.searchKey;
+				this.reloadCommodity();
 			},
 			// 重新加载 商品列表 
 			async reloadCommodity(searchkey) {
-				console.info('reloadNearbyStore' + JSON.stringify(searchkey));
 				this.isLoadEnd = false;
-				let commodityListData = await searchProductList(this.searchProductKey);
+				this.loading = true;
+			let commodityListData = await searchProductList(this.searchProductKey);
+				this.loading = false;
 				this.commodityList = commodityListData.Data;
 				this.dataNone = this.commodityList.length ? false : true;
 			},
@@ -295,11 +302,35 @@
 			},
 			// 综合排序
 			toSortPrice(index) {
-				this.searchProductKey.sort = index + 1;
-				this.isMask = false;
-				this.dataSortInit[0].active = true;
-				this.isSortList = false;
-				this.reloadCommodity();
+				switch (index) {
+					case 0: 
+						this.simpleSort = 0;
+						this.searchProductKey.sort = 1;
+						this.searchProductKey.sequence = 0;
+						this.isMask = false;
+						this.dataSortInit[0].active = true;
+						this.isSortList = false;
+						this.reloadCommodity();
+						return
+					case 1: 
+						this.simpleSort = 1;
+						this.searchProductKey.sort = 3;
+						this.searchProductKey.sequence = 0;
+						this.isMask = false;
+						this.dataSortInit[0].active = true;
+						this.isSortList = false;
+						this.reloadCommodity();
+						return
+					case 2: 
+						this.simpleSort = 2;
+						this.searchProductKey.sort = 3;
+						this.searchProductKey.sequence = 1;
+						this.isMask = false;
+						this.dataSortInit[0].active = true;
+						this.isSortList = false;
+						this.reloadCommodity();
+						return
+				}		
 			},
 			// 重置
 			reset() {
@@ -309,19 +340,16 @@
 				this.searchProductKey.brandName = '';
 				this.searchProductKey.minPrice = '';
 				this.searchProductKey.maxPrice = '';
-				this.priceMin = '';
-				this.priceMax = '';
 				this.searchProductKey.memory = '';
 				this.searchProductKey.color = '';
 				this.searchProductKey.pageIndex = 1;
 			},
 			// 确认筛选
 			confirm() {
-				if (this.priceMax < this.priceMin) this.priceMax = "";
-				this.searchProductKey.priceMin = this.priceMin;
-				this.searchProductKey.priceMax = this.priceMax;
+				if (this.searchProductKey.maxPrice < this.searchProductKey.minPrice) {
+					this.searchProductKey.maxPrice = '';
+				}
 				console.log('searchProductKey', this.searchProductKey);
-
 				this.isClassify = false;
 				this.isMask = false;
 				this.reloadCommodity();
@@ -374,6 +402,7 @@
 	right: 0;
 	width: 100%;
 	height: 1.28rem;
+	z-index: 2;
 	background-color: #FFF;
 }
 
@@ -429,14 +458,16 @@
 	padding-top: 0.1rem;
 }
 .store-item {
+	display: flex;
+	flex-direction: column;
 	position: relative;
 	float: left;
-	margin: 0.1rem 2%;
+	margin: 0.1rem 0 0.1rem 2%;
 	width: 47%;
 	height: 6.64rem;
 	border: 1px solid #EEE;
 	border-radius: 0.04rem;
-	padding: 0.15rem 1.5%;
+	padding: 0 1.5%;
 	background: #FFF;
 }
 
@@ -445,11 +476,14 @@
 	width: 100%;
 	margin-bottom: 0.1rem;
 	height: 0;
-	padding-bottom: 100%;
-	background-color: #FFF;
+	width: 90%;
+	margin: 5% auto;
+	padding-bottom: 90%;
+	/* background-color: #DDD; */
 	overflow: hidden;
 }
 .item-image img {
+	/* display: none; */
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -457,21 +491,24 @@
 	max-width: 100%;
 }
 
-.item-title {
-	font-size: 0.4rem;
-	max-height: 1.1rem;
-	overflow: hidden;
-	line-height: 0.6rem;
+.item-desc {
+	flex: 1;
+	padding: 0 4%;
+	display: flex;
+	flex-direction: column;
 }
 
-.item-desc {
-	position: absolute;
+.item-title {
+	font-size: 0.4rem;
+	flex: 2;
+	overflow: hidden;
+}
+
+.item-desc-desc {
+	flex: 1;
 	display: flex;
+	overflow: hidden;
 	justify-content: space-between;
-	bottom: 0.1rem;
-	left: 0;
-	right: 0;
-	padding: 0 4%;
 }
 
 .item-price {
@@ -490,16 +527,16 @@
 	position: relative;
 	padding-top: 1.28rem;
 	width: 100%;
-	height: 100%;
+	height: auto
 }
 .mask {
 	position: absolute;
 	display: block;
-	top: 1.4rem;
+	top: 2.68rem;
 	right: 0;
-	bottom: 1.4rem;
+	bottom: 0;
 	left: 0;
-	height: 100%;
+	height: auto;
 	width: 100%;
 	z-index: 19;
 	background-color: rgba(0,0,0,0.5);
@@ -536,7 +573,7 @@
 .selection-item::after {
 	content: '';
 	position: absolute;
-	right: 19%;
+	right: 10%;
 	display: block;
 	width: 0;
 	height: 0;
@@ -579,7 +616,7 @@
 	display: none;
 	position: absolute;
 	padding: 0.1rem 5% 0;
-	top: 1.4rem;
+	top: 2.68rem;
 	visibility: hidden;
 	/* transform: translate3d(0, -2rem, 0); */
 	left: 0;
@@ -607,7 +644,7 @@
 	display: none;
 	position: absolute;
 	right: 0;
-	top: 1.4rem;
+	top: 2.68rem;
 	width: 60%;
 	height: auto;
 	z-index: 20;

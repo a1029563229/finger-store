@@ -21,7 +21,7 @@
 				</li>
 			</ul>
 		</section>
-
+		<div class="mask" v-show="isMask" @click="isSortList = isClassify = isMask = false;"></div>
 		<section class="sort-filter">
 			<ul class="selection">
 				<li class="selection-item" v-for="(item, index) in dataSortInit" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
@@ -29,7 +29,7 @@
 				</li>
 			</ul>
 			<aside class="sort" :class="{active: isSortList}" >
-				<p v-for="(item,index) in dataSelectInit" @click="toSortPrice(index)" :class="{active: (index+1) == searchProductKey.sort}">{{item}}</p>
+				<p v-for="(item,index) in dataSelectInit" @click="toSortPrice(index)" :class="{active: index == simpleSort}">{{item}}</p>
 			</aside>
 			<aside class="classify" :class="{active: isClassify}">
 				<h1 class="classify-title">
@@ -43,9 +43,9 @@
 					价格区间
 				</h1>
 				<ol class="classify-price">
-					<dd><input type="number" placeholder="最低价" v-model="priceMin"></dd>
+					<dd><input type="number" placeholder="最低价" v-model.number="searchProductKey.minPrice"></dd>
 					<dd class="classify-price-line">-</dd>
-					<dd><input type="number" placeholder="最高价" v-model="priceMax"></dd>
+					<dd><input type="number" placeholder="最高价" v-model.number="searchProductKey.maxPrice"></dd>
 				</ol>
 				<h1 class="classify-title">
 					内存
@@ -66,24 +66,24 @@
 					<button class="classify-btn-confirm" @click="confirm">确定</button>
 				</div>
 			</aside>
-			<div class="mask" v-show="isMask" @click="isSortList = isClassify = isMask = false;"></div>
-			<ul class="store-list">
-			<li class="store-item" v-for="item in commodityList" @click="toProduct(item.ProductUrl)">
-				<div class="item-image">
-					<img :src="item.ImgUrl">
-				</div>
-				<h1 class="item-title">{{ item.ProductTitle }}</h1>
-				<p class="item-desc">
-					<span class="item-price">
-						{{ item.SellPrice | currency }}
-					</span>
-					<span class="item-num">
-						销量&nbsp;{{ item.SellCount }}
-					</span>
-				</p>
-			</li>
+			
+			<ul class="store-list clear">
+				<li class="store-item" v-for="item in commodityList" @click="toProduct(item.ProductUrl)">
+					<div class="item-image">
+						<img :src="item.ImgUrl">
+					</div>
+					<h1 class="item-title">{{ item.ProductTitle }}</h1>
+					<p class="item-desc">
+						<span class="item-price">
+							{{ item.SellPrice | currency }}
+						</span>
+						<span class="item-num">
+							销量&nbsp;{{ item.SellCount }}
+						</span>
+					</p>
+				</li>
 		</ul>
-		<div class="data-none" v-show="dataNone"> 抱歉，没有匹配到相关商品 </div>
+		<div class="data-none" v-show="dataNone">抱歉！未搜到您所需要的内容，可尝试换个关键字试试哦！</div>
 		<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
 		</section>
 		<navigation :about="true"></navigation>
@@ -107,7 +107,7 @@
 					{name: '价格', class: 'arrow-up',  up: true, active:false },
 					{name: '筛选', class: 'screen ',  up: false, active:false },
 				],
-				dataSelectInit: ['综合排序', '距离', '价格'],	//下拉框
+				dataSelectInit: ['综合排序', '价格从低到高', '价格从高到低'],	//下拉框
 				dataAttr: [],
 				isMask: false,
 				closeMask: false,
@@ -116,6 +116,7 @@
 				scroller: null,       // 加载更多
 				dataNone: false,			// 数据为空时显示
 				isSortList: false,		//综合
+				simpleSort: 0,				// 筛选-默认综合
 				isClassify: false,		// 筛选
 				priceMin: '',					// 最低价
 				priceMax: '',					// 最高价			
@@ -329,11 +330,35 @@
 			},
 			// 综合排序
 			toSortPrice(index) {
-				this.searchProductKey.sort = index + 1;
-				this.isMask = false;
-				this.dataSortInit[0].active = true;
-				this.isSortList = false;
-				this.reloadCommodity();
+				switch (index) {
+					case 0: 
+						this.simpleSort = 0;
+						this.searchProductKey.sort = 1;
+						this.searchProductKey.sequence = 0;
+						this.isMask = false;
+						this.dataSortInit[0].active = true;
+						this.isSortList = false;
+						this.reloadCommodity();
+						return
+					case 1: 
+						this.simpleSort = 1;
+						this.searchProductKey.sort = 3;
+						this.searchProductKey.sequence = 0;
+						this.isMask = false;
+						this.dataSortInit[0].active = true;
+						this.isSortList = false;
+						this.reloadCommodity();
+						return
+					case 2: 
+						this.simpleSort = 2;
+						this.searchProductKey.sort = 3;
+						this.searchProductKey.sequence = 1;
+						this.isMask = false;
+						this.dataSortInit[0].active = true;
+						this.isSortList = false;
+						this.reloadCommodity();
+						return
+				}
 			},
 			// 重置
 			reset() {
@@ -351,9 +376,11 @@
 			},
 			// 确认筛选
 			confirm() {
-				if (this.priceMax < this.priceMin) this.priceMax = '';
-				this.searchProductKey.priceMin = this.priceMin;
-				this.searchProductKey.priceMax = this.priceMax;
+				if (this.searchProductKey.maxPrice < this.searchProductKey.minPrice) {
+					this.searchProductKey.maxPrice = '';
+				}
+				// this.searchProductKey.minPrice = this.priceMin;
+				// this.searchProductKey.maxPrice = this.priceMax;
 				console.log('searchProductKey', this.searchProductKey);
 
 				this.isClassify = false;
@@ -603,14 +630,13 @@
 .sort-filter {
 	position: relative;
 	width: 100%;
-	height: 100%;
 }
 .mask {
 	position: absolute;
 	display: block;
-	top: 1.4rem;
+	top: 4.28rem;
 	right: 0;
-	bottom: 1.4rem;
+	bottom: 0;
 	left: 0;
 	height: 100%;
 	width: 100%;
@@ -620,6 +646,7 @@
 /* 筛选 */
 
 .selection {
+	position: relative;
 	background-color: #FFF;
 	height: 1.4rem;
 }

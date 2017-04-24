@@ -14,12 +14,13 @@
 			<router-link :to="{path: 'search',query:{storeid: 0,token: token}}" class="search-icon"></router-link>
 		</div>
 		<!-- 今日精品推荐 -->
-		<section-item title="static/img/home_activity_recommended@3x.png" v-show="recommendData.length">
-			<recommend-today :token="token" :show-type="4" :recomend-data="recommendData" v-if="recommendData.length"></recommend-today>
-		</section-item>
+		<recommend-today></recommend-today>
 		<!-- 附近店铺 -->
-		<section-item class="section-item-mask" title="static/img/home_activity_nearby@3x.png" v-show="dataSortInit.length">
-			
+		<section class="section-item-mask" v-show="dataSortInit.length">
+			<header class="section-title">
+				<i class="section-title-icon"></i>
+				<span>附近店铺</span>
+			</header>
 			<section class="sort-filter">
 				<ul class="selection">
 					<li class="selection-item" v-for="(item, index) in dataSortInit" :key="item.name" :class="[item.class, {active: item.active},{up: item.up}]" @click="choose(index)">
@@ -27,7 +28,7 @@
 					</li>
 				</ul>
 				<aside class="sort" :class="{active: isSortList}" >
-					<p v-for="(item,index) in dataSelectInit" @click="toSortPrice(index)" :class="{active: (index+1) == searchStoreKey.sort}">{{item}}</p>
+					<p v-for="(item,index) in dataSelectInit" @click="toSortPrice(index)" :class="{active: index == simpleSort}">{{item}}</p>
 				</aside>
 				<aside class="classify" :class="{active: isClassify}">
 					<h1 class="classify-title">
@@ -41,9 +42,9 @@
 						价格区间
 					</h1>
 					<ol class="classify-price clear">
-						<dd><input type="number" placeholder="最低价" v-model="priceMin"></dd>
+						<dd><input type="number" placeholder="最低价" v-model.number="searchStoreKey.minPrice"></dd>
 						<dd class="classify-price-line">-</dd>
-						<dd><input type="number" placeholder="最高价" v-model="priceMax"></dd>
+						<dd><input type="number" placeholder="最高价" v-model.number="searchStoreKey.maxPrice"></dd>
 					</ol>
 					<h1 class="classify-title">
 						内存
@@ -85,7 +86,7 @@
 				</ul>
 				
 			</section>
-		</section-item>
+		</section>
 		<!-- 底部导航栏 -->
 		<navigation></navigation>
 		<watch-scroll :scroller="scroller" @overflow="overflow"></watch-scroll>
@@ -124,6 +125,7 @@ export default {
 			dataAttr: [],					// 筛选数据
 			dataNone: false, 			// 数据为空时显示
 			isSortList: false,		// 综合
+			simpleSort: 0, 				// 默认综合排序
 			isClassify: false,		// 筛选
 			priceMin: '',					// 最低价
 			priceMax: '',					// 最高价			
@@ -151,10 +153,10 @@ export default {
 			dataSortInit: [		// 筛选数据初始化
 				{name: '综合', class: 'total', up: false, active:true },
 				{name: '距离', class: 'arrow-up', up: true, active:false },
-				{name: '销量', class: 'arrow-up',  up: true, active:false },
+				{name: '销量', class: 'arrow-up',  up: false, active:false },
 				{name: '筛选', class: 'screen ',  up: false, active:false },
 			],
-			dataSelectInit: ['综合排序', '销量', '距离'],	//下拉框
+			dataSelectInit: ['综合排序', '距离从近到远', '距离从远到近'],	//下拉框
 			isLoadEnd: false,
 		}
 	},
@@ -185,7 +187,6 @@ export default {
 		this.tokenInit();
 		this.getlocalation();
 		this.BannerInit();
-		this.recommendTodayInit();
 		this.getAttrList();
 	},
 	mounted() {
@@ -397,11 +398,36 @@ export default {
 		},
 		// 综合排序
 		toSortPrice(index) {
-			this.searchStoreKey.sort = index + 1;
-			this.isMask = false;
-			this.dataSortInit[0].active = true;
-			this.isSortList = false;
-			this.reloadNearbyStore();
+			switch (index) {
+				case 0: 
+					this.simpleSort = 0;
+					this.searchStoreKey.sort = 1;
+					this.searchStoreKey.sequence = 0;
+					this.isMask = false;
+					this.dataSortInit[0].active = false;
+					this.isSortList = false;
+					this.reloadNearbyStore();
+					return
+				case 1: 
+					this.simpleSort = 1;
+					this.searchStoreKey.sort = 3;
+					this.searchStoreKey.sequence = 0;
+					this.isMask = false;
+					this.dataSortInit[0].active = false;
+					this.isSortList = false;
+					this.reloadNearbyStore();
+					return
+				case 2: 
+					this.simpleSort = 2;
+					this.searchStoreKey.sort = 3;
+					this.searchStoreKey.sequence = 1;
+					this.isMask = false;
+					this.dataSortInit[0].active = false;
+					this.isSortList = false;
+					this.reloadNearbyStore();
+					return
+			}
+
 		},
 		// 重置
 		reset() {
@@ -411,17 +437,15 @@ export default {
 			this.searchStoreKey.brandName = '';
 			this.searchStoreKey.minPrice = '';
 			this.searchStoreKey.maxPrice = '';
-			this.priceMin = '';
-			this.priceMax = '';
 			this.searchStoreKey.memory = '';
 			this.searchStoreKey.color = '';
 			this.searchStoreKey.pageIndex = 1;
 		},
 		// 确认筛选
 		confirm() {
-			if (this.priceMax < this.priceMin) this.priceMax = "";
-			this.searchStoreKey.priceMin = this.priceMin;
-			this.searchStoreKey.priceMax = this.priceMax;
+			if (this.searchStoreKey.maxPrice < this.searchStoreKey.minPrice) {
+				this.searchStoreKey.maxPrice = '';
+			}
 			console.log('searchStoreKey', this.searchStoreKey);
 
 			this.isClassify = false;
@@ -572,7 +596,7 @@ export default {
 .selection-item::after {
 	content: '';
 	position: absolute;
-	right: 19%;
+	right: 10%;
 	display: block;
 	width: 0;
 	height: 0;
@@ -852,6 +876,28 @@ export default {
 	text-align: center;
 	font-size: 0.35rem;
 	background-color: #FFF;
+}
+/* section title */
+.section-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 1rem;
+  text-align: center;
+  font-size: 0.4rem;
+  color: #BD10E0;
+  background: url('../../static/img/home_section_title_bg@3x.png') no-repeat center;
+  background-size: cover;
+}
+
+.section-title-icon {
+  display: block;
+  width: 0.6rem;
+  height: 100%;
+  margin-right: 2%;
+  background: url('../../static/img/home_icon_nearby@2x.png') no-repeat center;
+  background-size: 0.6rem;
 }
 
 </style>
