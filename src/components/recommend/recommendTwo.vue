@@ -17,7 +17,7 @@
 <script>
 
 export default {
-	name: "recommend-two",
+	name: "recommend-two",	// 2 + 2
 	props: ['recommendList', 'token'],
 	filters: {
     money(value) {

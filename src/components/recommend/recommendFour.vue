@@ -3,6 +3,17 @@
 
 		<li class="recommendFour-item" @click="toDetail(listOne.link_url)">
 			<div class="recommendFour-img">
+        <img :src="listOne.img_url">
+      </div>
+
+      <div class="recommendFour-desc">
+      	<h1 class="recommendFour-desc-title ellipsis">{{listOne.product_name}}</h1>
+      	<p class="recommendFour-desc-desc">{{listOne.sell_title}}</p>
+      	<h2 class="recommendFour-desc-price">{{listOne.sell_price | money }}</h2>
+      </div>
+		</li>
+		<li class="recommendFour-item" @click="toDetail(listTwo.link_url)">
+			<div class="recommendFour-img">
         <img :src="listTwo.img_url">
       </div>
 
@@ -12,27 +23,16 @@
       	<h2 class="recommendFour-desc-price">{{listTwo.sell_price | money }}</h2>
       </div>
 		</li>
-		<li class="recommendFour-item">
-			<div class="recommendFour-img">
+
+		<li class="recommendFour-left" @click="toDetail(listThree.link_url)">
+			<div class="recommendFour-left-img">
         <img :src="listThree.img_url">
       </div>
 
-      <div class="recommendFour-desc">
-      	<h1 class="recommendFour-desc-title ellipsis">{{listThree.product_name}}</h1>
-      	<p class="recommendFour-desc-desc">{{listThree.sell_title}}</p>
-      	<h2 class="recommendFour-desc-price">{{listThree.sell_price | money }}</h2>
-      </div>
-		</li>
-
-		<li class="recommendFour-left">
-			<div class="recommendFour-left-img">
-        <img :src="listOne.img_url">
-      </div>
-
       <div class="recommendFour-left-desc">
-      	<h1 class="recommendFour-left-desc-title ellipsis">{{listOne.product_name}}</h1>
-      	<p class="recommendFour-left-desc-desc">{{listOne.sell_title}}</p>
-      	<h2 class="recommendFour-left-desc-price">{{listOne.sell_price | money }}</h2>
+      	<h1 class="recommendFour-left-desc-title ellipsis">{{listThree.product_name}}</h1>
+      	<p class="recommendFour-left-desc-desc">{{listThree.sell_title}}</p>
+      	<h2 class="recommendFour-left-desc-price">{{listThree.sell_price | money }}</h2>
       </div>
 		</li>
 		
@@ -41,17 +41,17 @@
 
 <script>
 export default {
-	name: "recommend-three",
+	name: "recommend-four", 					// 2 + 1 
 	props: ['recommendList', 'token'],
 	computed: {
 		listOne() {
-			return this.recommendList[2]
-		},
-		listTwo() {
 			return this.recommendList[0]
 		},
-		listThree() {
+		listTwo() {
 			return this.recommendList[1]
+		},
+		listThree() {
+			return this.recommendList[2]
 		},
 	},
 	filters: {
@@ -62,6 +62,7 @@ export default {
   },
 	methods: {
 		toDetail(url) {
+			console.log('url:',url);
 			window.location.href = url + "&token=" + this.token
 		}
 	}

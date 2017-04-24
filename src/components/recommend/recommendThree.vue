@@ -38,7 +38,7 @@
 
 <script>
 export default {
-	name: "recommend-three",
+	name: "recommend-three",  // 1 + 2
 	props: {
 		recommendList: {
 			type: Array,

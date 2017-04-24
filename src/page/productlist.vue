@@ -122,7 +122,7 @@
 					maxPrice: '',		// string	价格区间最大值
 					minPrice: '',   // string	价格区间最小值
 					color: '', 			// string	颜色
-					memory: ''     // string	内存
+					memory: '',     // string	内存
 				},
 				searchKey: '',
 			}
@@ -147,10 +147,11 @@
 			infiniteScroll,
 		},
 		created() {
-			this.init();		// 获取token
+			this.tokenInit();		// 获取token
 			this.searchKey = this.$route.query.name;
 			this.searchProductKey.keyword = this.$route.query.name || '';
 			this.searchProductKey.storeid = this.$route.query.storeid || 0;
+			// this.searchProductKey.token = this.token || '';
 			this.reloadCommodity();
 			this.getAttrList();
 		},
@@ -164,7 +165,7 @@
 			}
 		},
 		methods: {
-			init() {
+			tokenInit() {
 				if (!this.token) {
 					let tokenCookie = this.readCookie('USERTOKEN');
 					this.$store.dispatch('recordToken', tokenCookie);

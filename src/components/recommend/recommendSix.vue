@@ -1,6 +1,6 @@
 <template>
 	<ul class="recommendSix">
-		<li class="recommendSix-left">
+		<li class="recommendSix-left" @click="toDetail(listOne.link_url)">
 			<div class="recommendSix-left-img">
         <img :src="listOne.img_url">
       </div>
@@ -11,7 +11,7 @@
       	<h2 class="recommendSix-left-desc-price">{{listOne.sell_price | money }}</h2>
       </div>
 		</li>
-		<li class="recommendSix-item">
+		<li class="recommendSix-item" @click="toDetail(listTwo.link_url)">
 			<div class="recommendSix-img">
         <img :src="listTwo.img_url">
       </div>
@@ -22,7 +22,7 @@
       	<h2 class="recommendSix-desc-price">{{listTwo.sell_price | money }}</h2>
       </div>
 		</li>
-		<li class="recommendSix-item">
+		<li class="recommendSix-item" @click="toDetail(listThree.link_url)">
 			<div class="recommendSix-img">
         <img :src="listThree.img_url">
       </div>
@@ -33,9 +33,9 @@
       	<h2 class="recommendSix-desc-price">{{listThree.sell_price | money }}</h2>
       </div>
 		</li>
-		<li class="recommendSix-item">
+		<li class="recommendSix-item" @click="toDetail(listFour.link_url)">
 			<div class="recommendSix-img">
-        <img :src="listThree.img_url">
+        <img :src="listFour.img_url">
       </div>
 
       <div class="recommendSix-desc">
@@ -49,7 +49,7 @@
 
 <script>
 export default {
-	name: "recommend-six",
+	name: "recommend-six",	// 1 + 3
 	props: ['recommendList', 'token'],
 	computed: {
 		listOne() {

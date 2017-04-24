@@ -1,7 +1,18 @@
 <template>
 	<ul class="recommendSix">
 		
-		<li class="recommendSix-item">
+		<li class="recommendSix-item" @click="toDetail(listOne.link_url)">
+			<div class="recommendSix-img">
+        <img :src="listOne.img_url">
+      </div>
+
+      <div class="recommendSix-desc">
+      	<h1 class="recommendSix-desc-title ellipsis">{{listOne.product_name}}</h1>
+      	<p class="recommendSix-desc-desc">{{listOne.sell_title}}</p>
+      	<h2 class="recommendSix-desc-price">{{listOne.sell_price | money }}</h2>
+      </div>
+		</li>
+		<li class="recommendSix-item" @click="toDetail(listTwo.link_url)">
 			<div class="recommendSix-img">
         <img :src="listTwo.img_url">
       </div>
@@ -12,7 +23,7 @@
       	<h2 class="recommendSix-desc-price">{{listTwo.sell_price | money }}</h2>
       </div>
 		</li>
-		<li class="recommendSix-item">
+		<li class="recommendSix-item" @click="toDetail(listThree.link_url)">
 			<div class="recommendSix-img">
         <img :src="listThree.img_url">
       </div>
@@ -23,26 +34,15 @@
       	<h2 class="recommendSix-desc-price">{{listThree.sell_price | money }}</h2>
       </div>
 		</li>
-		<li class="recommendSix-item">
-			<div class="recommendSix-img">
-        <img :src="listThree.img_url">
-      </div>
-
-      <div class="recommendSix-desc">
-      	<h1 class="recommendSix-desc-title ellipsis">{{listFour.product_name}}</h1>
-      	<p class="recommendSix-desc-desc">{{listFour.sell_title}}</p>
-      	<h2 class="recommendSix-desc-price">{{listFour.sell_price | money }}</h2>
-      </div>
-		</li>
-		<li class="recommendSix-big">
+		<li class="recommendSix-big" @click="toDetail(listFour.link_url)">
 			<div class="recommendSix-big-img">
-        <img :src="listOne.img_url">
+        <img :src="listFour.img_url">
       </div>
 
       <div class="recommendSix-big-desc">
-      	<h1 class="recommendSix-big-desc-title ellipsis">{{listOne.product_name}}</h1>
-      	<p class="recommendSix-big-desc-desc">{{listOne.sell_title}}</p>
-      	<h2 class="recommendSix-big-desc-price">{{listOne.sell_price | money }}</h2>
+      	<h1 class="recommendSix-big-desc-title ellipsis">{{listFour.product_name}}</h1>
+      	<p class="recommendSix-big-desc-desc">{{listFour.sell_title}}</p>
+      	<h2 class="recommendSix-big-desc-price">{{listFour.sell_price | money }}</h2>
       </div>
 		</li>
 	</ul>
@@ -68,6 +68,7 @@ export default {
 	},
 	filters: {
     money(value) {
+    	if (!value) return '￥0.00'
       let val = parseFloat(value).toFixed(2)
       return `￥${val}`
     }
