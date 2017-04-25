@@ -38,7 +38,6 @@
 			<div class="recommendSix-big-img">
         <img :src="listFour.img_url">
       </div>
-
       <div class="recommendSix-big-desc">
       	<h1 class="recommendSix-big-desc-title ellipsis">{{listFour.product_name}}</h1>
       	<p class="recommendSix-big-desc-desc">{{listFour.sell_title}}</p>
@@ -57,12 +56,15 @@ export default {
 			return this.recommendList[0]
 		},
 		listTwo() {
+			if (!this.recommendList[1]) return []
 			return this.recommendList[1]
 		},
 		listThree() {
+			if (!this.recommendList[2]) return []
 			return this.recommendList[2]
 		},
 		listFour() {
+			if (!this.recommendList[3]) return []
 			return this.recommendList[3]
 		},
 	},

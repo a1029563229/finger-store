@@ -1,7 +1,7 @@
 <template>
 	<div class="store">
 		<div class="search-bar">
-			<span class="searchBtnDefault btn-back" @click="toBack()"></span>
+			<span class="searchBtnDefault btn-back" @click="toBack"></span>
 			<input class="search-input" type="text" v-model.trim="searchKey" placeholder="请输入关键字" @click="toSearch"/>
 			<span class="searchBtnDefault btn-search" @click="searchNow"></span>
 		</div>
@@ -89,7 +89,7 @@
 				dataSortInit: [		// 筛选数据初始化
 					{name: '综合', class: 'total', up: false, active:true },
 					{name: '价格', class: 'arrow-up', up: true, active:false },
-					{name: '距离', class: 'arrow-up',  up: true, active:false },
+					{name: '销量', class: 'arrow-up',  up: true, active:false },
 					{name: '店铺', class: 'screen', up:false,  active:false },
 					{name: '筛选', class: 'screen ',  up: false, active:false },
 				],
@@ -123,6 +123,7 @@
 					minPrice: '',   // string	价格区间最小值
 					color: '', 			// string	颜色
 					memory: '',     // string	内存
+					token: ''
 				},
 				searchKey: '',
 			}
@@ -151,7 +152,7 @@
 			this.searchKey = this.$route.query.name;
 			this.searchProductKey.keyword = this.$route.query.name || '';
 			this.searchProductKey.storeid = this.$route.query.storeid || 0;
-			// this.searchProductKey.token = this.token || '';
+			this.searchProductKey.token = this.token || '';
 			this.reloadCommodity();
 			this.getAttrList();
 		},
@@ -239,7 +240,8 @@
 				window.location.href = url;
 			},
 			toBack() {
-				this.$router.push('/home');
+				// this.$router.push('/home');
+				this.$router.go(-1);
 			},
 			// 切换筛选
 			choose(index) {
@@ -547,6 +549,7 @@
 .selection {
 	background-color: #FFF;
 	height: 1.4rem;
+	padding-right: 3%;
 }
 .selection::after {
 	content: '';
@@ -574,7 +577,7 @@
 .selection-item::after {
 	content: '';
 	position: absolute;
-	right: 10%;
+	right: 15%;
 	display: block;
 	width: 0;
 	height: 0;

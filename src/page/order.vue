@@ -86,7 +86,7 @@ export default {
 .myall-icon {
 	float: left;
 	display: block;
-	width: 1rem;
+	width: 0.9rem;
 	height: 1rem;
 	background: url('../assets/icon/my_order@2x.png') no-repeat center;
 	background-size: 0.55rem;

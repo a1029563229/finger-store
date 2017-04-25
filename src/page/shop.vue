@@ -2,8 +2,8 @@
 	<div class="store">
 		<div class="search-bar">
 			<span class="searchBtnDefault btn-back" @click="toBack()"></span>
-			<input class="search-input" type="text" placeholder="请输入关键字" @click="toSearch"/>
-			<span class="searchBtnDefault btn-search" @click="toSearch"></span>
+			<input class="search-input" type="text" v-model="keyword" placeholder="请输入关键字" @click="toSearch"/>
+			<span class="searchBtnDefault btn-search" @click="searchNow"></span>
 		</div>
 		<section class="store-info">
 			<div class="info-img">
@@ -100,11 +100,12 @@
 		name: 'shop',
 		data() {
 			return {
+				keyword: '',
 				commodityList: [],
 				dataSortInit: [		// 筛选数据初始化
 					{name: '综合', class: 'total', up: false, active:true },
 					{name: '价格', class: 'arrow-up', up: true, active:false },
-					{name: '距离', class: 'arrow-up',  up: true, active:false },
+					{name: '销量', class: 'arrow-up',  up: true, active:false },
 					{name: '筛选', class: 'screen ',  up: false, active:false },
 				],
 				dataSelectInit: ['综合排序', '价格从低到高', '价格从高到低'],	//下拉框
@@ -133,7 +134,7 @@
 					sequence: 0,		// 顺序排列：1 倒序：0正序
 					pageindex: 1, 	// 页码
 					pagesize: 10,  // int	每页多少条数据
-
+					keyword: '',
 					brandName: '',  // string	品牌名称
 					maxPrice: '',		// string	价格区间最大值
 					minPrice: '',   // string	价格区间最小值
@@ -166,6 +167,8 @@
 		},
 		created() {
 			this.init();
+			this.keyword = this.$route.query.name || '';
+			this.searchProductKey.keyword = this.$route.query.name || '';
 			this.searchProductKey.storeid = this.storeInfo.id;
 			this.reloadCommodity();
 			this.getAttrList();
@@ -204,29 +207,42 @@
 			},
 			// 点赞
 			async toPraise() {
-				this.isLike = true;
+				if (this.isLike) return
 				let params =  {
 					appkey: appkey,
 					token: this.token,
 					storeId: this.storeInfo.id
 				};
 				let praiseResult = await addStoreSuperb(params);
+				if (praiseResult.ResultCode === 1000) {
+					this.isLike = true;
+				}
 				console.log('praiseResult',praiseResult);
 			},
 			// 收藏
 			async toCollect() {
-				this.isCollect = true;
+				if (this.isCollect) return;
 				let params =  {
 					appkey: appkey,
 					token: this.token,
 					storeId: this.storeInfo.id
 				};
 				let collectResult = await addStoreCollect(params);
+				if (collectResult.ResultCode === 1000) {
+					this.isCollect = true;
+				}
 				console.log('collectResult',collectResult);
+				
 			},
 			// 搜索
 			toSearch() {
-				this.$router.push({path:'search', query:{storeid: this.storeInfo.id}});
+				this.$router.push({path:'search', query:{storeid: this.storeInfo.id,name: this.keyword}});
+			},
+			// 开始搜索
+			searchNow() {
+				this.searchProductKey.pageindex = 1;
+				this.searchProductKey.keyword = this.keyword;
+				this.reloadCommodity();
 			},
 			// 重新加载 商品列表 
 			async reloadCommodity() {
@@ -539,19 +555,17 @@
 }
 
 .btn-praise  {
-	background: url('../assets/icon/common_like_nor@2x.png') center no-repeat;
+	background: url('../assets/icon/common_like_press@2x.png') center no-repeat;
 	background-size: 0.7rem;
 }
 .btn-praise.active {
-	background-image: url('../assets/icon/common_like_press@2x.png');
 	animation: tipMove 0.3s;
 }
 .btn-collect  {
-	background: url('../assets/icon/common_collection_nor@2x.png') center no-repeat;
+	background: url('../assets/icon/common_collection_press@2x.png') center no-repeat;
 	background-size: 0.7rem;
 }
 .btn-collect.active  {
-	background-image: url('../assets/icon/common_collection_press@2x.png');
 	animation: tipMove 0.3s;
 }
 
@@ -648,6 +662,7 @@
 	position: relative;
 	background-color: #FFF;
 	height: 1.4rem;
+	padding-right: 3%;
 }
 .selection::after {
 	content: '';
@@ -675,7 +690,7 @@
 .selection-item::after {
 	content: '';
 	position: absolute;
-	right: 19%;
+	right: 16%;
 	display: block;
 	width: 0;
 	height: 0;

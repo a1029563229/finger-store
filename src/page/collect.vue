@@ -41,8 +41,8 @@ export default {
       dataNone: false,
       collectKey: {
         appkey: appkey, 
-        lat: '',          // String 纬度  
-        lng: '',          // String 经度  
+        lat: '0',          // String 纬度  
+        lng: '0',          // String 经度  
         pageIndex: 1,     // int  页码
         pageSize: 10,     // int  每页多少条数据
         token: ''
@@ -132,6 +132,18 @@ export default {
       this.collectData = collects.Data;
       console.log('collectData:',this.collectData);
     },
+    // 跳转到 店铺列表页
+    toStore(name, id, img, lat, lng) {
+      let params = {
+        name: name,
+        id: id,
+        logo: img,
+        lat: lat,
+        lng: lng,
+      };
+      this.$store.dispatch('recordStoreInfo',params);
+      this.$router.push({ path:'/shop' });
+    }, 
     // 加载更多
     loadmore() {
       let self = this;

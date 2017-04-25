@@ -1,35 +1,14 @@
 <template>
   <div id="shopDes">
-    <!-- <transition   name="slide-fade">
-      <baidu-map :center="{lng: 116.404, lat: 39.915}" :zoom="16" class="mapView" v-show="mapFlag">
-        <bm-label content="" :position="position"  title="Hover me"/>
-      </baidu-map>
-    </transition > -->
     <header-top title="店铺描述"></header-top>
-       <!--  <div class="mapHideIcon" v-show="mapFlag">
-         <i @click="mapHide"><</i>
-       </div> -->
-      <!-- <div class="shopbar">
-        <img src="">
-        <span class="shop-name">{{totalInfo.Name}}</span>
-        <div class="shopBarRight">
-          <div class="shopBarRightItem">
-            <img src="static/img/common_like_press@2x.png" @click="collect($event.target)">
-            <span>点赞</span>
-          </div>
-          <div class="shopBarRightItem" >
-            <img src="static/img/common_collection_press@2x.png" @click="collect($event.target)">
-            <span>收藏</span>
-          </div>
-        </div>
-      </div> -->
+      
       <section class="store-info">
         <div class="info-img">
           <img :src="storeInfo.logo">
         </div>
         <h1 class="info-name ellipsis">{{ storeInfo.name }}</h1>
         <ul class="info-btn">
-          <li @click="toPraise">
+          <li @click="toLike">
             <i class="btn-praise" :class="{active: isLike}"></i>
             点赞
           </li>
@@ -64,11 +43,11 @@
       </li>
       <li class="sellerinfoItem">
         <span>客服电话:</span>
-        <span class="sellerinfoText">{{totalInfo.Name}}</span>
+        <span class="sellerinfoText">{{totalInfo.Telephone}}</span>
       </li>
     </div>
     <div class="qrCode">
-      <img :src="qrcodeImg"><br/>
+      <img :src="`${baseUrl}/api/1.0/YupinhuiServer/ZZDHandle/GetStoreQrCode?appkey=${appkey}&storeId=${storeInfo.id}` "><br/>
       <span>店铺二维码手机扫一扫</span>
     </div>
   </div>
@@ -77,8 +56,8 @@
 <script>
 import headerTop from '@/components/common/headerTop'
 import { mapState } from 'vuex'
-import { getStoreQrcode } from '@/service/getData'
-import { GetStoreTotalInfo, GetStoreQrCode ,appkey,token,GetContractStoreInfo,AddStoreSuperb,AddStoreCollect} from '../config/env'
+import { BASE_URL,appkey } from '../config/env'
+import { getStoreQrcode, GetStoreTotalInfo, GetStoreQrCode ,GetContractStoreInfo,addStoreSuperb,addStoreCollect} from '../service/getData'
 
 export default{
   name: 'shopdes',
@@ -91,6 +70,10 @@ export default{
       collectImg: 'static/img/common_collection_press@2x.png',
       mapFlag: false,
       qrcodeImg: '',
+      isLike: false,
+      isCollect: false,
+      appkey: '',
+      baseUrl: '',
     }
   },
   components: {
@@ -102,22 +85,37 @@ export default{
       userLocal: state => state.home.userLocal,
       token: state => state.home.token
     })
-
   },
   created() {
-    this.getQrcodeData();
+    this.tokenInit();   // 获取token
+    this.appkey = appkey;
+    this.baseUrl = BASE_URL;
   },
   mounted(){
-    this.init()
+    this.getStoreDetailInfo();
+    this.getshopInfo();
   },
   methods: {
-    init: async function(){
-
-      await this.getshopInfo()
-
-      await this.getSoreInfo()
-
-      // await this.getQrcode()
+    tokenInit() {
+      if (!this.token) {
+        let tokenCookie = this.readCookie('USERTOKEN');
+        this.$store.dispatch('recordToken', tokenCookie);
+      }
+      if (JSON.stringify(this.storeInfo).length < 3) {
+        let storeInfoTemp = JSON.parse(this.readCookie('storeInfo'));
+        this.$store.dispatch('recordStoreInfo',storeInfoTemp);
+        this.storeInfo = storeInfoTemp;
+      } 
+    },
+    readCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+      }
+      return '';
     },
     showMap(){
       let local = {
@@ -130,90 +128,33 @@ export default{
       this.$store.dispatch('recordStoreLocal', local);
       this.$router.push({path: "map"});
     },
-    async getQrcodeData() {
-      // let qrcodeData = await getStoreQrcode(this.token);
-      this.qrcodeImg = await getStoreQrcode(this.token);
-        // this.qrcodeImg = this.qrcodeData;
-    },
-
-
-    zan(ev){
+    async toLike() {
       let obj = {
         appkey: appkey,
         token: this.token,
         storeId: this.storeInfo.id
-      }
-      this.$http.post(AddStoreSuperb, this.$qs.stringify(obj))
-        .then( res =>{
-          if(res.data.ResultCode != 1000){
-            alert(res.data.Message)
-          } else {
-            console.log(ev.src = '22')
-          }
-        })
+      };
+      let res = await addStoreSuperb(obj);
+      console.log('toLike:',res);
     },
-    collect(ev){
+    async toCollect() {
       let obj = {
         appkey: appkey,
         token: this.token
+      };
+      let res = await addStoreCollect(obj);
+      console.log('toCollect:',res);
+    },
+    async getStoreDetailInfo() {
+      let params = {
+        appkey: appkey,
+        token: this.token,
+        storeId: this.storeInfo.id
       }
-      this.$http.post(AddStoreCollect,this.$qs.stringify(obj))
-        .then( res =>{
-          if(res.data.ResultCode != 1000){
-            alert(res.data.Message)
-          } else {
-            console.log(ev.src = '22')
-          }
-        })
-    },
-    getSoreInfo(){
-      return new Promise( (resolve, reject) =>{
-        let obj = {
-          appkey: appkey,
-          token: token
-        }
-        console.log(obj)
-        this.$http.post(GetContractStoreInfo, this.$qs.stringify(obj))
-          .then( res =>{
-            console.log(res.data.Data)
-            this.totalInfo = res.data.Data
-            resolve()
-          })
-      })
-    },
-
-   /* getQrcode(){
-      return new Promise( (resolve, reject) =>{
-        let obj = {
-          appkey: appkey,
-          token: token
-        }
-
-        this.$http.post(GetStoreQrCode, this.$qs.stringify(obj))
-          .then( res =>{
-
-            console.log(res)
-
-//              console.log(res.data)
-            this.qrCode = res.data
-            resolve()
-          })
-      })
-    },*/
-    getshopInfo(){
-      return new Promise( (resolve,reject) =>{
-        let obj = {
-          appkey: appkey,
-          token: token
-        }
-        this.$http.post(GetContractStoreInfo,this.$qs.stringify(obj))
-          .then( res =>{
-            this.totalInfo = res.data.Data
-            resolve()
-          })
-      })
-
-    },
+      let res = await GetContractStoreInfo(params);
+      console.log('GetContractStoreInfo-res',res);
+      this.totalInfo = res.Data;
+    }, 
     collect(el){
       let obj={
         appkey: appkey,

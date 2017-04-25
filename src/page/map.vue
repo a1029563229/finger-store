@@ -41,8 +41,8 @@ export default {
 		},
 		polylinePath() {
 			return  [
-				{ lng: this.storeLocal.userlng, lat: this.storeLocal.userlat},
-				{ lng: this.storeLocal.storelng, lat: this.storeLocal.storelat}
+				{ lng: this.storeLocal.storelng, lat: this.storeLocal.storelat},
+				{ lng: this.storeLocal.userlng, lat: this.storeLocal.userlat}
 			]
 		}
 	},

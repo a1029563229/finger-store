@@ -18,7 +18,7 @@
 				历史搜索
 			</h1>
 			<ul class="keyword-list clear">
-				<li class="keyword-item" v-for="item in historyWords">
+				<li class="keyword-item" v-for="item in historyWords" @click="toSearch(item)">
 					{{ item }}
 				</li>
 			</ul>
@@ -46,7 +46,7 @@ export default {
 			}),
 	},
 	created() {
-		this.init(); // get Token
+		this.tokenInit(); // get Token
 		this.getHotWords();
 		this.toHistoryWords();
 		this.searchResult = this.$route.query.name;
@@ -65,7 +65,7 @@ export default {
 },
 	methods: {
 		// 获取token
-		init() {
+		tokenInit() {
 			if (!this.token) {
 				let tokenCookie = this.readCookie('USERTOKEN');
 				this.$store.dispatch('recordToken', tokenCookie);
@@ -101,7 +101,7 @@ export default {
 		toSearch(word) {
 			
 			if (this.$route.query.storeid) {
-				this.$router.push({path:'productlist', query:{name: word, storeid:this.$route.query.storeid}});
+				this.$router.push({path:'shop', query:{name: word}});
 			} else {
 				this.$router.push({path:'productlist', query:{name: word}});
 			}

@@ -260,6 +260,7 @@ export default {
 		},
 		// 重新加载 附近商店列表 
 		async reloadNearbyStore() {
+			this.loading = true;
 			this.searchStoreKey.pageIndex = 1;
 			let nearbyList = await searchStoreList(this.searchStoreKey);
 			console.warn('nearbyListData',nearbyList);
@@ -288,6 +289,7 @@ export default {
 			
 			var options={enableHighAccuracy:true, maximumAge:1000 }
       if(navigator.geolocation){
+      	this.loading = true;
       	await navigator.geolocation.getCurrentPosition(this.onSuccess,this.onError,options);  //浏览器支持geolocation\
       }else{
         alert('您的浏览器不支持地理位置定位');  //浏览器不支持geolocation
@@ -299,7 +301,6 @@ export default {
     	this.searchStoreKey.lng = lngData;  //返回用户位置  //经度
       this.searchStoreKey.lat = latData;   //纬度
       let userLocal = {lat: latData, lng: lngData};
-      this.loading = true;
       this.reloadNearbyStore();
      	this.$store.dispatch('recordUserLocal', userLocal);
       return 
@@ -307,7 +308,6 @@ export default {
        // alert('经度'+this.searchStoreKey.lng +'，纬度'+this.searchStoreKey.lat); 
     },
  		onError(error){
- 			this.loading = true;
  			this.reloadNearbyStore();
  			return
       // switch(error.code){
@@ -364,14 +364,12 @@ export default {
 					this.isClassify = false;
 					if (!active) {
 						this.searchStoreKey.sort = 3;
-						this.dataSortInit[1].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;
-						this.reloadNearbyStore();
 					} else {
 						this.dataSortInit[1].up = !up;
-						this.dataSortInit[1].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;
-						this.reloadNearbyStore();
 					}
+					this.dataSortInit[1].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;
 					this.dataSortInit[1].active = true;
+					this.reloadNearbyStore();
 					return
 				case 2: 
 					this.reset();
@@ -380,14 +378,12 @@ export default {
 					this.isClassify = false;
 					if (!active) {
 						this.searchStoreKey.sort = 2;
-						this.dataSortInit[2].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;							
-						this.reloadNearbyStore();
 					} else {
 						this.dataSortInit[2].up = !up;
-						this.dataSortInit[2].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;
-						this.reloadNearbyStore();
 					}
+					this.dataSortInit[2].up ? this.searchStoreKey.sequence = 0 : this.searchStoreKey.sequence = 1;
 					this.dataSortInit[2].active = true;
+					this.reloadNearbyStore();
 					return
 				case 3: 
 					this.isMask = true;
@@ -404,31 +400,22 @@ export default {
 					this.simpleSort = 0;
 					this.searchStoreKey.sort = 1;
 					this.searchStoreKey.sequence = 0;
-					this.isMask = false;
-					this.dataSortInit[0].active = false;
-					this.isSortList = false;
-					this.reloadNearbyStore();
-					return
+					break;
 				case 1: 
 					this.simpleSort = 1;
 					this.searchStoreKey.sort = 3;
 					this.searchStoreKey.sequence = 0;
-					this.isMask = false;
-					this.dataSortInit[0].active = false;
-					this.isSortList = false;
-					this.reloadNearbyStore();
-					return
+					break;
 				case 2: 
 					this.simpleSort = 2;
 					this.searchStoreKey.sort = 3;
 					this.searchStoreKey.sequence = 1;
-					this.isMask = false;
-					this.dataSortInit[0].active = false;
-					this.isSortList = false;
-					this.reloadNearbyStore();
-					return
+					break;
 			}
-
+			this.isMask = false;
+			this.dataSortInit[0].active = true;
+			this.isSortList = false;
+			this.reloadNearbyStore();
 		},
 		// 重置
 		reset() {
@@ -570,6 +557,7 @@ export default {
 	position: relative;
 	background-color: #FFF;
 	height: 1.4rem;
+	padding-right: 3%;
 }
 .selection::after {
 	content: '';
@@ -597,7 +585,7 @@ export default {
 .selection-item::after {
 	content: '';
 	position: absolute;
-	right: 10%;
+	right: 15%;
 	display: block;
 	width: 0;
 	height: 0;

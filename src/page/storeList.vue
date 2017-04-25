@@ -513,6 +513,7 @@ export default {
 	position: relative;
 	background-color: #FFF;
 	height: 1.4rem;
+	padding-right: 3%;
 }
 .selection::after {
 	content: '';
@@ -540,7 +541,7 @@ export default {
 .selection-item::after {
 	content: '';
 	position: absolute;
-	right: 10%;
+	right: 15%;
 	display: block;
 	width: 0;
 	height: 0;

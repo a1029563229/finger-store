@@ -30,7 +30,7 @@
       <recommend-seven :recommend-list="recommendData" :token="token"></recommend-seven>
     </template> -->
     <section class="recommend" v-for="item in recommendRes" v-show="item.list_floor_product.length">
-     <header class="recommend-title">
+     <header class="recommend-title" v-show="item.floor_name">
       <i class="recommend-title-icon"></i>
       <span>{{ item.floor_name }}</span>
      </header>
