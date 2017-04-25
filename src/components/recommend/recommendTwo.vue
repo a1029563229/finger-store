@@ -21,6 +21,7 @@ export default {
 	props: ['recommendList', 'token'],
 	filters: {
     money(value) {
+    	if (!value) return ''
       let val = parseFloat(value).toFixed(2)
       return `￥${val}`
     }

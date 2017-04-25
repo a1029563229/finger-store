@@ -64,7 +64,7 @@ export default {
 	},
 	filters: {
     money(value) {
-    	if (!value) return '￥0.00'
+    	if (!value) return ''
       let val = parseFloat(value).toFixed(2)
       return `￥${val}`
     }

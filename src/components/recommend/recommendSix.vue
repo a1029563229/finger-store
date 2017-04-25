@@ -67,6 +67,7 @@ export default {
 	},
 	filters: {
     money(value) {
+    	if (!value) return ''
       let val = parseFloat(value).toFixed(2)
       return `￥${val}`
     }
@@ -126,8 +127,9 @@ export default {
 
 .recommendSix-left-desc-title {
 	flex: 1;
-	font-size: 0.4rem;
+	font-size: 0.36rem;
 	color: #222;
+	overflow: hidden;
 }
 .recommendSix-left-desc-desc {
 	flex: 2;
@@ -184,9 +186,10 @@ export default {
 }
 
 .recommendSix-desc-title {
-	font-size: 0.4rem;
+	font-size: 0.36rem;
 	color: #222;
 	flex: 1;
+	overflow: hidden;
 }
 .recommendSix-desc-desc {
 	flex: 2;

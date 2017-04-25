@@ -49,7 +49,7 @@
 
 <script>
 export default {
-	name: "recommend-six",
+	name: "recommend-six",	// 1 + 3
 	props: ['recommendList', 'token'],
 	computed: {
 		listOne() {
@@ -70,7 +70,7 @@ export default {
 	},
 	filters: {
     money(value) {
-    	if (!value) return '￥0.00'
+    	if (!value) return ''
       let val = parseFloat(value).toFixed(2)
       return `￥${val}`
     }
@@ -188,16 +188,19 @@ export default {
 	width: 75%;
 	padding: 1% 0 0 4%;
 	overflow: hidden;
+	line-height: 1.2;
 }
 
 .recommendSix-desc-title {
-	font-size: 0.4rem;
+	font-size: 0.36rem;
 	color: #222;
 	flex: 1;
+	overflow: hidden;
 }
 .recommendSix-desc-desc {
 	flex: 2;
 	color: #999;
+	font-size: 0.32rem;
 	overflow: hidden;
 }
 .recommendSix-desc-price {
@@ -205,6 +208,5 @@ export default {
 	font-size: 0.35rem;
 	color: #E52951;
 }
-
 
 </style>

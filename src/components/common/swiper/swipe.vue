@@ -49,9 +49,10 @@
 				autoplay: self.autoplay,
 				direction: self.direction,
 				effect: self.effect,
-				autoplayDisableOnInteraction: false,
 				observer: true,
-				observeParents: true
+				observeParents: true,
+				preventClicks : false,
+				touchMoveStopPropagation : false
 			})
 		},
 		data() {
