@@ -41,9 +41,9 @@
 			}
 		},
 		mounted() {
-			var self = this;
-			var swiper = new Swiper('.'+ self.swipeid, {
-				loop: self.loop,
+			let self = this;
+			let swiper = new Swiper('.'+ self.swipeid, {
+				loop: true,
 				pagination: '.swiper-pagination',
 				paginationType: self.paginationType,
 				autoplay: self.autoplay,

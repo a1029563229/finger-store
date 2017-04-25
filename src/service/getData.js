@@ -142,21 +142,12 @@ let addStoreSuperb = (params) => axios({
 	}
 });
 
-/*// 联系我们-获取店铺具体信息
-let getContractStoreInfo = (token) => axios({
-	url: service + '/GetContractStoreInfo',
-	method: 'post',
-	data: {
-		appkey: appkey,
-		token: token
-	}
-});*/
 
 // 获取店铺的二维码
-let GetStoreQrCode = (params) => axios({
+/*let GetStoreQrCode = (params) => axios({
 	url: service + '/GetStoreQrCode?'+ params,
 	method: 'get'
-});
+});*/
 
 // 获取订单列表
 let GainOrderList = (params) => axios({
@@ -279,7 +270,7 @@ export {
     addStoreSuperb, 				// 店铺点赞
     addStoreCollect, 				// 店铺收藏
     getContractStoreInfo, 	// 获取店铺具体信息
-    GetStoreQrCode, 				// 获取店铺的二维码
+    // GetStoreQrCode, 				// 获取店铺的二维码
     GainOrderList, 					// 获取订单列表
     GetContractStoreInfo, 	// 获取店铺具体信息
     GainZZDOrderList,				// 用于店主获取订单列表
