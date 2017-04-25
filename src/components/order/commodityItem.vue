@@ -115,10 +115,10 @@ export default {
   },
   methods: {
     tokenInit() {                      // 获取token
-     if (!this.token) {
-      console.log('recordToken-USERTOKEN', this.token);
-      this.$store.dispatch('recordToken',this.readCookie('USERTOKEN'));
-     }
+      if (!this.token) {
+        console.log('recordToken-USERTOKEN', this.token);
+        this.$store.dispatch('recordToken',this.readCookie('USERTOKEN'));
+      }
     },
     readCookie(name) {                // 获取cookie
       var nameEQ = name + "=";
@@ -201,15 +201,6 @@ export default {
       } else {
         alert(res.Message)
       }
-      /*this.$http.post(ZZDApplyDrawback, obj)
-        .then( res =>{
-            console.log(res)
-          if( res.data.ResultCode === 1000){
-            alert(res.data.Message)
-          }else {
-            alert(res.data.Message)
-          }
-        })*/
     },
     toDetail(el){
       let orderNo = el.getAttribute('data-orderNo')
