@@ -260,7 +260,7 @@ export default{
 }
 
 .shoinfo-time {
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .shopinfo-addr-text {
@@ -279,7 +279,7 @@ export default{
 }
 
 .shop-qrcode {
-  margin-top: 0.4rem;
+  margin: 0.4rem 0;
   width: 100%;
   height: auto;
   display: flex;

@@ -3,19 +3,19 @@
 		<header-top title="订单详情"></header-top>
 		<section class="detail-head">
 			<i class="head-icon"></i>
-			{{orderDetail.Status | orderStateName }}
+			{{ orderDetail.Status | orderStateName }}
 		</section>
 		<section class="detail-user">
 			<p class="clear user-phone">
 				<i class="user-icon"></i>
-				收货人：{{orderDetail.customer.consignee}}
+				收货人：{{userInfo.consignee}}
 				<span class="user-phone-num">
-					{{orderDetail.customer.phoneNumber}}
+					{{userInfo.phoneNumber}}
 				</span>
 			</p>
 			<p class="clear user-detail">
 				<i class="local-icon"></i>
-					地址：{{orderDetail.customer.deliveryAddress}}
+					地址：{{userInfo.deliveryAddress}}
 			</p>
 		</section>
   	<ul class="detail-order clear">
@@ -77,6 +77,7 @@ export default {
 	data() {
 		return {
       orderDetail: [],
+
 		}
 	},
 	components: {
@@ -92,7 +93,12 @@ export default {
     ...mapState({
     	token: state => state.home.token,
     	orderno: state => state.list.orderno
-    })
+    }),
+    userInfo() {
+    	// return this.orderDetail.customer.consignee
+    	console.log(this.orderDetail.customer);
+    	return this.orderDetail.customer || {}
+    }
   },
   filters: {
   	money(value) {
@@ -271,56 +277,56 @@ export default {
 }
 
 .detail-order-list{
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
   width: 100%;
-  height: 3rem;
+  height: 2.7rem;
   background: #FFF;
   border-bottom: 1px solid #EEE;
   padding: 3%;
 }
 .order-img{
 	position: relative;
-  width: 30%;
+  width: 25%;
   height: 0;
   padding-bottom: 25%;
-  float: left;
   overflow: hidden;
+  /* background-color: #DDD; */
+
 }
 .order-img > img{
 	position: absolute;
 	left: 50%;
 	top: 50%;
   width:100%;
+  /* display: none; */
   transform: translate(-50%, -50%);
 }
 
 .order-info {
+	display: flex;
+	flex-direction: column;
   width: 70%;
-  float: right;
   height: 100%;
-  padding-left: 3%;
   position: relative;
 }
 .order-info-title {
 	display: block;
-	max-height: 1.55rem;
+	flex: 3;
 	overflow: hidden;
 }
 
 .order-bot{
-  position: absolute;
-  left: 3%;
-  bottom: 0;
-  line-height: 0.7rem;
   width: 96%;
+  display: flex;
+  justify-content: space-between;
 }
 .order-price{
   color: #E84567;
   font-size: 0.4rem;
 }
 .order-mount{
-  position: absolute;
-  right: 0;
-  top: 0;
   font-size: 0.35rem;
 }
 </style>

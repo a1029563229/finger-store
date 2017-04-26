@@ -11,7 +11,7 @@
 		</div>
 		<ul class="order-choice">
 			<li class="choice-item" v-for="(item,index) in tablist" @click="selected(index)">
-	      <img :src="item.url" alt="">
+	      <img :src="item.url">
 				<span>{{item.name}}</span>
 			</li>
 		</ul>
@@ -50,10 +50,11 @@ export default {
 	},
 	methods: {
 		toMyorder() {
+			this.$store.dispatch('setTabIndex',0);
 			this.$router.push('myorder');
 		},
 		selected(index) {
-      this.$store.dispatch('setTabIndex',index)
+      this.$store.dispatch('setTabIndex',index +1)
       this.$router.push('myorder');
 		},
 		toCollect(){

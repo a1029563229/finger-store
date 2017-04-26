@@ -8,11 +8,11 @@
 		</ul>
 		<!-- header -->
 		<ul class="myorder-list">
-			<li class="list-wrap" v-for="(item,index) in orderList" :orderNo="item.orderNo">
+			<li class="list-wrap" v-for="(item,index) in orderList">
 				<header class="list-title">
 					<div class="list-title-name">
 						<i class="list-title-logo list-title-icon"></i>
-		        <span>{{ item.storeName }}</span>
+		        <span>{{ item.StoreName }}</span>
 		        <i class="list-title-arrow list-title-icon"></i>
 					</div>
 	        <span class="title-tip" v-show="item.OrderStatus == 1">待付款</span>
@@ -22,7 +22,7 @@
 	        <span class="title-tip" v-show="item.OrderStatus == 5">退款 </span>
 				</header>
 				<ol class="lists">
-					<dd class="lists-item">
+					<dd class="lists-item" @click="toDetail(item.orderNo)">
 						<aside class="lists-item-img">
 							<img :src="item.productImage">
 						</aside>
@@ -33,38 +33,36 @@
 							<p class="lists-item-desc-desc">
 								{{item.productAttrs}}
 							</p>
-							<p class="lists-item-desc-num">
-								<span class="lists-item-desc-price">{{ item.productPrice | currency }}</span>
-								<span>X{{ item.order_amount }}</span>
-							</p>
 						</section>
 					</dd>
 				</ol>
 				<section class="list-total">
-					共 {{ item.order_amount  }} 件商品&nbsp;合计:{{ 1555.041 | currency }}
+					共 {{ item.quantity  }} 件商品&nbsp;&nbsp;合计:{{ item.order_amount | currency }}
 				</section>
 				<section class="list-func">
-					<template v-show="item.OrderStatus == 1">
-						<button class="list-btn-default" @click="deletOrder(item.orderNo)">取消订单</button>
-						<button class="list-btn-default list-btn-gray">确认付款</button>
+					<template v-if="item.OrderStatus == 1">
+						<button class="list-btn-default" :class="{'list-btn-gray': true}" @click="deletOrder(item.orderNo_sub)">取消订单</button>
+						<button class="list-btn-default list-btn-active">确认付款</button>
 					</template>
-					<template v-show="item.OrderStatus == 2">
-						<button class="list-btn-default list-btn-active" @click="applyRefund(item.orderNo_sub, item.phoneNumber)">申请退款</button>
+					<template v-if="item.OrderStatus == 2">
+						<button class="list-btn-default " @click="applyRefund(item.orderNo_sub, item.phoneNumber)">申请退款</button>
+						<button class="list-btn-default list-btn-active" :class="{'list-btn-gray': true}" @click="applyTransport(item.orderNo_sub, item.phoneNumber)">催发货</button>
 					</template>
-					<template v-show="item.OrderStatus == 3">
-						<button class="list-btn-default"  @click="toTransport(item.orderStatusUrl)">查看物流</button>
+					<template v-if="item.OrderStatus == 3">
+						<button class="list-btn-default list-btn-gray" @click="applyRefund(item.orderNo_sub, item.phoneNumber)">申请退款</button>
+						<button class="list-btn-default list-btn-active"  @click="viewTransport(item.orderStatusUrl)">查看物流</button>
 					</template>
-					<template v-show="item.OrderStatus == 4">
-						<button class="list-btn-default"  @click="toTransport(item.orderStatusUrl)">查看物流</button>
+					<template v-if="item.OrderStatus == 4">
+						<button class="list-btn-default list-btn-active"  @click="viewTransport(item.orderStatusUrl)">查看物流</button>
 					</template>
-					<template v-show="item.OrderStatus == 5">
-						
-					</template>
-					
 				</section>
 			</li>
 		</ul>
+		<section class="data-none" v-if="orderList.length">
+			
+		</section>
 		<navigation></navigation>
+		<infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
     <pay-model v-show="showPay"></pay-model>
 	</div>
 </template>
@@ -75,50 +73,48 @@ import commodityItem from '@/components/order/commodityItem'
 import navigation from '@/components/common/navigation'
 import { mapState } from 'vuex'
 import { appkey } from '../config/env'
-import { GainZZDOrderList } from '../service/getData'
-
+import { GainZZDOrderList, ZZDExpedite, ZZDDeleteOrderByNo, ZZDApplyDrawback } from '../service/getData'
+// 加载更多
+import infiniteScroll from '@/components/common/infiniteScroll'
 export default {
 	data() {
 		return {
       showPay: false,
       tabList: ['全部', '待付款', '待发货', '待收货', '已完成', '退款'],
 			itemNum: 0,
+			scroller: null,
+			isLoadEnd: false,
 			orderList: [],
-			orderKey: {
-				appkey: appkey,
-				token: '',
-				pageindex: 1,
-				pagesize: 10,
-				orderStatus: 0
-			},
+			loading: false,
+			listKey: {
+	      token: '',
+	      appkey: '',
+	      pageindex: 1,
+	      pagesize: 10,
+	      orderStatus: 0
+		  }
 		}
 	},
 	components: {
 		headerTop,
 		commodityItem,
 		navigation,
-    payModel
+    payModel,
+    infiniteScroll
 	},
 	created() {
 		this.tokenInit();
+		this.itemNum = this.selectIdx;
+		this.sendRequest(0);
 	},
 	mounted() {
-		this.resetIdx();
+		this.scroller = this.$el;
 	},
 	computed: {
 		...mapState({
 			token: state => state.home.token,
+			selectIdx: state => state.list.selectIdx
 		}),
-		totalPrice() {
-      /*let price = 0;
-        this.orderList.forEach( (item,idx) =>{
-          price += (item.productPrice-0)
-        })
-      for (let item of this.orderList) {
-        price += (item.productPrice-0)
-      }*/
-      return 12
-    }
 	},
 	filters: {
 		currency(value) {
@@ -144,34 +140,86 @@ export default {
       }
       return '';
     },
-		resetIdx(){
-      let isfromMyorder = this.$store.state.list.isfromMyorder
-      if( isfromMyorder ){
-          this.itemNum = this.$store.state.list.selectIdx
-          this.$store.state.list.isfromMyorder = false
-      }
-    },
+    // 切换tab
 		chooseItem(index) {
-
-      this.$store.dispatch('switchTab',index)
       this.sendRequest(index);
 			this.itemNum = index;
 		},
+		// 获取订单数据
 		async sendRequest( orderStatus ) {
-		  let params = {
-		      token: this.token,
-		      appkey: appkey,
-		      pageindex: 1,
-		      pagesize: 10,
-		      orderStatus: orderStatus
-		    }
-		  let res = await GainZZDOrderList(params);
+			this.isLoadEnd = false;
+		  this.loading = true;
+			this.listKey.pageindex = 1;
+			this.listKey.orderStatus = orderStatus;
+			this.listKey.token = this.token;
+			this.listKey.appkey = appkey;
+
+		  let res = await GainZZDOrderList(this.listKey);
+		  this.loading = false;
 		  this.orderList = res.Data;
 		  console.log(this.orderList);
 		},
-		toTransport(url) {
+		async loadmore() {
+			this.loading = true;
+			this.listKey.pageindex++;
+			this.listKey.orderStatus = this.itemNum;
+			this.listKey.token = this.token;
+			this.listKey.appkey = appkey;
+		  let res = await GainZZDOrderList(this.listKey);
+		  this.loading = false;
+		  res.Data.forEach(item => {
+		  	this.orderList.push(item);
+		  })
+		  if (res.TotalPage < res.PageIndex) this.isLoadEnd = true;
+	  },
+		// 查看物流
+		viewTransport(url) {
 			window.location.href = url + "&token=" + this.token;
-		}
+		},
+	 	async deletOrder(orderNo){
+			let obj = {
+			  appkey: appkey,
+			  token: this.token,
+			  orderno: orderNo
+			}
+			let res = await ZZDDeleteOrderByNo(obj);
+		  if (res.ResultCode === 1000) {
+		    window.location.reload()
+		  } else {
+		    alert(res.Message)
+		  }
+	  },
+
+	  async applyRefund(orderNo, mobile){
+      mobile -= 0;
+      let data = {orderNo:orderNo, mobile: mobile, goodsPic:'|',city:0}
+      let obj = {
+        appkey:appkey,
+        token: this.token,
+        data:JSON.stringify(data)
+      }
+      console.log(obj)
+      this.isRefund = true;
+      let res = await ZZDApplyDrawback(obj);
+      if (res.ResultCode === 1000) {
+        // alert(res.Message)
+      } else {
+        // alert(res.Message)
+      }
+    },
+    toDetail(orderNo){
+      this.$store.dispatch('setOrderno', orderNo);
+      this.$router.push('/orderdetail')
+      console.log(orderNo)
+    },
+    async applyTransport(orderno) {
+    	let params = {
+    		appkey: appkey,
+    		token: this.token,
+    		suborderno: orderno
+    	};
+    	let res = await ZZDExpedite(params);
+    }
 	}
 }
 </script>
@@ -256,7 +304,7 @@ export default {
 	justify-content: space-between;
 	width: 100%;
 	background-color: #F4F4F4;
-	height: 2.8rem;
+	height: 2.7rem;
 	padding: 0 3%;
 	border-bottom: 1px solid #E8E8E8;
 }
@@ -288,24 +336,15 @@ export default {
 	/* border: 1px solid brown; */
 }
 .lists-item-desc-title {
-	flex: 2;
+	flex: 1;
 	overflow: hidden;
 	font-size: 0.32rem;
 }
 .lists-item-desc-desc {
-	flex: 2;
+	flex: 1;
 	font-size: 0.32rem;
 	color: #999;
 	overflow: hidden;
-}
-.lists-item-desc-num {
-	display: flex;
-	justify-content: space-between;
-	flex: 1;
-	font-size: 0.32rem;
-}
-.lists-item-desc-price {
-	color: #E52951;
 }
 
 /* 商品价格统计 */

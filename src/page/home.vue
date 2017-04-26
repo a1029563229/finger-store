@@ -486,15 +486,12 @@ export default {
 	width: 100%;
 	height: 4.8rem;
 }
-.home-swipe {
-	width: 100%;
-	height: 6rem;
-}
+
 .home-swipe img {
 	position: absolute;
-	height: 100%;
 	top: 50%;
-	transform: translate(0, -50%);
+	left: 50%;
+	transform: translate3d(-50%, -50%, 0);
 }
 
 /* search */

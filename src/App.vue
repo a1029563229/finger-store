@@ -36,6 +36,9 @@ export default {
   width: 100%;
   height: 100vh;
   overflow: auto;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  z-index:1; 
 }
 
 </style>

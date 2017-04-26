@@ -222,6 +222,15 @@ let ZZDDeleteOrderByNo = (params) => axios({
 	}
 });
 
+// 根据订单号催发货
+let ZZDExpedite = (params) => axios({
+	url: service + '/ZZDExpedite',
+	method: 'post',
+	data: {
+		...params
+	}
+});
+
 
 // 响应拦截
 axios.interceptors.response.use(function(response) {
@@ -278,5 +287,6 @@ export {
     ZZDApplyDrawback, 			// 用于用户申请退款
     GainBindBankById,  			// 通过ID获取绑定银行卡信息
     GetCollectSotres,  			// 查询我的收藏店铺列表
-    ZZDDeleteOrderByNo 			// 根据订单号删除订单
+    ZZDDeleteOrderByNo, 			// 根据订单号删除订单
+    ZZDExpedite							// 根据订单号催发货
   }
