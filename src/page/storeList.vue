@@ -431,15 +431,17 @@ export default {
 .storelist {
 	width: 100%;
 	height: 100%;
-	padding-bottom: 1.4rem;
+	padding: 2.68rem 0 1.4rem;
 	/*background-color: #F4F4F4;*/
 }
 
 /* search-bar */
 .search-bar {
-	position: relative;
+	position: fixed;
+	top: 0;
 	width: 100%;
 	height: 1.28rem;
+	z-index: 9;
 	background-color: #FFF;
 }
 
@@ -499,18 +501,21 @@ export default {
 .mask {
 	position: absolute;
 	display: block;
-	top: 2.68rem;
 	right: 0;
 	bottom: 0;
 	left: 0;
+	top: 0;
 	height: 100%;
 	width: 100%;
-	z-index: 19;
+	z-index: 8;
 	background-color: rgba(0,0,0,0.5);
 }
 /* section-item-mask */
 .selection {
-	position: relative;
+	position: fixed;
+	top: 1.28rem;
+	z-index: 9;
+	width: 100%;
 	background-color: #FFF;
 	height: 1.4rem;
 	padding-right: 3%;
@@ -582,10 +587,10 @@ export default {
 /* 下拉菜单 */
 .sort {
 	display: none;
-	position: absolute;
+	position: fixed;
 	padding: 0.1rem 5% 0;
-	top: 1.4rem;
 	visibility: hidden;
+	top: 2.68rem;
 	/* transform: translate3d(0, -2rem, 0); */
 	left: 0;
 	width: 100%;
@@ -610,9 +615,9 @@ export default {
 
 .classify {
 	display: none;
-	position: absolute;
+	position: fixed;
 	right: 0;
-	top: 1.4rem;
+	top: 2.68rem;
 	width: 60%;
 	height: auto;
 	z-index: 20;
@@ -789,7 +794,7 @@ export default {
 
 .btn-map {
 	position: relative;
-	z-index: 10;
+	z-index: 5;
 	margin-top: 0.2rem;
 	display: block;
 	width: 2.2rem;

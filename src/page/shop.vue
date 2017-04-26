@@ -441,7 +441,7 @@
 	position: relative;
 	width: 100%;
 	background-color: #F4F4F4;
-	padding-top:3rem;
+	padding-top:4.28rem;
 }
 
 /* search-bar */
@@ -651,24 +651,27 @@
 	width: 100%;
 }
 .mask {
-	position: absolute;
+	position: fixed;
 	display: block;
-	top: 4.28rem;
+	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
 	height: 100%;
 	width: 100%;
-	z-index: 19;
+	z-index: 8;
 	background-color: rgba(0,0,0,0.5);
 }
 /* 筛选 */
 
 .selection {
-	position: relative;
+	position: fixed;
+	top: 2.88rem;
+	width: 100%;
 	background-color: #FFF;
 	height: 1.4rem;
 	padding-right: 3%;
+	z-index: 9;
 }
 .selection::after {
 	content: '';
@@ -737,9 +740,9 @@
 /* 下拉菜单 */
 .sort {
 	display: none;
-	position: absolute;
+	position: fixed;
 	padding: 0.1rem 5% 0;
-	top: 1.4rem;
+	top: 4.28rem;
 	visibility: hidden;
 	/* transform: translate3d(0, -2rem, 0); */
 	left: 0;
@@ -765,9 +768,9 @@
 
 .classify {
 	display: none;
-	position: absolute;
+	position: fixed;
 	right: 0;
-	top: 1.4rem;
+	top: 4.28rem;
 	width: 60%;
 	height: auto;
 	z-index: 20;

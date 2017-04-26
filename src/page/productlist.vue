@@ -395,18 +395,18 @@
 
 .store {
 	background-color: #F4F4F4;
-	padding-bottom: 1.2rem;
+	padding: 2.68rem 0  1.2rem;
 }
 
 /* search-bar */
 .search-bar {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	right: 0;
 	width: 100%;
 	height: 1.28rem;
-	z-index: 2;
+	z-index: 9;
 	background-color: #FFF;
 }
 
@@ -529,26 +529,29 @@
 /* sort-filter */
 .sort-filter {
 	position: relative;
-	padding-top: 1.28rem;
 	width: 100%;
 	height: auto
 }
 .mask {
-	position: absolute;
+	position: fixed;
 	display: block;
-	top: 2.68rem;
+	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
 	height: auto;
 	width: 100%;
-	z-index: 19;
+	z-index: 8;
 	background-color: rgba(0,0,0,0.5);
 }
 /* 筛选 */
 
 .selection {
+	position: fixed;
+	top: 1.28rem;
+	width: 100%;
 	background-color: #FFF;
+	z-index: 9;
 	height: 1.4rem;
 	padding-right: 3%;
 }
@@ -619,18 +622,16 @@
 /* 下拉菜单 */
 .sort {
 	display: none;
-	position: absolute;
+	position: fixed;
 	padding: 0.1rem 5% 0;
-	top: 2.68rem;
 	visibility: hidden;
-	/* transform: translate3d(0, -2rem, 0); */
 	left: 0;
+	top: 2.68rem;
 	width: 100%;
 	height: 2rem;
 	z-index: 20;
 	line-height: 0.6rem;
 	color: inherit;
-	/* transition: transform 0.3s ease; */
 	background-color: #fff;
 	border-bottom: 1px solid #EEE;
 }
@@ -647,9 +648,9 @@
 
 .classify {
 	display: none;
-	position: absolute;
-	right: 0;
+	position: fixed;
 	top: 2.68rem;
+	right: 0;
 	width: 60%;
 	height: auto;
 	z-index: 20;

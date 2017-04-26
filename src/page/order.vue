@@ -1,10 +1,10 @@
 <template>
 	<div class="order">
 		<header-top title="我的" :goBack="false"></header-top>
-		<div class="order-myall">
+		<div class="order-myall" @click="toMyorder">
 			<i class="myall-icon"></i>
 			<span class="order-myall-text">我的订单</span>
-			<div class="myall-right" @click="toMyorder">
+			<div class="myall-right">
 				<span>全部订单</span>
 				<i class="myall-arrow-right"></i>
 			</div>

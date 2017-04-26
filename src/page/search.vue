@@ -99,8 +99,8 @@ export default {
 			console.log('deleteInfo',deleteInfo);
 		},
 		toSearch(word) {
-			
-			if (this.$route.query.storeid) {
+			console.log(this.$route.query.storeid);
+			if (this.$route.query.storeid > 0) {
 				this.$router.push({path:'shop', query:{name: word}});
 			} else {
 				this.$router.push({path:'productlist', query:{name: word}});

@@ -347,6 +347,7 @@ export default{
   height: 100%;
   float: right;
   margin-right: 2%;
+  color: #999;
 }
 
 .info-btn li {
