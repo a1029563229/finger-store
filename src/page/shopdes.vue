@@ -37,12 +37,15 @@
       <section class="shopinfo-content">
         <div class="shopinfo-default shopinfo-address">
           <span>商家地址：</span>
-          <span class="ellipsis shopinfo-addr-text">{{ totalInfo.Address }}</span>
+          <span class="shopinfo-addr-text">
+            {{ totalInfo.StoreProvice }}{{ totalInfo.StoreShi }}{{ totalInfo.StoreArea }}{{ totalInfo.Address }}
+          </span>
           <span class="shopinfo-address-btn" @click="showMap">到这里去</span>
         </div>
-        <div class="shopinfo-default">
+        <div class="shopinfo-default shoinfo-time">
           <span>营业时间：</span>
           <span>{{ totalInfo.BusinessHours }}</span>
+          
         </div>
         <div class="shopinfo-default">
           <span>客服电话：</span>
@@ -244,13 +247,19 @@ export default{
   padding: 0 3% 0 6%;
   display: flex;
   width: 100%;
-  height: 1.2rem;
+  height: 1.0rem;
   align-items: center;
   border-bottom: 1px solid #EEE;
   font-size: 0.35rem;
 }
 
 .shopinfo-address {
+  height: 1.5rem;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.shoinfo-time {
   justify-content: space-between;
 }
 

@@ -7,13 +7,12 @@
 			</li>
 		</ul>
 		<!-- header -->
-		<!-- <commodity-item class="myorder-list"></commodity-item> -->
 		<ul class="myorder-list">
-			<li class="list-wrap" v-for="(item,index) in orderList">
+			<li class="list-wrap" v-for="(item,index) in orderList" :orderNo="item.orderNo">
 				<header class="list-title">
 					<div class="list-title-name">
 						<i class="list-title-logo list-title-icon"></i>
-		        <span>订单状态</span>
+		        <span>{{ item.storeName }}</span>
 		        <i class="list-title-arrow list-title-icon"></i>
 					</div>
 	        <span class="title-tip" v-show="item.OrderStatus == 1">待付款</span>
@@ -29,95 +28,42 @@
 						</aside>
 						<section class="lists-item-desc">
 							<h1 class="lists-item-desc-title">
-								未发货哇哦
+								{{ item.product }}
 							</h1>
 							<p class="lists-item-desc-desc">
-								未发货哇哦IE很烦人我IE然后我IE然后问我偶尔回我内容和我我
+								{{item.productAttrs}}
 							</p>
 							<p class="lists-item-desc-num">
-								<span class="lists-item-desc-price">{{ 1245 | currency }}</span>
-								<span>X1231223</span>
-							</p>
-						</section>
-					</dd>
-					<dd class="lists-item">
-						<aside class="lists-item-img">
-							<img :src="item.productImage">
-						</aside>
-						<section class="lists-item-desc">
-							<h1 class="lists-item-desc-title">
-								未发货哇哦
-							</h1>
-							<p class="lists-item-desc-desc">
-								未发货哇哦IE很烦人我IE然后我IE然后问我偶尔回我内容和我我
-							</p>
-							<p class="lists-item-desc-num">
-								<span class="lists-item-desc-price">{{ 1245 | currency }}</span>
-								<span>X1231223</span>
+								<span class="lists-item-desc-price">{{ item.productPrice | currency }}</span>
+								<span>X{{ item.order_amount }}</span>
 							</p>
 						</section>
 					</dd>
 				</ol>
 				<section class="list-total">
-					共{{ 2 }}件商品&nbsp;合计:{{ 1555.041 | currency }}
+					共 {{ item.order_amount  }} 件商品&nbsp;合计:{{ 1555.041 | currency }}
 				</section>
 				<section class="list-func">
-					<template>
-						<button class="list-btn-default list-btn-active" @click="applyRefund(item.orderNo_sub, item.phoneNumber)">申请退款</button>
+					<template v-show="item.OrderStatus == 1">
 						<button class="list-btn-default" @click="deletOrder(item.orderNo)">取消订单</button>
 						<button class="list-btn-default list-btn-gray">确认付款</button>
-						<button class="list-btn-default"  @click="viewStatus(item.orderStatusUrl)">查看物流</button>
 					</template>
+					<template v-show="item.OrderStatus == 2">
+						<button class="list-btn-default list-btn-active" @click="applyRefund(item.orderNo_sub, item.phoneNumber)">申请退款</button>
+					</template>
+					<template v-show="item.OrderStatus == 3">
+						<button class="list-btn-default"  @click="toTransport(item.orderStatusUrl)">查看物流</button>
+					</template>
+					<template v-show="item.OrderStatus == 4">
+						<button class="list-btn-default"  @click="toTransport(item.orderStatusUrl)">查看物流</button>
+					</template>
+					<template v-show="item.OrderStatus == 5">
+						
+					</template>
+					
 				</section>
 			</li>
 		</ul>
-
-		<ul class="ct">
-			<li class="list-wrap" v-for="(item,index) in orderList">
-	      <div class="toDetai" :data-orderNo="item.orderNo" @click="toDetail($event.target)"></div>
-	      <div class="list-title">
-	        <i class="title-icon"></i>
-	        <span class="title-text">订单状态</span>
-	        <i class="arrow-right"></i>
-	        <span class="title-tip" v-show="item.OrderStatus == 1">待付款</span>
-	        <span class="title-tip" v-show="item.OrderStatus == 2">待发货 </span>
-	        <span class="title-tip" v-show="item.OrderStatus == 3">已发货 </span>
-	        <span class="title-tip" v-show="item.OrderStatus == 4">已完成 </span>
-	        <span class="title-tip" v-show="item.OrderStatus == 5">退款 </span>
-	      </div>
-				<div class="list-img">
-					<img :src="item.productImage_300_300" >
-				</div>
-				<div class="list-desc">
-					<h1>
-						{{item.product}}
-					</h1>
-					<p>
-						{{item.consignee}}
-					</p>
-					<h2>
-						<span class="list-price">¥{{item.productPrice}}</span>
-						<i>X{{item.quantity}}</i>
-					</h2>
-				</div>
-	      <div class="list-footer">
-	        <div class="listFootBtn" v-show="item.OrderStatus == 1">
-	          <button class="btn btn1" @click="deletOrder(item.orderNo)">取消订单</button>
-	          <button class="btn btn2" @click="forPay(item.payurl)">确认付款</button>
-	        </div>
-	        <div class="listFootBtn" v-show="(item.OrderStatus == 2) || (item.OrderStatus == 3) || (item.OrderStatus == 4)">
-	          <button class="btn btn1" :data-orderNo="item.orderNo_sub"  :data-phone="item.phoneNumber" @click="applyRefund($event.target)">申请退款</button>
-	          <button class="btn btn2"  @click="viewStatus(item.orderStatusUrl)">查看物流</button>
-	        </div>
-	        <div class="listFootBtn" v-show="item.OrderStatus == 5">
-	          <button class="btn btn1" @click="applyRefund(item.orderNo_sub, item.phoneNumber)">申请退款</button>
-	          <button class="btn btn2" @click="viewStatus(item.orderStatusUrl)">查看物流</button>
-	        </div>
-	      </div>
-			</li>
-	    <span class="list-amount" v-show="orderList.length">共{{orderList.length}}件商品 合计: ¥ {{totalPrice}}</span>
-		</ul>
-		<!-- footer -->
 		<navigation></navigation>
     <pay-model v-show="showPay"></pay-model>
 	</div>
@@ -138,6 +84,13 @@ export default {
       tabList: ['全部', '待付款', '待发货', '待收货', '已完成', '退款'],
 			itemNum: 0,
 			orderList: [],
+			orderKey: {
+				appkey: appkey,
+				token: '',
+				pageindex: 1,
+				pagesize: 10,
+				orderStatus: 0
+			},
 		}
 	},
 	components: {
@@ -216,6 +169,9 @@ export default {
 		  this.orderList = res.Data;
 		  console.log(this.orderList);
 		},
+		toTransport(url) {
+			window.location.href = url + "&token=" + this.token;
+		}
 	}
 }
 </script>
@@ -395,113 +351,4 @@ export default {
 }
 
 	/* 商品列表 */
-
-/* 订单状态 */
-.toDetai{
-  position: absolute;
-  width: 100%;
-  height: 2.7rem;
-  top: 1rem;
-}
-.ct{
-  position: relative;
-}
-.list-amount{
-  position: absolute;
-  right: 3%;
-  bottom: 1rem;
-}
-
-.list-img {
-	flex: 1;
-	padding: 0.3rem;
-  height: 2.72rem;
-  margin-top: 1rem;
-}
-.list-desc {
-	display: flex;
-	flex-direction: column;
-	flex: 3;
-	padding: 0.25rem 0;
-	height: 2.72rem;
-	justify-content: space-around;
-	overflow: hidden;
-  margin-top: 1rem;
-}
-.list-desc h1 {
-	flex: 2;
-	font-size: 0.32rem;
-	overflow: hidden;
-}
-.list-desc p {
-	flex: 2;
-	font-size: 0.28rem;
-	overflow: hidden;
-}
-
-.list-desc h2 {
-	display: flex;
-	font-size:  0.34rem;
-	flex: 1;
-	overflow: hidden;
-	justify-content: space-between;
-}
-
-.list-price {
-	color: #E52951;
-}
-.list-footer{
-  height: 1.5rem;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  background: #fff;
-}
-  .list-footer{
-    height: 1.5rem;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    background: #fff;
-    padding-right: 3%;
-  }
-  .list-footer>span{
-    text-align: right;
-    width: 100%;
-    display: inherit;
-  }
-  .listFootBtn{
-    line-height: 1rem;
-    text-align: right;
-    margin-top: 0.5rem;
-  }
-  .btn{
-    line-height: 0.7rem;
-    width: 20%;
-    background: none;
-    font-size: 0.35rem;
-    border-radius: 5px;
-    color: #DEDEDE;
-  }
-  .btn1{
-    border: 1px solid #DEDEDE;
-    margin-right: 3%;
-  }
-  .btn2{
-    color: #E8496B;
-    border: 1px solid #E8496B;
-  }
-  .list-header{
-    position: absolute;
-    width: 100%;
-    background: #fff;
-    display: flex;
-    line-height: 1rem;
-    top: 0;
-  }
-  .list-header>h4{
-    position: absolute;
-    right: 3%;
-  }
-
 </style>
