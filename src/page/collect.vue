@@ -17,7 +17,7 @@
         </div>
       </li>
     </ul>
-    <div class="data-none" v-show="dataNone || !collectData.length">您还没有收藏呢</div>
+    <div class="data-none" v-show="dataNone ">您还没有收藏呢</div>
     <infinite-scroll :scroller="scroller" :loading="loading" @load="loadmore" :loading-end="isLoadEnd"></infinite-scroll>
     <navigation></navigation>
   </div>

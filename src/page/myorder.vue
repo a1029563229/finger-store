@@ -62,7 +62,12 @@
 					共{{ 2 }}件商品&nbsp;合计:{{ 1555.041 | currency }}
 				</section>
 				<section class="list-func">
-					<button class="list-btn-default">申请退款</button>
+					<template>
+						<button class="list-btn-default list-btn-active" @click="applyRefund(item.orderNo_sub, item.phoneNumber)">申请退款</button>
+						<button class="list-btn-default" @click="deletOrder(item.orderNo)">取消订单</button>
+						<button class="list-btn-default list-btn-gray">确认付款</button>
+						<button class="list-btn-default"  @click="viewStatus(item.orderStatusUrl)">查看物流</button>
+					</template>
 				</section>
 			</li>
 		</ul>
@@ -366,7 +371,7 @@ export default {
 	align-items: center;
 	justify-content: flex-end;
 	background-color: #FFF;
-	padding: 0 3%;
+	padding: 0 2%;
 }
 .list-btn-default {
 	display: flex;
@@ -378,8 +383,16 @@ export default {
 	border: 1px solid #DDD;
 	border-radius: 0.06rem;
 	background-color: #FFF;
+	margin-right: 2%;
 }
-
+.list-btn-active {
+	color: #E52951;
+	border-color: #E52951;
+}
+.list-btn-gray {
+	color: #999;
+	border-color: #999;
+}
 
 	/* 商品列表 */
 

@@ -441,14 +441,17 @@
 	position: relative;
 	width: 100%;
 	background-color: #F4F4F4;
+	padding-top:3rem;
 }
 
 /* search-bar */
 .search-bar {
-	position: relative;
+	position: fixed;
+	top: 0;
 	width: 100%;
 	height: 1.28rem;
 	background-color: #FFF;
+	z-index: 9;
 }
 
 .search-bar::before {
@@ -500,11 +503,14 @@
 /* store - info */
 
 .store-info {
+	position: fixed;
+	top: 1.28rem;
 	width: 100%;
 	height: 1.6rem;
 	border-bottom: 1px solid #EEE;
 	overflow: hidden;
 	background-color: #FFF;
+	z-index: 9;
 }
 
 .info-img {
